@@ -1,0 +1,15 @@
+sources = $(presentations:.pdf=.tex)
+
+%.pdf: %.tex
+	TEXINPUTS=./:../texmf//: pdflatex $^
+
+default: $(presentations)
+
+.PHONY: clean
+
+again:
+	for i in $(sources); do TEXINPUTS=./:../texmf//: pdflatex $$i; done
+	
+
+clean:
+	rm -f *.aux *.log *.out *.nav *.snm *.toc *.vrb *~

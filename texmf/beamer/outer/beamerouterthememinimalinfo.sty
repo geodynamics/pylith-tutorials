@@ -1,0 +1,31 @@
+% Brad Aagaard
+
+\mode<presentation>
+
+\setbeamercolor*{section in head/foot}{parent=palette primary}
+\setbeamercolor*{subsection in head/foot}{parent=palette secondary}
+\setbeamercolor*{logo in head/foot}{use=structure,fg=structure.fg}
+
+\setbeamertemplate{sidebar right}{default}{}
+
+\defbeamertemplate*{footline}{infolines theme}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.25\paperwidth,ht=3.0ex,dp=1.5ex,center]{section in head/foot}%
+    \usebeamerfont{section in head/foot}\insertsectionhead
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.25\paperwidth,ht=3.0ex,dp=1.5ex,center]{subsection in head/foot}%
+    \usebeamerfont{subsection in head/foot}\insertsubsectionhead
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.50\paperwidth,ht=3.0ex,dp=1.5ex,right]{logo in head/foot}%
+    \vspace*{-1.5ex}\insertlogo
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\defbeamertemplate*{headline}{infolines theme}{}
+
+\setbeamersize{text margin left=2em,text margin right=2em}
+
+\mode<all>

@@ -1,0 +1,21 @@
+% Beamer theme for CIG related presentations.
+%
+
+\mode<presentation>
+
+\newif\ifbeamer@secheader
+\beamer@secheaderfalse
+
+\DeclareOptionBeamer{secheader}{\beamer@secheadertrue}
+\ProcessOptionsBeamer
+
+\usepackage{helvet}
+\newcommand{\summary}[1]{\framesubtitle{#1}}
+
+\usecolortheme{cig}
+\useinnertheme[shadow]{rounded}
+\useoutertheme{logo}
+
+\ifbeamer@secheader\else\setbeamertemplate{headline}[default]\fi
+
+\mode<all>

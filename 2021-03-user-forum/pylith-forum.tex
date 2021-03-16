@@ -1,0 +1,527 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[none]{hyphenat}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{bm}
+\usepackage{mathtools} % equations
+\usepackage{tikz}
+\usetikzlibrary{shapes,calc}
+
+\title{PyLith User Forum}
+\author{Brad Aagaard}
+\date{March 16, 2021}
+
+\institute{\includegraphics[scale=0.4]{../logos/cig_blackfg}}
+
+\newcommand{\highlight}[1]{{\bf\color{green}#1}}
+
+\usetikzlibrary{arrows,shapes}
+\newcommand{\tikzmark}[1]{\tikz[remember picture,overlay,baseline=-0.5ex] \coordinate (#1);}
+\tikzstyle{popup-figure} = [very thick,
+  rectangle callout, callout absolute pointer={#1}, anchor=center,
+  font=\mdseries, draw=purple,
+  fill=white, fill opacity=0.9, text opacity=1.0, text=black]
+
+
+\usefonttheme[onlymath]{serif}
+\newcommand{\lhs}[1]{{\color{blue}#1}}
+\newcommand{\rhs}[1]{{\color{orange}#1}}
+\newcommand{\annotateL}[2]{%
+  {\color{blue}\underbrace{\color{blue}#1}_{\color{blue}\mathclap{#2}}}}
+\newcommand{\annotateR}[2]{%
+  {\color{orange}\underbrace{\color{orange}#1}_{\color{orange}\mathclap{#2}}}}
+\newcommand{\trialvec}[1][]{{\vec{\psi}_\mathit{trial}^{#1}}}
+\newcommand{\trialscalar}[1][]{{\psi_\mathit{trial}^{#1}}}
+\newcommand{\basisvec}[1][]{{\vec{\psi}_\mathit{basis}^{#1}}}
+\newcommand{\basisscalar}[1][]{{\psi_\mathit{basis}^{#1}}}
+
+\newcommand{\tensor}[1]{\bm{#1}}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+\usetheme{Logo}
+\usecolortheme{cig}
+
+\logo{\includegraphics[height=4.5ex]{../logos/cig_blackfg}}
+% --------------------------------------------------------- DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{PyLith v3}
+  \summary{Major rewrite of PyLith started in 2016}
+
+  \small{\begin{tabular}{p{2.0cm}p{5.5cm}p{5.5cm}}
+    \toprule
+    Feature
+    & PyLith v2
+    & PyLith v3 \\
+    \midrule
+    Governing eqn
+    & Hardwired (elasticity)
+    & Flexible (elasticity, incompressible elasticity, poroelasticity)
+    \\[\baselineskip]
+    Temporal discretization
+    & Backward Euler, Newmark (central difference)
+    & PETSc TS (primarily Runge Kutta)
+      \\[2\baselineskip]
+    Spatial discretization
+    & Hardwired (1st order)
+    & Flexible (tested up to 4th order)
+           \\[2\baselineskip]
+           Finite-element definition
+           & PyLith
+           & PETSc \\
+    \bottomrule
+  \end{tabular}}
+    
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Multiphysics Formulation}
+  \summary{Implement physics using point-wise integration functions}  
+
+  We want to solve equations in which the weak \tikzmark{aside-weak-form}form can be expressed
+  as
+  \begin{gather}
+    \lhs{F(t,s,\dot{s})} = \rhs{G(t,s)} \\
+    s(t_0) = s_0
+  \end{gather}
+  where $\lhs{F}$ and $\rhs{G}$ are vector functions, $t$ is time, and $s$ is the solution vector.\pause
+
+  \vspace*{\baselineskip}
+
+  Using the finite-element method and divergence theorem, we cast the weak form into
+  \begin{multline}
+    \int_\Omega \trialvec \cdot \lhs{\vec{f}_0(t,s,\dot{s})} + \nabla \trialvec : \lhs{\tensor{f}
+    _1(t,s,\dot{s})} \, 
+    d\Omega = \\
+    \int_\Omega \trialvec \cdot \rhs{\vec{g}_0(t,s)} + \nabla \trialvec : \rhs{\tensor{g}_1(t,s)} \, 
+    d\Omega,
+  \end{multline}
+  where $\vec{f}_0$ and $\vec{g}_0$ are vectors, and $\tensor{f}_1$ and
+  $\tensor{g}_1$ are tensors.\pause
+
+
+  \begin{tikzpicture}[remember picture, overlay]
+    \node<3>[popup-figure={(aside-weak-form)}] at (7.0,3.0) {
+      \begin{minipage}{0.75\textwidth}
+      \highlight{Aside: Finite-Element Method Weak Form}
+  
+      \vspace*{\baselineskip}
+
+      Solve governing equation in integrated sense:
+      \begin{equation}
+        \int_\Omega \trialscalar \cdot \mathit{PDE} \, d\Omega = 0,
+      \end{equation}
+      by minimizing the error with respect to the unknown coefficients.
+
+      \vspace*{\baselineskip}
+
+      This usually leads to equations of the form:
+      \begin{equation}
+        \int_\Omega \trialscalar \cdot f_0(x,t) + \nabla \trialscalar \cdot f_1(x,t) \, d\Omega = 0.
+      \end{equation}
+    \end{minipage}};\end{tikzpicture}\pause
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Multiphysics Formulation: Dynamic Elasticity without Faults}
+  \summary{}
+
+  \only<1>{\highlight{Strong form}
+  \begin{align}
+      % Solution
+      \vec{s}^T &= \left( \vec{u} \quad \ \vec{v} \right)^T, \\
+      % Elasticity
+    \lhs{\rho \frac{\partial^2\vec{u}}{\partial t^2}} &= \rhs{\vec{f}(\vec{x},t) + \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u})} \text{ in } \Omega, \\
+    % Neumann
+    \tensor{\sigma} \cdot \vec{n} &= \vec{\tau}(\vec{x},t) \text{ on } \Gamma_\tau, \\
+    % Dirichlet
+    \vec{u} &= \vec{u}_0(\vec{x},t) \text{ on } \Gamma_u.
+  \end{align}}
+
+  \only<2>{\highlight{Weak form}
+  
+\begin{gather}
+  % Displacement-velocity
+  \annotateL{\frac{\partial \vec{u}}{\partial t}}{f^u_0}  = M_u^{-1} \int_\Omega \trialvec[u] \cdot \annotateR{\vec{v}}{g^u_0} \, d\Omega, \\
+  % Elasticity
+  \annotateL{\frac{\partial \vec{v}}{\partial t}}{f^v_0} = M_v^{-1} \int_\Omega \trialvec[v] \cdot \annotateR{\vec{f}(\vec{x},t)}{\vec{g}^v_0} + \nabla \trialvec[v] : \annotateR{-\tensor{\sigma}(\vec{u})}{\tensor{g^v_1}} \, d\Omega
+  + \int_{\Gamma_\tau} \trialvec[v] \cdot \annotateR{\vec{\tau}(\vec{x},t)}{\vec{g}^v_0} \, d\Gamma, \\
+  % Mu
+  M_u = \mathit{Lump}\left( \int_\Omega \trialscalar[u]_i \annotateL{\delta_{ij}}{J^{uu}_{f0}} \basisscalar[u]_j \, d\Omega \right), \\
+  % Mv
+  M_v = \mathit{Lump}\left( \int_\Omega \trialscalar[v]_i \annotateL{\rho(\vec{x}) \delta_{ij}}{J^{vv}_{f0}} \basisscalar[v]_j \, d\Omega \right).
+\end{gather}}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Multiphysics Formulation: Incompressible elasticity}
+  \summary{Formulation shown for quasistatic case without faults}
+
+  \only<1>{\highlight{Strong form}
+\begin{gather}
+  % Solution
+  \vec{s}^T = \left( \vec{u} \quad \ p \right)^T, \\
+  % Elasticity
+  \lhs{\vec{f}(t) + \tensor{\nabla} \cdot \left(\tensor{\sigma}^\mathit{dev}(\vec{u}) - p\tensor{I}\right)} = \vec{0} \text{ in }\Omega, \\
+  % Pressure
+  \lhs{\vec{\nabla} \cdot \vec{u} + \frac{p}{K}} = 0 \text{ in }\Omega, \\
+  % Neumann
+  \tensor{\sigma} \cdot \vec{n} = \vec{\tau} \text{ on }\Gamma_\tau, \\
+  % Dirichlet
+  \vec{u} = \vec{u}_0 \text{ on }\Gamma_u, \\
+  p = p_0 \text{ on }\Gamma_p.
+\end{gather}}
+
+
+  \only<2>{\highlight{Weak form}
+
+    \begin{gather}
+      % Elasticity
+  \int_\Omega \trialvec[u] \cdot \annotateL{\vec{f}(t)}{f_0^u} + \nabla \trialvec[u] :
+  \annotateL{\left(-\tensor{\sigma}^\mathit{dev}(\vec{u}) + p\tensor{I}\right)}{f_1^u}  \, d\Omega
+  + \int_{\Gamma_\tau} \trialvec[u] \cdot \annotateL{\vec{\tau}(t)}{f_0^u} \, d\Gamma = 0, \\
+% Pressure
+  \int_\Omega \trialscalar[p] \cdot \annotateL{\left(\vec{\nabla} \cdot \vec{u} + 
+\frac{p}{K} \right)}{f_0^p} \, d\Omega = 0.
+\end{gather}}
+    
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Multiphysics Formulation: Poroelasticity}
+  \summary{Formulation shown for quasistatic case without fault}
+
+  \only<1>{\highlight{Strong form}
+    \begin{gather}
+      % Solution
+      \vec{s}^{T} = \left(\vec{u} \quad p \quad \epsilon_v\right), \\
+      % Elasticity
+      \lhs{\vec{f}(t) + \nabla \cdot \tensor{\sigma}(\vec{u},p)} = \vec{0} \text{ in } \Omega, \\
+      % Pressure
+      \lhs{\frac{\partial \zeta(\vec{u},p)}{\partial t} - \gamma(\vec{x},t) + \nabla \cdot \vec{q}(p)} = 0 \text{ in } \Omega, \\
+      % Vol. Strain
+      \lhs{\nabla \cdot \vec{u} - \epsilon_{v}} = 0 \text{ in } \Omega, \\
+      % Neumann traction
+      \tensor{\sigma} \cdot \vec{n} = \vec{\tau}(\vec{x},t) \text{ on } \Gamma_{\tau}, \\
+      % Dirichlet displacement
+      \vec{u} = \vec{u}_0(\vec{x}, t) \text{ on } \Gamma_{u}, \\
+      % Neumann flow
+      \vec{q} \cdot \vec{n} = q_0(\vec{x}, t) \text{ on } \Gamma_{q}, \text{ and } \\
+      % Dirichlet pressure
+      p = p_0(\vec{x},t) \text{ on } \Gamma_{p}.
+\end{gather}}
+
+  \only<2>{\highlight{Weak form}
+    \begin{gather}
+    % Displacement
+      \int_\Omega \trialvec[u] \cdot \annotateL{\vec{f}(\vec{x},t)}{f^u_0}
+      + \nabla \trialvec[u] : \annotateL{-\tensor{\sigma}(\vec{u},p_f)}{f^u_1} \, d\Omega
+      + \int_{\Gamma_\tau} \trialvec[u] \cdot \annotateL{\vec{\tau}(\vec{x},t)}{f^u_0} \, d\Gamma = 0, \\
+% Pressure
+      \int_\Omega  \trialscalar[p] \annotateL{\left(\frac{\partial \zeta(\vec{u},p_f)}{\partial t} - \gamma(\vec{x},t)\right)} {f^p_0} \, d\Omega
+      + \nabla \trialscalar[p] \cdot \annotateL{-\vec{q}(p_f)}{f^p_1} \, d\Omega
+      + \int_{\Gamma_q} \trialscalar[p] \annotateL{q_0(\vec{x},t)}{f^p_0} \, d\Gamma = 0, \\
+ % Volumetric Strain
+      \int_\Omega \trialscalar[\epsilon_{v}] \cdot \annotateL{\left(\nabla \cdot \vec{u} - \epsilon_{v} \right)}{f^{\epsilon_{v}}_{0}} \, d\Omega = 0.
+    \end{gather}}
+    
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Poroelasticity Implementation}
+  \summary{}
+
+  \vfill
+  More information on the poroelasticity implementation
+  
+  \vfill
+  Robert Walker\\
+  University of New York, Buffalo\\
+  Postdoc with Matthew Knepley
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Summary of Multiphysics Implementation}
+  \summary{}
+
+  \highlight{We decouple the finite-element definition from the weak
+    form equation, using pointwise functions that look like the PDE.}
+
+  \vfill
+  Each material and boundary condition contribute pointwise functions.
+
+  \vfill    
+  \begin{description}
+  \item[Flexibility] The cell traversal, handled by PETSc,
+    accommodates arbitrary cell shapes. The problem can be posed in
+    any spatial dimension with an arbitrary number of physical fields.
+  \item[Extensibility] PETSc needs to maintain only a single method,
+    easing language transitions (CUDA, OpenCL). A new discretization
+    scheme could be enabled in a single place in the code.
+  \item[Efficiency] Only a few PETSc routines need to be
+    optimized. The application scientist is no longer responsible for
+    proper vectorization, tiling, and other traversal optimization.
+  \end{description}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Improved Testing Infrastructure}
+  \summary{}
+
+  \begin{itemize}
+  \item \highlight{Multiple levels of testing}
+    \begin{itemize}
+    \item {\bf Unit tests}: Tests of individual class methods or functions
+    \item {\bf Method of Manufactured solutions}: Verify implementation of physics
+    \item {\bf Full scale tests} Verify all output for simple simulation (can be parallel)
+    \end{itemize}
+  \item \highlight{Continuous integration}
+    \begin{itemize}
+    \item Use Docker images to allow testing on many (8) Linux
+      distributions via GitLab pipelines
+    \item All dependencies included in custom Docker images
+    \item Test runners build PETSc + CIG code in Docker containers and run tests
+    \end{itemize}
+  \end{itemize}
+    
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Recent Development Activities}
+  \summary{}  
+
+  \begin{itemize}
+  \item \highlight{Updated Pythia/Pyre to Python 3}
+    \begin{itemize}
+    \item Added unit tests for features used by PyLith
+    \item Compatible with Python 3.6 or later
+    \item Reorganized code into single pythia package
+    \item Integrated nemesis into pythia (no longer a separate install)
+    \end{itemize}\pause
+  \item \highlight{Updated SpatialData to Proj 6.x/7.x}
+    \begin{itemize}
+    \item Updated SpatialData to use current Proj API (v6.0 and later)
+    \item Specify coordinate system\tikzmark{cs-example} using Proj parameters, EPSG codes,
+      or WKT strings
+    \end{itemize}
+  \end{itemize}
+
+  \begin{tikzpicture}[remember picture, overlay]
+    \node<3>[popup-figure={(cs-example)}] at (7.0,-1.0) {
+      \begin{minipage}{0.8\textwidth}
+        
+      {\bf UTM zone 11 northern hemisphere}
+
+      \footnotesize{\begin{description}
+      \item[Proj] +proj=utm +zone=11 +ellps=GRS80 +datum=NAD83 +units=m
+      \item[EPSG] EPSG:26911
+      \end{description}}
+    \end{minipage}};\end{tikzpicture}
+
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{PyLith v3 - Physics Capabilities}
+  \summary{Release before June 2021 hackathon}  
+
+  \begin{itemize}
+  \item \highlight{Governing Equations}
+    \begin{itemize}
+    \item Quasistatic and dynamic elasticity
+    \item Quasistatic incompressible elasticity
+    \item Quasistatic poroelasticity
+    \end{itemize}
+  \item \highlight{Bulk Rheologies}
+    \begin{itemize}
+    \item Isotropic, linear elasticity (all governing equations)
+    \item Viscoelasticity (quasistatic elasticity)
+    \end{itemize}
+  \item \highlight{Fault}
+    \begin{itemize}
+    \item Prescribed slip for quasistatic and dynamic problems
+    \end{itemize}
+  \item \highlight{Boundary Conditions}
+    \begin{itemize}
+    \item Dirichlet
+    \item Neumann
+    \item Absorbing
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{PyLith v3 Documentation Improvements}
+  \summary{}
+
+  \begin{itemize}
+  \item \highlight{{\tt pyre\_doc}: Get help for any Pyre component}\\
+    \begin{itemize}
+    \item Description of component
+    \item List of properties and facilities with default values
+    \end{itemize}
+  \item \highlight{{\tt pylith\_cfgsearch}: Search {\tt .cfg} files based on keywords and features}
+    \begin{itemize}
+    \item Find example(s) demonstrating feature(s)
+    \item Search your own files based on keyword(s) or feature(s)
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{PyLith Features Coming Soon}
+  \summary{Features with very high priority for implementation}  
+
+  \begin{itemize}
+  \item Fault friction
+  \item Import Gmsh (open-source mesh generation) files
+  \item Parallel mesh loading
+  \item Reimplement Drucker-Prager elastoplastic bulk rheology
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Planned Changes to PyLith Documentation}
+  \summary{}
+
+  \begin{itemize}
+  \item \highlight{Change distribution: PDF $\rightarrow$ online + PDF}
+    \begin{itemize}
+    \item Switch documentation source from \LaTeX to Markedly
+      Structured Text\\ Markdown processed by Sphinx
+    \item Online: Better search, stable development version + releases
+    \end{itemize}
+  \item \highlight{Examples via Jupyter Notebooks}
+    \begin{itemize}
+    \item Consolidate each example into a single
+      notebook
+    \item Available as Jupyter notebook, which is integrated into
+      (online) documentation
+    \end{itemize}
+  \item \highlight{Timeline}
+    \begin{itemize}
+    \item 1-2 years
+    \item Could be faster with help from the PyLith community
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{PyLith Hackathon, June 2021}
+  \summary{}
+
+  Online Hackathon, June 10-14 (Mon-Thu) and June 17-19 (Mon-Wed)
+
+  \vfill
+
+  \begin{itemize}
+  \item 3--4 projects with 3--4 people working on each project as a team
+  \item Registration will open later this week
+  \item PyLith development environment
+    \begin{itemize}
+    \item We will provide a Docker container with {\bf all} dependencies
+    \item Virtual Studio Code Integrated Development Environment\\
+      Run VSCode locally (outside container) but work is done in the container
+    \item We will provide instructions for how to setup the development environment
+    \end{itemize}
+  \item Prerequisites
+    \begin{itemize}
+    \item Experience using PyLith
+    \item Comfortable with using the command line
+    \item Some coding experience (depends on the project)
+    \item Available to do ``homework'' before the hackathon
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Potential Hackathon Projects}
+  \summary{We will work with you to refine the project scope/details {\em before} the hackathon}
+
+  \begin{itemize}
+  \item Poroelasticity: examples, benchmarks, fault implementation w/pore pressure
+  \item Point sources: wells; seismic moment tensors
+  \item Earthquake cycle modeling: start top-level implementation
+  \item Gmsh integration: Gmsh Python scripts for existing examples
+  \item Full scale tests: Create simulations with known solutions
+  \item Documentation: Convert to MyST + Sphinx; examples as Jupyter notebooks
+  \end{itemize}
+  \vfill
+  \begin{itemize}
+  \item Adaptive mesh refinement
+  \item Viscoelastic bulk rheologies using strain rate
+  \item Time-dependent Green's functions
+  \end{itemize}
+
+  \vfill
+  You may propose your own project too!
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Open Discussion}
+  \summary{}
+
+  \vfill
+  Questions/discussion related to anything presented
+
+  \vfill
+  Questions/discussion on anything PyLith related
+  
+\end{frame}
+
+
+
+
+
+% --------------------------------------------------------- DOCUMENT
+\end{document}
+
+
+% End of file
