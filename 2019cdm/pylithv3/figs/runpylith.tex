@@ -1,0 +1,159 @@
+\documentclass[tikz]{standalone}
+\usepackage[none]{hyphenat}
+\usepackage{helvet}
+\renewcommand{\familydefault}{phv}
+
+\makeatletter
+\renewcommand{\large}{\@setfontsize\large{10}{9}}
+\renewcommand{\normalsize}{\@setfontsize\normalsize{8}{9.5}}
+\makeatother
+
+\usepackage{tikz}
+
+\begin{document}
+\pagestyle{empty}
+
+\input{../../../palettes/figcolors}
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+\usetikzlibrary{arrows,shapes}
+\usetikzlibrary{shadows.blur}
+
+\tikzstyle{maincomps} = [
+  rectangle, 
+  text centered, 
+  very thick, 
+  font=\bf\large]
+\tikzstyle{mesh} = [
+  maincomps, 
+  draw=green!0!white, 
+  fill=ltgreen!50!white]
+\tikzstyle{params} = [
+  maincomps, 
+  draw=dkyellow!0!white, 
+  fill=yellow!50!white]
+\tikzstyle{visualize} = [
+  maincomps, 
+  draw=blue!0!white, 
+  fill=ltblue!50!white]
+\tikzstyle{postprocess} = [
+  maincomps, 
+  draw=purple!0!white, 
+  fill=ltpurple!50!white]
+
+\tikzstyle{pylith} = [
+  rectangle, 
+  font=\bf\large,
+  minimum width=6em, 
+  text centered,
+  rounded corners=0.75em,
+  minimum height=3.0em,
+  very thick,
+  draw=red!80!black,
+  top color=red!10,
+  bottom color=red!60,
+  blur shadow={shadow blur steps=5}]
+
+\tikzstyle{subcomps} = [
+  rectangle, 
+  text width=9em, 
+  text centered, 
+  very thick, 
+  minimum height=1.5em, 
+  font=\small, 
+  node distance=12.0em]
+\tikzstyle{app} = [
+  subcomps,
+  rounded corners=0.75em,
+  draw=orange!80!black,
+  top color=orange!10,
+  bottom color=orange!60]
+\tikzstyle{input} = [
+  subcomps,
+  font=\tt,
+  draw=green!80!black,
+  top color=green!10,
+  bottom color=green!60]
+\tikzstyle{output} = [
+  subcomps, 
+  font=\tt,
+  draw=blue!80!black,
+  top color=blue!10,
+  bottom color=blue!60]
+
+\tikzstyle{arrowto} = [>=latex, ->, very thick]
+\tikzstyle{arrowto_minor} = [arrowto, thin]
+\tikzstyle{connect} = [very thick]
+\tikzstyle{connect_opt} = [connect, dashed]
+
+\begin{tikzpicture}[node distance=16.0em]
+
+  \begin{pgfonlayer}{background}
+    
+    \node (pylith) [pylith] {PyLith};
+
+    \node (mesh) [mesh, above left of=pylith, text depth=10em, minimum width=36em, xshift=-5em] {Mesh Generator};
+    \node (params) [params, above right of=pylith, text depth=10em, minimum width=24em, xshift=+5em] {Simulation Parameters};
+    \node (viz) [visualize, below of=pylith, text height=11.5em, minimum width=24em, yshift=+4em] {Visualization};
+    \node (postprocess) [postprocess, right of=viz, text height=8em, xshift=5em, yshift=+2.5em] {Post-processing};
+    
+  \end{pgfonlayer}
+  
+  % Mesh
+  \node (cubit) [app, xshift=-12em, yshift=+3.0em] at (mesh) {CUBIT / Trelis};
+  \node (exodus) [input, below of=cubit, yshift=+6em] {Exodus file [.exo]};
+
+  \node (lagrit) [app, right of=cubit] {LaGriT};
+  \node (gmvpset) [input, below of=lagrit, yshift=+6em] {GMV File [.gmv] \par Pset File [.pset]};
+
+  \node (textedit) [app, right of=lagrit] {Text Editor};
+  \node (asciimesh) [input, below of=textedit, yshift=+6em] {ASCII File [.mesh]};
+
+  % Simulation parameters
+  \node (textedit2) [app, yshift=+3.0em] at (params) {Text Editor};
+  \node (cfg) [input, below of=textedit2, xshift=-6.0em, yshift=+6em] {Parameter File(s) [.cfg]};
+  \node (spatialdb) [input, right of=cfg] {Spatial Database(s) [.spatialdb]};
+
+  % Visualization
+  \node (vtk) [output, xshift=-6.0em, yshift=+2.5em] at (viz) {VTK File(s) [.vtk]};
+  \node (hdf5) [output, right of=vtk] {HDF5 File(s) [.h5] \par Xdmf File(s) [.xmf]};
+
+  \node (paraview) [app, below of=vtk, yshift=+6em] {ParaView};
+  \node (visit) [app, right of=paraview] {Visit};
+
+
+  % Post-processing
+  \node (h5py) [app, yshift=+2em] at (postprocess) {Python w/h5py};
+  \node (matlab) [app, below of=h5py, yshift=+9em] {Matlab};
+
+  % Main workflow
+  \draw[connect_opt] (exodus.south) |- (mesh.south);
+  \draw[connect_opt] (gmvpset.south) |- (mesh.south);
+  \draw[connect_opt] (asciimesh.south) |- (mesh.south);
+  \draw[arrowto] (mesh.south) |- (pylith.west);
+  \draw[arrowto] (cfg.south) |- (pylith.east);
+  \draw[arrowto] (spatialdb.south) |- (pylith.east);
+
+  \draw[arrowto] (pylith.south) |-+(0,-1em)-| (viz.north);
+  \draw[connect_opt] (viz.north) -| (vtk.north);
+  \draw[connect_opt] (viz.north) -| (hdf5.north);
+  \path (hdf5.east) edge[arrowto,<->] (postprocess.west);
+
+  % Annotation
+  \path (cubit) edge[arrowto_minor] (exodus);
+  \path (lagrit) edge[arrowto_minor] (gmvpset);
+  \path (textedit) edge[arrowto_minor] (asciimesh);
+
+  \path (textedit2.south) edge[arrowto_minor] (cfg.north);
+  \path (textedit2.south) edge[arrowto_minor] (spatialdb.north);
+
+  \path (vtk.south) edge[arrowto_minor] (paraview.north);
+  \path (vtk.south) edge[arrowto_minor] (visit.north);
+  \path (hdf5.south) edge[arrowto_minor] (paraview.north);
+  \path (hdf5.south) edge[arrowto_minor] (visit.north);
+
+
+\end{tikzpicture}
+
+\end{document}

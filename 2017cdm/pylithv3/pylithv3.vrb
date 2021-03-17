@@ -1,0 +1,32 @@
+\frametitle{Example: Elasticity Stress Kernels for Residual}
+  \summary{}
+
+\begin{itemize}
+\item Volumetric Stress
+\lstset{language=C}
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+for (i=0; i < _dim; ++i) {
+   trace += disp_x[i] - initialstrain[i*_dim+i];
+   meanistress += initialstress[i*_dim+i];
+}
+meanistress /= (PylithReal) _dim;
+for (i = 0; i < _dim; ++i) {
+   stress[i*_dim+i] += lambda * trace + meanistress;
+}
+\end{lstlisting}
+\item Deviatoric Stress
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+for (i=0; i < _dim; ++i) {
+    meanistress += initialstress[i*_dim+i];
+}
+meanistress /= (PylithReal) _dim;
+    for (i=0; i < _dim; ++i) {
+      for (j=0; j < _dim; ++j) {
+          stress[i*_dim+j] += mu * (disp_x[i*_dim+j] + disp_x[j*_dim+i]
+              - initialstrain[i*_dim+j]) + initialstress[i*_dim+j];
+    }
+    stress[i*_dim+i] -= meanistress;
+}
+\end{lstlisting}
+\end{itemize}
+

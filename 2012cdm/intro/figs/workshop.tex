@@ -1,0 +1,150 @@
+\input{../../palettes/figcolors}
+
+\tikzstyle{days} = [rectangle, 
+                    text width=15mm,
+                    text centered,
+                    minimum height=2em,
+                    thin,
+                    font=\bfseries,
+                    draw=dkyellow!80!black,
+                    top color=yellow,
+                    bottom color=dkyellow]
+\tikzstyle{admin} = [rectangle, 
+                      draw=orange!80!black,
+                      top color=ltorange!50!white,
+                      bottom color=orange]
+\tikzstyle{tutorial} = [rectangle, 
+                      draw=green!80!black,
+                      top color=ltgreen!20!white,
+                      bottom color=green]
+\tikzstyle{break} = [rectangle, 
+                      draw=blue!80!black,
+                      top color=ltblue!20!white,
+                      bottom color=blue]
+\tikzstyle{talk} = [rectangle, 
+                      draw=ltred!80!black,
+                      top color=ltred!20!white,
+                      bottom color=red!70!white!100]
+\tikzstyle{tinker} = [rectangle, 
+                      draw=ltpurple!80!black,
+                      top color=ltpurple!20!white,
+                      bottom color=purple!70!white!100]
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75, transform shape,
+  node distance=6.0em,
+  thick]
+
+% Reference points
+\coordinate (o1) at (0mm,0mm);
+\coordinate (o2) at (+25mm,0mm);
+\coordinate (o3) at (+50mm,0mm);
+\coordinate (o4) at (+75mm,0mm);
+\coordinate (o5) at (+100mm,0mm);
+
+
+  % Days
+  \node[days] (mon) at ($(o1)+(8.5mm,0mm)$) {Mon};
+  \node[days] (tue) at ($(o2)+(8.5mm,0mm)$) {Tue};
+  \node[days] (wed) at ($(o3)+(8.5mm,0mm)$) {Wed};
+  \node[days] (thu) at ($(o4)+(8.5mm,0mm)$) {Thu};
+  \node[days] (fri) at ($(o5)+(8.5mm,0mm)$) {Fri};
+
+  % Morning/Afternoon
+  %\node[days] (am) {Morning};
+  %\node[days] (pm) {Afternoon};
+
+  % Mon
+  \path[break] ($(o1)+(0mm,-5mm)$) rectangle ++(17mm,-3.57mm); % breakfast
+  \path[admin] ($(o1)+(0mm,-8.57mm)$) rectangle ++(17mm,-1.79mm); % intro
+  \path[tutorial] ($(o1)+(0mm,-10.36mm)$) rectangle ++(17mm,-5.36mm); % relax 45min
+  \path[tutorial] ($(o1)+(0mm,-15.72mm)$) rectangle ++(17mm,-3.57mm); % pylith 30min
+  \path[tutorial] ($(o1)+(0mm,-19.29mm)$) rectangle ++(17mm,-3.57mm); % cubit 30min
+
+  \path[break] ($(o1)+(0mm,-22.86mm)$) rectangle ++(17mm,-1.79mm); % break 15min
+
+  \path[tutorial] ($(o1)+(0mm,-24.65mm)$) rectangle ++(17mm,-14.29mm); % pylith 2hrs
+
+  \path[break] ($(o1)+(0mm,-38.94mm)$) rectangle ++(17mm,-5.36mm); % lunch 45min
+  \path[tinker] ($(o1)+(0mm,-44.30mm)$) rectangle ++(17mm,-10.71mm); % tinker 90min
+  \path[break] ($(o1)+(0mm,-55.01mm)$) rectangle ++(17mm,-3.57mm); % break 30min
+
+  \path[tutorial] ($(o1)+(0mm,-58.58mm)$) rectangle ++(17mm,-10.71mm); % pylith 90min
+  \path[tutorial] ($(o1)+(0mm,-69.29mm)$) rectangle ++(17mm,-5.36mm); % relax 45min
+  \path[tinker] ($(o1)+(0mm,-74.65mm)$) rectangle ++(17mm,-5.36mm); % tinker 45min
+
+  % Tue
+  \path[break] ($(o2)+(0mm,-5mm)$) rectangle ++(17mm,-3.57mm); % breakfast
+  \path[admin] ($(o2)+(0mm,-8.57mm)$) rectangle ++(17mm,-0.60mm); % intro 5min
+  \path[tutorial] ($(o2)+(0mm,-9.17mm)$) rectangle ++(17mm,-10.71mm); % cubit 85min
+  \path[tutorial] ($(o2)+(0mm,-19.29mm)$) rectangle ++(17mm,-5.36mm); % pylith 45min
+
+  \path[break] ($(o2)+(0mm,-24.65mm)$) rectangle ++(17mm,-1.79mm); % pylith 15min
+
+  \path[tutorial] ($(o2)+(0mm,-26.44mm)$) rectangle ++(17mm,-3.57mm); % pylith 30min
+  \path[tutorial] ($(o2)+(0mm,-30.00mm)$) rectangle ++(17mm,-7.14mm); % pylith 60min
+
+  \path[break] ($(o2)+(0mm,-37.14mm)$) rectangle ++(17mm,-7.14mm); % lunch 60min
+  \path[tinker] ($(o2)+(0mm,-44.28mm)$) rectangle ++(17mm,-10.71mm); % tinker 90min
+  \path[break] ($(o2)+(0mm,-54.99mm)$) rectangle ++(17mm,-3.57mm); % break 30min
+
+  \path[tutorial] ($(o2)+(0mm,-58.56mm)$) rectangle ++(17mm,-12.50mm); % pylith 105min
+  \path[tinker] ($(o2)+(0mm,-71.06mm)$) rectangle ++(17mm,-8.93mm); % tinker 75min
+
+  % Wed
+  \path[break] ($(o3)+(0mm,-5mm)$) rectangle ++(17mm,-3.57mm); % breakfast 30min
+  \path[admin] ($(o3)+(0mm,-8.57mm)$) rectangle ++(17mm,-3.57mm); % intro 30min
+  \path[talk] ($(o3)+(0mm,-12.14mm)$) rectangle ++(17mm,-3.57mm); % posters 30min
+
+  \path[break] ($(o3)+(0mm,-15.71mm)$) rectangle ++(17mm,-3.57mm); % break 30min
+
+  \path[talk] ($(o3)+(0mm,-19.28mm)$) rectangle ++(17mm,-7.14mm); % talk 60min
+  \path[talk] ($(o3)+(0mm,-26.42mm)$) rectangle ++(17mm,-7.14mm); % talk 60min
+
+  \path[admin] ($(o3)+(0mm,-33.56mm)$) rectangle ++(17mm,-3.57mm); % shuttle 30min
+  \path[break] ($(o3)+(0mm,-37.13mm)$) rectangle ++(17mm,-7.14mm); % lunch 60min
+  \path[tinker] ($(o3)+(0mm,-44.27mm)$) rectangle ++(17mm,-10.71mm); % tinker 90min
+  \path[break] ($(o3)+(0mm,-54.99mm)$) rectangle ++(17mm,-3.57mm); % break 30min
+
+  \path[talk] ($(o3)+(0mm,-58.55mm)$) rectangle ++(17mm,-7.14mm); % talk 60min
+  \path[talk] ($(o3)+(0mm,-65.69mm)$) rectangle ++(17mm,-7.14mm); % talk 60min
+
+  \path[talk] ($(o3)+(0mm,-72.83mm)$) rectangle ++(17mm,-7.14mm); % talk 60min
+
+  % Thu
+  \path[break] ($(o4)+(0mm,-5mm)$) rectangle ++(17mm,-3.57mm); % breakfast 30min
+  \path[talk] ($(o4)+(0mm,-8.57mm)$) rectangle ++(17mm,-7.14mm); % talk 60min
+  \path[talk] ($(o4)+(0mm,-15.71mm)$) rectangle ++(17mm,-7.14mm); % talk 60min
+
+  \path[break] ($(o4)+(0mm,-22.85mm)$) rectangle ++(17mm,-1.79mm); % break 15min
+
+  \path[talk] ($(o4)+(0mm,-24.64mm)$) rectangle ++(17mm,-1.79mm); % talk 15min
+  \path[talk] ($(o4)+(0mm,-26.43mm)$) rectangle ++(17mm,-3.57mm); % discuss 30min
+
+  \path[tinker] ($(o4)+(0mm,-30.00mm)$) rectangle ++(17mm,-7.14mm); % tour 60min
+
+  \path[break] ($(o4)+(0mm,-37.13mm)$) rectangle ++(17mm,-7.14mm); % lunch 60min
+  \path[admin] ($(o4)+(0mm,-44.27mm)$) rectangle ++(17mm,-7.14mm); % tour 60min
+  \path[tinker] ($(o4)+(0mm,-51.41mm)$) rectangle ++(17mm,-3.57mm); % tinker 30min
+  \path[break] ($(o4)+(0mm,-54.99mm)$) rectangle ++(17mm,-3.57mm); % break 30min
+
+  \path[talk] ($(o4)+(0mm,-58.55mm)$) rectangle ++(17mm,-7.14mm); % talk 60min
+
+  \path[tinker] ($(o4)+(0mm,-65.69mm)$) rectangle ++(17mm,-14.28mm); % tinker 60min
+
+  % Fri
+  \path[break] ($(o5)+(0mm,-5mm)$) rectangle ++(17mm,-3.57mm); % breakfast 30min
+  \path[talk] ($(o5)+(0mm,-8.57mm)$) rectangle ++(17mm,-7.14mm); % talk 60min
+  \path[talk] ($(o5)+(0mm,-15.71mm)$) rectangle ++(17mm,-7.14mm); % talk 60min
+
+  \path[break] ($(o5)+(0mm,-22.85mm)$) rectangle ++(17mm,-3.57mm); % break 30min
+
+  \path[talk] ($(o5)+(0mm,-26.42mm)$) rectangle ++(17mm,-7.14mm); % talk 60min
+  \path[admin] ($(o5)+(0mm,-33.56mm)$) rectangle ++(17mm,-3.57mm); % wrapup 30min
+
+  \path[break] ($(o5)+(0mm,-37.13mm)$) rectangle ++(17mm,-7.14mm); % lunch 60min
+  \path[tinker] ($(o5)+(0mm,-44.27mm)$) rectangle ++(17mm,-28.57mm); % tinker 4hrs
+
+\end{tikzpicture}
+\end{center}
+

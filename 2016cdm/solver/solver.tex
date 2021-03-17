@@ -1,0 +1,640 @@
+\documentclass[dvipsnames]{beamer}
+
+\input{talkPreamble.tex}
+\usepackage{listings}
+
+\title[Solvers]{Using PETSc Solvers in PyLith}
+\author[M.~Knepley]{Matthew~Knepley, Brad Aagaard, and Charles Williams}
+\date[CIG16]{CIG All-Hands PyLith Tutorial 2016\\UC Davis \quad June 19, 2016}
+% - Use the \inst command if there are several affiliations
+\institute[Rice]{
+  Computational and Applied Mathematics\\
+  Rice University
+}
+\subject{PyLith}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+  \begin{center}
+  \includegraphics[scale=0.12]{figures/logos/anl-white-background-modern.jpg}\hspace{1.0in}
+  \includegraphics[scale=0.10]{figures/logos/RiceLogo_TMCMYK300DPI.jpg}
+  \end{center}
+  \vskip0.4in
+\end{frame}
+%
+\begin{frame}<testing>{Abstract}\small
+The idea here is to show people how to understand waht is going on, rather than just give cookbook
+examples since they are already in PyLith.
+\end{frame}
+%
+\begin{frame}{Main Point}
+
+\Huge
+We want to enable users to\\
+\bigskip
+\pause
+assess solver performance,\\
+\bigskip
+\pause
+and optimize solvers\\
+\qquad for particular problems.
+\end{frame}
+%
+%
+\section{Mathematical Background}
+\begin{frame}{Measures}\Large
+
+\begin{center}\LARGE What do we care about?\end{center}
+
+\bigskip
+
+\begin{itemize}
+  \item<2-> Error\\
+    The difference between my computed answer and\\
+    the true solution of my equations % not about real life
+
+  \bigskip
+
+  \item<3-> Residual\\
+    How close my computed answer comes to satisfying my equations
+\end{itemize}
+\end{frame}
+%
+\begin{frame}{Measures}\Large
+\begin{center}\LARGE This gives us two metrics for measuring the quality of our computed solutions.\end{center}
+
+\bigskip
+
+\begin{overprint}
+\onslide<1>
+\begin{center}They are not the same, but they are related.\end{center}
+\onslide<2>
+\begin{align*}
+  \frac{\|u - u^*\|}{\|u^*\|} \le \kappa \frac{\|F(u)\|}{\|F(0)\|}
+\end{align*}
+\onslide<3>
+For linear equations, $F(u) = A u - b$, this becomes
+\begin{align*}
+  \frac{\|u - u^*\|}{\|u^*\|} &= \frac{\|A^{-1} (Au - b)\|}{\|A^{-1} b\|}\\
+                              &\le \frac{\|A\| \|A^{-1}\| \|Au - b\|}{\|b\|}\\
+                              &\le \kappa(A) \frac{\|Au - b\|}{\|b\|}
+\end{align*}
+\onslide<4>
+For linear equations, $F(u) = A u - b$, this becomes
+\begin{align*}
+  \kappa(A) = \|A\| \|A^{-1}\|
+\end{align*}
+\end{overprint}
+\end{frame}
+%
+%
+\section{Controlling the Solver}
+%
+\begin{frame}[fragile]{Controlling PETSc}
+\begin{center}\LARGE
+  All of PETSc can be controlled by \blue{options}
+\end{center}
+\begin{itemize}
+  \item[] \verb|-ksp_type gmres|
+  \item[] \verb|-start_in_debugger|
+  \item[] All objects can have a prefix, \verb|-velocity_pc_type jacobi|
+\end{itemize}
+\pause
+\medskip
+\begin{center}\LARGE
+  All PETSc options can be given to PyLith
+\end{center}
+\begin{itemize}
+  \item[] \verb|--petsc.ksp_type=gmres|
+  \item[] \verb|--petsc.start_in_debugger|
+\end{itemize}
+\end{frame}
+%
+\begin{frame}[fragile]{Examples}
+
+{\LARGE We will illustrate options using}
+\bigskip
+\begin{center}
+  PETSc SNES \magenta{\href{http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex19.c.html}{ex19}}, located at \verb|$PETSC_DIR/src/snes/examples/tutorials/ex19.c|
+\end{center}
+\bigskip
+{\LARGE and}
+\bigskip
+\begin{center}
+  PyLith Example \magenta{\href{http://www.geodynamics.org/svn/cig/short/3D/PyLith/trunk/examples/3d/hex8/}{hex8}}, located at \verb|$PYLITH_DIR/examples/3d/hex8/|
+\end{center}
+\end{frame}
+%
+\section{Where do I begin?}
+%
+\begin{frame}{What solvers can I choose from?}\Large
+\begin{itemize}
+  \item Direct (LU, Cholesky)
+  \begin{itemize}
+    \item Robust, large memory and time
+  \end{itemize}
+  \bigskip
+  \item Multigrid
+  \begin{itemize}
+    \item Touchy, small memory and time
+  \end{itemize}
+  \bigskip
+  \item Domain Decomposition
+  \begin{itemize}
+    \item Somewhat robust, medium memory and time
+  \end{itemize}
+  \bigskip
+  \item Krylov
+  \begin{itemize}
+    \item Ineffectual alone, small memory and time
+  \end{itemize}
+\end{itemize}
+\end{frame}
+%
+\begin{frame}{What is a Krylov solver?}\Large
+A Krylov solver builds a small model of a linear operator $A$, using a subspace defined by
+\begin{equation*}
+  \mathcal{K}(A,r) = \mathrm{span}\{r, Ar, A^2r, A^3r, \ldots \}
+\end{equation*}
+where $r$ is the initial residual.
+\bigskip
+
+\pause
+The small system is solved directly, and the solution is projected back to the original space.
+\end{frame}
+%
+\begin{frame}{What Should I Know About Krylov Solvers?}
+\LARGE
+\begin{itemize}
+  \item Strength is \textit{adaptivity}
+  \begin{itemize}
+    \item They can handle \textit{low-mode} errors
+  \end{itemize}
+  \bigskip
+  \item They are \textit{not} stand-alone solvers
+  \begin{itemize}
+    \item They need preconditioners
+  \end{itemize}
+  \bigskip
+  \item Scalability suffers after many iterates
+  \begin{itemize}
+    \item They do a lot of inner products
+  \end{itemize}
+\end{itemize}
+\end{frame}
+%
+\begin{frame}{What is a Preconditioner?}\Large
+A preconditioner $M$ changes a linear system,
+\begin{equation*}
+  M^{-1} A x = M^{-1} b
+\end{equation*}
+so that the effective operator is $M^{-1} A$, which is hopefully \red{better} for Krylov methods.
+\bigskip
+\begin{itemize}
+  \item<2-> Preconditioner should be inexpensive
+  \medskip
+  \item<3-> Preconditioner should accelerate convergence
+\end{itemize}
+\end{frame}
+%
+\begin{frame}[fragile]{{\bf Always} start with LU}
+Always, always start with LU:
+\begin{itemize}
+  \item No iterative tolerance
+  \medskip
+  \item (Almost) no condition number dependence
+  \medskip
+  \item Check for accidental singularity
+\end{itemize}
+\pause
+\bigskip
+In parallel, you need a 3rd party package
+\begin{itemize}
+  \item MUMPS (\verb|--download-mumps|)
+  \medskip
+  \item SuperLU (\verb|--download-superlu_dist|)
+\end{itemize}
+\end{frame}
+%%     What is LU fails? Use full Schur complement
+\begin{frame}[fragile]{What if LU fails?}\Large
+LU will fail for
+\begin{itemize}
+  \item Singular problems
+  \medskip
+  \item Saddle-point problems
+\end{itemize}
+\pause
+\smallskip
+For saddles use \magenta{\href{http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCFIELDSPLIT.html}{\texttt{PC\_FIELDSPLIT}}}
+\begin{itemize}
+  \item Separately solves each field
+  \medskip
+  \item Decomposition is automatic in PyLith
+  \medskip
+  \item Autodetect with {\small \verb|-pc_fieldsplit_detect_saddle_point|}
+  \medskip
+  \item Exact with full Schur complement solve
+\end{itemize}
+\end{frame}
+%
+%
+\section{How do I improve?}
+\subsection{Look at what you have}
+%
+\begin{frame}[fragile]{What solver did you use?}
+Use \verb|-snes_view| or \verb|-ksp_view| to output a description of the solver:
+\small
+\begin{verbatim}
+KSP Object:        (fieldsplit_0_)         1 MPI processes
+  type: fgmres
+    GMRES: restart=100, using Classical (unmodified) Gram-
+      Schmidt Orthogonalization with no iterative refinement
+    GMRES: happy breakdown tolerance 1e-30
+  maximum iterations=1, initial guess is zero
+  tolerances:  relative=1e-09, absolute=1e-50,
+    divergence=10000
+  right preconditioning
+  has attached null space
+  using UNPRECONDITIONED norm type for convergence test
+\end{verbatim}
+\end{frame}
+%
+\begin{frame}[fragile]{What did the convergence look like?}
+Use \verb|-snes_monitor| and \verb|-ksp_monitor|, or \verb|-log_summary|:
+\small
+\begin{overprint}
+\onslide<2>
+\smallskip
+\begin{verbatim}
+  0 SNES Function norm 0.207564 
+  1 SNES Function norm 0.0148968 
+  2 SNES Function norm 0.000113968 
+  3 SNES Function norm 6.9256e-09 
+  4 SNES Function norm < 1.e-11
+\end{verbatim}
+\onslide<3>
+\smallskip
+\begin{verbatim}
+  0 KSP Residual norm 1.61409 
+      Residual norms for mg_levels_1_ solve.
+      0 KSP Residual norm 0.213376 
+      1 KSP Residual norm 0.0192085 
+    Residual norms for mg_levels_2_ solve.
+    0 KSP Residual norm 0.223226 
+    1 KSP Residual norm 0.0219992 
+      Residual norms for mg_levels_1_ solve.
+      0 KSP Residual norm 0.0248252 
+      1 KSP Residual norm 0.0153432 
+    Residual norms for mg_levels_2_ solve.
+    0 KSP Residual norm 0.0124024 
+    1 KSP Residual norm 0.0018736 
+  1 KSP Residual norm 0.02282 
+\end{verbatim}
+\onslide<4>
+\smallskip
+\begin{verbatim}
+Event       Count      Time (sec)     Flops      Total
+           Max Ratio  Max     Ratio   Max  Ratio Mflop/s
+KSPSetUp      12 1.0 3.6259e-03 1.0 0.00e+00 0.0     0
+KSPSolve       3 1.0 4.8937e-01 1.0 8.93e+05 1.0     2
+SNESSolve      1 1.0 4.9477e-01 1.0 9.22e+05 1.0     2
+\end{verbatim}
+\end{overprint}
+\end{frame}
+%
+\begin{frame}[fragile]{Look at timing}
+Use \verb|-log_summary|:
+\small
+\smallskip
+\begin{verbatim}
+Event        Time (sec)     Flops     --- Global ---  Total
+           Max     Ratio   Max  Ratio %T %f %M %L %R  MF/s
+VecMDot   1.8904e-03 1.0 2.49e+04 1.0  0  3  0  0  0    13
+MatMult   2.1026e-03 1.0 2.65e+05 1.0  0 29  0  0  0   126
+PCApply   4.6001e-01 1.0 7.78e+05 1.0 58 84  0  0 64     2
+KSPSetUp  3.6259e-03 1.0 0.00e+00 0.0  0  0  0  0  4     0
+KSPSolve  4.8937e-01 1.0 8.93e+05 1.0 61 97  0  0 90     2
+SNESSolve 4.9477e-01 1.0 9.22e+05 1.0 62100  0  0 92     2
+\end{verbatim}
+\pause
+Use \verb|-log_view ::ascii_info_detail| to get this information as a Python module
+\end{frame}
+%
+\subsection{Back off in steps}
+%
+\begin{frame}[fragile]{Weaken the KSP}
+
+ GMRES\quad $\Longrightarrow$\quad BiCGStab
+\begin{itemize}
+  \item \verb|-ksp_type bcgs|
+  \medskip
+  \item Less storage
+  \medskip
+  \item Fewer dot products (less work)
+  \medskip
+  \item Variants \verb|-ksp_type bcgsl| and \verb|-ksp_type ibcgs|
+\end{itemize}
+\bigskip
+\begin{center}
+  Complete \magenta{\href{http://www.mcs.anl.gov/petsc/documentation/linearsolvertable.html}{Table}} of Solvers and Preconditioners
+\end{center}
+\end{frame}
+%
+\begin{frame}[fragile]{Weaken the PC}
+
+ LU\quad $\Longrightarrow$\quad ILU
+\begin{itemize}
+  \item \verb|-pc_type ilu|
+  \medskip
+  \item Less storage and work
+\end{itemize}
+\pause
+\smallskip
+In parallel,
+\begin{itemize}
+  \item Hypre \verb|-pc_type hypre -pc_hypre_type euclid|
+  \medskip
+  \item Block-Jacobi \verb|-pc_type bjacobi -sub_pc_type ilu|
+  \medskip
+  \item Additive Schwarz \verb|-pc_type asm -sub_pc_type ilu|
+\end{itemize}
+\pause
+\bigskip
+\begin{center}
+  Default for MG smoother is Chebychev/SOR(2)
+\end{center}
+\end{frame}
+%
+\begin{frame}[fragile]{Algebraic Multigrid (AMG)}
+\begin{itemize}
+  \item Can solve elliptic problems
+  \begin{itemize}
+    \item Laplace, elasticity, Stokes
+  \end{itemize}
+  \medskip
+  \item Works for unstructured meshes
+  \medskip
+  \item \verb|-pc_type gamg|,  \verb|-pc_type ml|, \verb|-pc_type hypre -pc_hypre_type boomeramg|
+  \medskip
+  \item \red{CRUCIAL} to have an accurate near-null space
+  \begin{itemize}
+    \item \magenta{\href{http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatSetNearNullSpace.html}{MatSetNearNullSpace()}}
+    \item PyLith provides this automatically
+  \end{itemize}
+  \medskip
+  \item Use \verb|-pc_mg_log| to put timing in its own log stage
+\end{itemize}
+\end{frame}
+%
+\begin{frame}[fragile]{PC\_FieldSplit}
+\begin{itemize}
+  \item {\Large Separate solves for block operators}
+  \begin{itemize}
+    \item Physical insight for subsystems
+    \smallskip
+    \item Have optimial PCs for simpler equations
+    \smallskip
+    \item Suboptions \verb|fs_fieldsplit_0_*|
+  \end{itemize}
+  \bigskip
+  \item {\Large Flexibly combine subsolves}
+  \begin{itemize}
+    \item Jacobi: \verb|fs_pc_fieldsplit_type = additive|
+    \smallskip
+    \item Gauss-Siedel: \verb|fs_pc_fieldsplit_type = multiplicative|
+    \smallskip
+    \item Schur complement: \verb|fs_pc_fieldsplit_type = schur|
+  \end{itemize}
+\end{itemize}
+\end{frame}
+%
+\input{slides/MultiField/StokesOptionsTour.tex}
+%
+\begin{frame}{Why use FGMRES?}\Large
+Flexible GMRES (FGMRES) allows a\\
+\blue{different preconditioner} at each step:
+\medskip
+\begin{itemize}
+  \item Takes twice the memory
+  \medskip
+  \item Needed for iterative PCs
+  \medskip
+  \item Avoided sometimes with a careful PC choice
+\end{itemize}
+\end{frame}
+%
+%
+\section{Can We Do It?}
+%
+\begin{frame}{Example 3D Hex8 \texttt{step10.cfg}}
+\begin{center}\Huge
+Looks nice,\\
+But can you do this for\\
+a real PyLith Example?
+\end{center}
+\end{frame}
+%
+\begin{frame}[fragile]{Example 3D Hex8 \texttt{step10.cfg}}
+
+\begin{block}{First, we try LU on the whole problem \texttt{solver\_lu.cfg}}
+\begin{verbatim}
+[pylithapp.petsc]
+snes_view = true
+pc_type = lu
+\end{verbatim}
+\end{block}
+\pause
+\begin{center}
+  \Huge \red{FAIL}
+\end{center}
+\pause
+This is due to the saddle point introduced to handle the fault.
+\end{frame}
+%
+\begin{frame}[fragile]{Example 3D Hex8 \texttt{step10.cfg}}
+
+\begin{block}{Next, we split fields using \texttt{PC\_FIELDSPLIT} \texttt{solver\_fault\_additive.cfg}}
+\small
+% solver02.cfg
+\begin{verbatim}
+[pylithapp.timedependent.formulation]
+matrix_type = aij
+split_fields = True
+
+[pylithapp.petsc]
+ksp_max_it = 1000
+fs_pc_type = fieldsplit
+fs_pc_use_amat = true
+fs_pc_fieldsplit_type = additive
+fs_fieldsplit_displacement_ksp_type = preonly
+fs_fieldsplit_displacement_pc_type = lu
+fs_fieldsplit_lagrange_multiplier_ksp_type = preonly
+fs_fieldsplit_lagrange_multiplier_pc_type = jacobi
+\end{verbatim}
+\end{block}
+\pause
+\begin{center}
+  Converges in 58 itertions because preconditioner is not that strong
+\end{center}
+\end{frame}
+%
+\begin{frame}[fragile]{Example 3D Hex8 \texttt{step10.cfg}}
+
+% solver03.cfg
+\begin{block}{We need to use a full Schur factorization \texttt{solver\_fault\_exact.cfg}}
+\begin{verbatim}
+[pylithapp.petsc]
+fs_pc_type = fieldsplit
+fs_pc_use_amat = true
+fs_pc_fieldsplit_type = schur
+fs_pc_fieldsplit_schur_factorization_type = full
+fs_fieldsplit_displacement_ksp_type = preonly
+fs_fieldsplit_displacement_pc_type = lu
+fs_fieldsplit_lagrange_multiplier_pc_type = jacobi
+fs_fieldsplit_lagrange_multiplier_ksp_type = gmres
+fs_fieldsplit_lagrange_multiplier_ksp_rtol = 1.0e-11
+\end{verbatim}
+\end{block}
+\pause
+\begin{center}
+  Works in one iterate! This is good for checking the physics.
+\end{center}
+\end{frame}
+%
+\begin{frame}[fragile]{Example 3D Hex8 \texttt{step10.cfg}}
+
+\begin{block}{We can add a user defined preconditioner for the Schur complement}
+\begin{verbatim}
+[pylithapp.timedependent.formulation]
+use_custom_constraint_pc = True
+[pylithapp.petsc]
+fs_pc_fieldsplit_schur_precondition = user
+\end{verbatim}
+\end{block}
+\pause
+\begin{overprint}
+\onslide<2>
+\begin{block}{The initial convergence}\scriptsize
+\begin{verbatim}
+0 SNES Function norm 1.547533880440e-02 
+  Linear solve converged due to CONVERGED_RTOL iterations 30
+  0 KSP Residual norm 1.158385264202e-02 
+  Linear solve converged due to CONVERGED_RTOL iterations 30
+  1 KSP Residual norm 2.231623131220e-13 
+Linear solve converged due to CONVERGED_RTOL iterations 1
+1 SNES Function norm 1.146037096697e-13 
+\end{verbatim}
+\end{block}
+\onslide<3>
+\begin{block}{improves to \texttt{solver\_fault\_schur\_custompc.cfg}}{\scriptsize
+\begin{verbatim}
+0 SNES Function norm 1.547533880440e-02 
+  Linear solve converged due to CONVERGED_RTOL iterations 24
+  0 KSP Residual norm 1.158385264203e-02 
+  Linear solve converged due to CONVERGED_RTOL iterations 25
+  1 KSP Residual norm 5.404403812155e-14 
+Linear solve converged due to CONVERGED_RTOL iterations 1
+1 SNES Function norm 2.201265688755e-14 
+\end{verbatim}}
+and gets much better for larger problems.
+\end{block}
+\end{overprint}
+\end{frame}
+%
+\begin{frame}[fragile]{Example 3D Hex8 \texttt{step10.cfg}}
+
+\begin{block}{You can back off the Schur complement tolerance}
+\begin{verbatim}
+ksp_type = fgmres
+fs_fieldsplit_lagrange_multiplier_ksp_rtol = 1.0e-05
+\end{verbatim}
+at the cost of more iterates
+{\scriptsize
+\begin{verbatim}
+0 SNES Function norm 1.547533880440e-02 
+  0 KSP Residual norm 1.547533880440e-02 
+  Linear solve converged due to CONVERGED_RTOL iterations 10
+  1 KSP Residual norm 9.761444929927e-08 
+  Linear solve converged due to CONVERGED_RTOL iterations 15
+  2 KSP Residual norm 4.058177976336e-13 
+Linear solve converged due to CONVERGED_RTOL iterations 2
+1 SNES Function norm 2.763748407804e-13 
+\end{verbatim}
+}
+\end{block}
+\end{frame}
+%
+\begin{frame}[fragile]{Example 3D Hex8 \texttt{step10.cfg}}
+
+\begin{block}{You can back off the primal LU solver}
+\begin{verbatim}
+fs_fieldsplit_displacement_ksp_type = preonly
+fs_fieldsplit_displacement_pc_type  = gamg
+\end{verbatim}
+at the cost of more iterates
+{\scriptsize
+\begin{verbatim}
+0 SNES Function norm 1.547533880440e-02 
+  0 KSP Residual norm 1.547533880440e-02 
+  Linear solve converged due to CONVERGED_RTOL iterations 12
+  1 KSP Residual norm 3.659593456893e-04 
+  Linear solve converged due to CONVERGED_RTOL iterations 15
+  2 KSP Residual norm 9.111591440754e-06 
+  Linear solve converged due to CONVERGED_RTOL iterations 16
+  .
+  .
+  6 KSP Residual norm 3.526238448332e-12 
+  Linear solve converged due to CONVERGED_RTOL iterations 17
+  7 KSP Residual norm 8.640836102392e-14 
+Linear solve converged due to CONVERGED_RTOL iterations 7
+1 SNES Function norm 8.641267905609e-14 
+\end{verbatim}
+}
+\end{block}
+\end{frame}
+%
+\begin{frame}[fragile]{Example 3D Hex8 \texttt{step10.cfg}}
+
+\begin{block}{You can restore the behavior with a lower tolerance}
+\begin{verbatim}
+fs_fieldsplit_displacement_ksp_type = gmres
+fs_fieldsplit_displacement_ksp_rtol = 5.0e-10
+\end{verbatim}
+but it is quite sensitive to the tolerance.
+{\scriptsize
+\begin{verbatim}
+0 SNES Function norm 1.547533880440e-02 
+  0 KSP Residual norm 1.547533880440e-02 
+  Linear solve converged due to CONVERGED_RTOL iterations 10
+  1 KSP Residual norm 9.761445192979e-08 
+  Linear solve converged due to CONVERGED_RTOL iterations 15
+  2 KSP Residual norm 7.227466516039e-13 
+Linear solve converged due to CONVERGED_RTOL iterations 2
+1 SNES Function norm 2.391873654238e-13 
+\end{verbatim}
+}
+\end{block}
+\end{frame}
+%
+%
+\section{Nonlinear Systems}
+%
+  \input{slides/SNES/SNESEx19.tex}
+  \input{slides/SNES/NoConvergence.tex}
+  \input{slides/SNES/NPC.tex}
+  \input{slides/SNES/NPCUseCases.tex}
+  \input{slides/SNES/NPCEx19.tex}
+%
+\begin{frame}{Other Solver Issues}
+\begin{center}\Huge
+For any other solver problems,
+\end{center}
+\bigskip
+\begin{center}\Huge
+contact \magenta{\href{mailto:cig-short@geodynamics.org}{cig-short@geodynamics.org}}
+\end{center}
+\end{frame}
+
+\end{document}

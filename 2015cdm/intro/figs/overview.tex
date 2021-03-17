@@ -1,0 +1,81 @@
+\input{../../palettes/figcolors}
+
+\tikzstyle{days} = [rectangle, 
+  text centered,
+  thin,
+  draw=dkyellow!80!black,
+  font=\bfseries,
+  top color=yellow,
+  bottom color=dkyellow]
+
+\tikzstyle{admin} = [rectangle, 
+  draw=orange!80!black,
+  top color=ltorange!50!white,
+  bottom color=orange]
+
+\tikzstyle{handson} = [rectangle, 
+  draw=green!80!black,
+  top color=ltgreen!20!white,
+  bottom color=green]
+
+\tikzstyle{presentation} = [rectangle, 
+  draw=blue!80!black,
+  top color=ltblue!20!white,
+  bottom color=blue]
+
+\tikzstyle{questions} = [rectangle, 
+  draw=ltpurple!80!black,
+  top color=ltpurple!20!white,
+  bottom color=purple!70!white!100]
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75, transform shape,
+  node distance=2.0em,
+  text width=45mm,
+  thick]
+% Reference points
+\coordinate (o1) at (0mm,0mm);
+\coordinate (o2) at (+50mm,0mm);
+\coordinate (o3) at (+100mm,0mm);
+
+% Days
+\node[days] (mon) at ($(o1)$) {Mon};
+\node[days] (tue) at ($(o2)$) {Tue};
+\node[days] (tbd) at ($(o3)$) {TBD};
+
+% Mon
+\node[admin, below of=mon] (intro) {Overview};
+\node[presentation, below of=intro] (version2) {PyLith 2.0 \& beyond};
+\node[handson, below of=version2] (refresher) {CUBIT, PyLith, ParaView};
+\node[questions, below of=refresher] (sessionIQ) {Q\&A};
+
+\node[presentation, below of=sessionIQ, yshift=-3em] (greensfns_intro) {Green's Fns: Overview};
+\node[handson, below of=greensfns_intro] (greensfns_2d) {Green's Fns: 2-D};
+\node[handson, below of=greensfns_2d] (greensfns_3d) {Green's Fns: 3-D};
+\node[questions, below of=greensfns_3d] (sessionIIQ) {Q\&A};
+
+
+% Tue
+
+\node[presentation, below of=tue] (solver_intro) {Solvers: Overview};
+\node[handson, below of=solver_intro] (solver_linear) {Linear Solvers};
+\node[handson, below of=solver_linear] (solver_nonlinear) {Nonlinear Solver};
+\node[questions, below of=solver_nonlinear] (sessionIIIQ) {Q\&A};
+
+
+\node[presentation, below of=sessionIIIQ, yshift=-3em] (debugging) {Debugging Strategy};
+\node[handson, below of=debugging] (debugging1) {Example 1};
+\node[handson, below of=debugging1] (debugging2) {Example 2};
+\node[questions, below of=debugging2] (sessionIVQ) {Q\&A};
+
+
+% TBD
+\node[presentation, below of=tbd] (bonus) {Gravity \& Finite Strain};
+\node[handson, below of=bonus] (gravity_flat) {Flat and layered};
+\node[handson, below of=gravity_flat] (gravity_topo) {Topography};
+\node[questions, below of=gravity_topo] (sessionIQ) {Q\&A};
+
+
+
+\end{tikzpicture}
+\end{center}

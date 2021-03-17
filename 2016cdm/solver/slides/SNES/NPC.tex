@@ -1,0 +1,22 @@
+\begin{frame}[fragile]{Nonlinear Preconditioning}
+\begin{columns}
+\begin{column}[t]{0.45\textwidth}
+{\Large \magenta{\href{http://www.mcs.anl.gov/petsc/petsc-dev/docs/manualpages/PC/PC.html}{\class{PC}}} preconditions \magenta{\href{http://www.mcs.anl.gov/petsc/petsc-dev/docs/manualpages/KSP/KSP.html}{\class{KSP}}}}
+\begin{semiverbatim}
+  -ksp_type gmres
+
+  -pc_type richardson
+\end{semiverbatim}
+\end{column}
+%
+\pause
+\begin{column}[t]{0.55\textwidth}
+{\Large \magenta{\href{http://www.mcs.anl.gov/petsc/petsc-dev/docs/manualpages/SNES/SNES.html}{\class{SNES}}} preconditions \magenta{\href{http://www.mcs.anl.gov/petsc/petsc-dev/docs/manualpages/SNES/SNES.html}{\class{SNES}}}}
+\begin{semiverbatim}
+  -snes_type ngmres
+
+  -npc_snes_type nrichardson
+\end{semiverbatim}
+\end{column}
+\end{columns}
+\end{frame}

@@ -1,0 +1,65 @@
+\begin{frame}[fragile]{Driven Cavity Problem}
+
+\magenta{\href{http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex19.c.html}{SNES ex19.c}}
+\smallskip
+\begin{semiverbatim}\scriptsize
+./ex19 -lidvelocity 100 \only<1-2>{-grashof 1e2}\only<3-4>{\blue{-grashof 1e4}}\only<5-7>{\blue{-grashof 1e5}}
+  -da\_grid\_x 16 -da\_grid\_y 16 -da\_refine 2 \only<7>{\blue{-pc\_type lu}}
+  -snes\_monitor\_short -snes\_converged\_reason -snes\_view
+\end{semiverbatim}
+\smallskip
+\begin{overprint}\scriptsize
+\onslide<2>
+\begin{semiverbatim}
+lid velocity = 100, prandtl # = 1, grashof # = 100
+  0 SNES Function norm 768.116 
+  1 SNES Function norm 658.288 
+  2 SNES Function norm 529.404 
+  3 SNES Function norm 377.51 
+  4 SNES Function norm 304.723 
+  5 SNES Function norm 2.59998 
+  6 SNES Function norm 0.00942733 
+  7 SNES Function norm 5.20667e-08 
+Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE iterations 7
+\end{semiverbatim}
+\onslide<4>
+\begin{semiverbatim}
+lid velocity = 100, prandtl # = 1, grashof # = 10000
+  0 SNES Function norm 785.404 
+  1 SNES Function norm 663.055 
+  2 SNES Function norm 519.583 
+  3 SNES Function norm 360.87 
+  4 SNES Function norm 245.893 
+  5 SNES Function norm 1.8117 
+  6 SNES Function norm 0.00468828 
+  7 SNES Function norm 4.417e-08 
+Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE iterations 7
+\end{semiverbatim}
+\onslide<6>
+\begin{semiverbatim}
+lid velocity = 100, prandtl # = 1, grashof # = 100000
+  0 SNES Function norm 1809.96 
+Nonlinear solve did not converge due to DIVERGED_LINEAR_SOLVE iterations 0
+\end{semiverbatim}
+\onslide<7>
+\begin{semiverbatim}
+lid velocity = 100, prandtl # = 1, grashof # = 100000
+  0 SNES Function norm 1809.96 
+  1 SNES Function norm 1678.37 
+  2 SNES Function norm 1643.76 
+  3 SNES Function norm 1559.34 
+  4 SNES Function norm 1557.6 
+  5 SNES Function norm 1510.71 
+  6 SNES Function norm 1500.47 
+  7 SNES Function norm 1498.93 
+  8 SNES Function norm 1498.44 
+  9 SNES Function norm 1498.27 
+ 10 SNES Function norm 1498.18 
+ 11 SNES Function norm 1498.12 
+ 12 SNES Function norm 1498.11 
+ 13 SNES Function norm 1498.11 
+ 14 SNES Function norm 1498.11 
+ \ldots
+\end{semiverbatim}
+\end{overprint}
+\end{frame}

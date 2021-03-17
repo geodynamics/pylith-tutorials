@@ -1,0 +1,64 @@
+\input{../../palettes/figcolors}
+
+\tikzstyle{days} = [rectangle, 
+                    text centered,
+                    thin,
+                    draw=dkyellow!80!black,
+                    font=\bfseries,
+                    top color=yellow,
+                    bottom color=dkyellow]
+\tikzstyle{admin} = [rectangle, 
+                    draw=orange!80!black,
+                    top color=ltorange!50!white,
+                    bottom color=orange]
+\tikzstyle{tutorial} = [rectangle, 
+                    draw=green!80!black,
+                    top color=ltgreen!20!white,
+                    bottom color=green]
+\tikzstyle{break} = [rectangle, 
+                    draw=blue!80!black,
+                    top color=ltblue!20!white,
+                    bottom color=blue]
+\tikzstyle{tinker} = [rectangle, 
+                      draw=ltpurple!80!black,
+                      top color=ltpurple!20!white,
+                      bottom color=purple!70!white!100]
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75, transform shape,
+  node distance=2.0em,
+  text width=55mm,
+  thick]
+% Reference points
+\coordinate (o1) at (0mm,0mm);
+\coordinate (o2) at (+65mm,0mm);
+
+% Days
+\node[days] (mon) at ($(o1)$) {Mon};
+\node[days] (tue) at ($(o2)$) {Tue};
+
+% Mon
+\node[tutorial, below of=mon] (pylith_refresher) {PyLith/CUBIT: Refresher}; % pylith 45min
+\node[tutorial, below of=pylith_refresher] (pylith_subduction) {PyLith: 2-D Subduction Zone}; % pylith 90min
+\node[tinker, below of=pylith_subduction] (tinker_mon_A) {Tinker Time}; % tinker 90min
+
+\node[break, below of=tinker_mon_A] (lunch_mon) {Lunch}; % lunch 60min
+
+\node[tutorial, below of=lunch_mon] (cubit_int) {CUBIT: Geometry, Sizing Fns}; % cubit 90min
+\node[tinker, below of=cubit_int] (tinker_mon_B) {Tinker Time}; % tinker 90min
+
+\node[tutorial, below of=tinker_mon_B] (pylith_greensfns) {PyLith: Green's Functions}; % pylith 90min
+
+% Tue
+\node[tutorial, below of=tue] (pylith_debug) {PyLith: Debugging Sims}; % pylith 2hrs
+\node[break, below of=pylith_debug] (break_tue_am) {Break}; % break 15min
+\node[tutorial, below of=break_tue_am] (pylith_friction) {PyLith: Friction}; % pylith 90min
+
+\node[break, below of=pylith_friction] (lunch_tue) {Lunch}; % lunch 60min
+\node[tinker, below of=lunch_tue] (tinker_tue_A) {Tinker Time}; % tinker 90min
+
+\node[tutorial, below of=tinker_tue_A] (pylith_solver) {PyLith: Solver Options}; % pylith 60min
+\node[tinker, below of=pylith_solver] (tinker_tue_B) {Tinker Time}; % tinker 90min
+
+\end{tikzpicture}
+\end{center}

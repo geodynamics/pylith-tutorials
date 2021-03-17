@@ -1,0 +1,316 @@
+\begin{frame}[fragile]{Stokes example}
+The common block preconditioners for Stokes require only options:
+\begin{overprint}
+\onslide<1>
+\begin{columns}
+\begin{column}[t]{0.67\textwidth}
+\begin{center}\Huge The Stokes System\end{center}
+\end{column}
+\begin{column}[t]{0.33\textwidth}
+\Huge
+\begin{equation*}
+\begin{pmatrix}
+A & B \\
+B^T & 0
+\end{pmatrix}
+\end{equation*}
+\end{column}
+\end{columns}
+%
+\onslide<2>
+\begin{columns}
+\begin{column}[t]{0.67\textwidth}
+\begin{itemize}
+  \item[] \code{-pc\_type fieldsplit}
+  \item[] \code{-pc\_field\_split\_type additive}
+  \medskip
+  \item[] \code{-fieldsplit\_0\_pc\_type ml}
+  \item[] \code{-fieldsplit\_0\_ksp\_type preonly}
+  \medskip
+  \item[] \code{-fieldsplit\_1\_pc\_type jacobi}
+  \item[] \code{-fieldsplit\_1\_ksp\_type preonly}
+\end{itemize}
+\end{column}
+\begin{column}[t]{0.33\textwidth}
+\Huge\begin{center}PC\end{center}
+\begin{equation*}
+\begin{pmatrix}
+\hat A & 0 \\
+    0  & I
+\end{pmatrix}
+\end{equation*}
+\end{column}
+\end{columns}
+\medskip
+\scriptsize
+  Cohouet \& Chabard, \emph{Some fast 3D finite element solvers for the generalized Stokes problem}, 1988.
+%
+\onslide<3>
+\begin{columns}
+\begin{column}[t]{0.67\textwidth}
+\begin{itemize}
+  \item[] \code{-pc\_type fieldsplit}
+  \item[] \code{-pc\_field\_split\_type multiplic}
+  \medskip
+  \item[] \code{-fieldsplit\_0\_pc\_type hypre}
+  \item[] \code{-fieldsplit\_0\_ksp\_type preonly}
+  \medskip
+  \item[] \code{-fieldsplit\_1\_pc\_type jacobi}
+  \item[] \code{-fieldsplit\_1\_ksp\_type preonly}
+\end{itemize}
+\end{column}
+\begin{column}[t]{0.33\textwidth}
+\Huge\begin{center}PC\end{center}
+\begin{equation*}
+\begin{pmatrix}
+\hat A & B \\
+    0  & I
+\end{pmatrix}
+\end{equation*}
+\end{column}
+\end{columns}
+\medskip
+\scriptsize
+  Elman, \emph{Multigrid and Krylov subspace methods for the discrete Stokes equations}, 1994.
+%
+\onslide<4>
+\begin{columns}
+\begin{column}[t]{0.67\textwidth}
+\begin{itemize}
+  \item[] \code{-pc\_type fieldsplit}
+  \item[] \code{-pc\_field\_split\_type schur}
+  \medskip
+  \item[] \code{-fieldsplit\_0\_pc\_type gamg}
+  \item[] \code{-fieldsplit\_0\_ksp\_type preonly}
+  \medskip
+  \item[] \code{-fieldsplit\_1\_pc\_type none}
+  \item[] \code{-fieldsplit\_1\_ksp\_type minres}
+\end{itemize}
+\end{column}
+\begin{column}[t]{0.33\textwidth}
+\Huge\begin{center}PC\end{center}
+\begin{equation*}
+\begin{pmatrix}
+\hat A & 0 \\
+    0  & -\hat S
+\end{pmatrix}
+\end{equation*}
+\end{column}
+\end{columns}
+\begin{itemize}
+  \item[] \code{-pc\_fieldsplit\_schur\_factorization\_type diag}
+\end{itemize}
+\scriptsize
+  May and Moresi, \emph{Preconditioned iterative methods for Stokes flow problems arising in computational geodynamics}, 2008.\\
+  Olshanskii, Peters, and Reusken, \emph{Uniform preconditioners for a parameter dependent saddle point problem with application to generalized Stokes interface equations}, 2006.
+%
+\onslide<5>
+\begin{columns}
+\begin{column}[t]{0.67\textwidth}
+\begin{itemize}
+  \item[] \code{-pc\_type fieldsplit}
+  \item[] \code{-pc\_field\_split\_type schur}
+  \medskip
+  \item[] \code{-fieldsplit\_0\_pc\_type gamg}
+  \item[] \code{-fieldsplit\_0\_ksp\_type preonly}
+  \medskip
+  \item[] \code{-fieldsplit\_1\_pc\_type none}
+  \item[] \code{-fieldsplit\_1\_ksp\_type minres}
+\end{itemize}
+\end{column}
+\begin{column}[t]{0.33\textwidth}
+\Huge\begin{center}PC\end{center}
+\begin{equation*}
+\begin{pmatrix}
+\hat A  & 0 \\
+    B^T & \hat S
+\end{pmatrix}
+\end{equation*}
+\end{column}
+\end{columns}
+\begin{itemize}
+  \item[] \code{-pc\_fieldsplit\_schur\_factorization\_type lower}
+\end{itemize}
+\scriptsize
+  May and Moresi, \emph{Preconditioned iterative methods for Stokes flow problems arising in computational geodynamics}, 2008.
+%
+\onslide<6>
+\begin{columns}
+\begin{column}[t]{0.67\textwidth}
+\begin{itemize}
+  \item[] \code{-pc\_type fieldsplit}
+  \item[] \code{-pc\_field\_split\_type schur}
+  \medskip
+  \item[] \code{-fieldsplit\_0\_pc\_type gamg}
+  \item[] \code{-fieldsplit\_0\_ksp\_type preonly}
+  \medskip
+  \item[] \code{-fieldsplit\_1\_pc\_type none}
+  \item[] \code{-fieldsplit\_1\_ksp\_type minres}
+\end{itemize}
+\end{column}
+\begin{column}[t]{0.33\textwidth}
+\Huge\begin{center}PC\end{center}
+\begin{equation*}
+\begin{pmatrix}
+\hat A & B \\
+     0 & \hat S
+\end{pmatrix}
+\end{equation*}
+\end{column}
+\end{columns}
+\begin{itemize}
+  \item[] \code{-pc\_fieldsplit\_schur\_factorization\_type upper}
+\end{itemize}
+\scriptsize
+  May and Moresi, \emph{Preconditioned iterative methods for Stokes flow problems arising in computational geodynamics}, 2008.
+%
+\onslide<7>
+\begin{columns}
+\begin{column}[t]{0.67\textwidth}
+\begin{itemize}
+  \item[] \code{-pc\_type fieldsplit}
+  \item[] \code{-pc\_field\_split\_type schur}
+  \medskip
+  \item[] \code{-fieldsplit\_0\_pc\_type gamg}
+  \item[] \code{-fieldsplit\_0\_ksp\_type preonly}
+  \medskip
+  \item[] \code{-fieldsplit\_1\_pc\_type lsc}
+  \item[] \code{-fieldsplit\_1\_ksp\_type minres}
+\end{itemize}
+\end{column}
+\begin{column}[t]{0.33\textwidth}
+\Huge\begin{center}PC\end{center}
+\begin{equation*}
+\begin{pmatrix}
+\hat A & B \\
+     0 & \hat S_{\mathrm{LSC}}
+\end{pmatrix}
+\end{equation*}
+\end{column}
+\end{columns}
+\begin{itemize}
+  \item[] \code{-pc\_fieldsplit\_schur\_factorization\_type upper}
+\end{itemize}
+\scriptsize
+  May and Moresi, \emph{Preconditioned iterative methods for Stokes flow problems arising in computational geodynamics}, 2008.\\
+  Kay, Loghin and Wathen, \emph{A Preconditioner for the Steady-State N-S Equations}, 2002.\\
+  Elman, Howle, Shadid, Shuttleworth, and Tuminaro, \emph{Block preconditioners based on approximate commutators}, 2006.
+%
+\onslide<8>
+\begin{itemize}
+  \item[] \code{-pc\_type fieldsplit}
+  \item[] \code{-pc\_field\_split\_type schur}
+  \item[] \code{-pc\_fieldsplit\_schur\_factorization\_type full}
+\end{itemize}
+\Huge
+\begin{center}PC\end{center}
+\begin{equation*}
+\begin{pmatrix}
+      I        &  0 \\
+    B^T A^{-1}  &  I
+\end{pmatrix}
+\begin{pmatrix}
+\hat A & 0 \\
+    0  & \hat S
+\end{pmatrix}
+\begin{pmatrix}
+ I & A^{-1} B \\
+ 0 & I
+\end{pmatrix}
+\end{equation*}
+\end{overprint}
+\end{frame}
+%
+%
+\ifx\@restTalk\@empty
+\begin{frame}[fragile]{Stokes example}
+All block preconditioners can be \textit{embedded} in MG using only options:
+\begin{columns}
+\begin{column}[c]{0.67\textwidth}
+\begin{itemize}\scriptsize
+  \item[]<1-> \code{-pc\_type mg -pc\_mg\_levels 5 -pc\_mg\_galerkin}
+  \item[]<2-> \code{-mg\_levels\_pc\_type fieldsplit}
+  \item[]<2-> \code{-mg\_levels\_pc\_field\_split\_type \only<2>{additive}\only<3>{multiplicative}\only<4->{schur}}
+
+  \only<2-7>{
+  \medskip
+  \item[]<2-> \code{-mg\_levels\_fieldsplit\_0\_pc\_type gamg}
+  \item[]<2-> \code{-mg\_levels\_fieldsplit\_0\_ksp\_type preonly}
+
+  \medskip
+
+  \item[]<2-> \only<2-3>{\code{-mg\_levels\_fieldsplit\_1\_pc\_type jacobi}}  \only<4-6>{\code{-mg\_levels\_fieldsplit\_1\_pc\_type none}} \only<7>{\code{-mg\_levels\_fieldsplit\_1\_pc\_type lsc}}
+  \item[]<2-> \only<2-3>{\code{-mg\_levels\_fieldsplit\_1\_ksp\_type preonly}}\only<4->{\code{-mg\_levels\_fieldsplit\_1\_ksp\_type minres}}
+  }
+\end{itemize}
+\end{column}
+%
+\only<2-7>{
+\Huge
+\only<2-7>{\begin{center}Smoother PC\end{center}}
+\begin{equation*}
+\left(
+\only<2>{
+\begin{matrix}
+\hat A & 0 \\
+    0  & I
+\end{matrix}
+}
+\only<3>{
+\begin{matrix}
+\hat A & B \\
+    0  & I
+\end{matrix}
+}
+\only<4>{
+\begin{matrix}
+\hat A & 0 \\
+    0  & -\hat S
+\end{matrix}
+}
+\only<5>{
+\begin{matrix}
+\hat A & 0 \\
+  B^T  & \hat S
+\end{matrix}
+}
+\only<6>{
+\begin{matrix}
+\hat A & B \\
+    0  & \hat S
+\end{matrix}
+}
+\only<7>{
+\begin{matrix}
+\hat A & B \\
+    0  & \hat S_{\text{LSC}}
+\end{matrix}
+}
+\right)
+\end{equation*}
+}
+\end{column}
+\end{columns}
+
+\medskip
+
+\only<4->{\scriptsize
+\hskip1pt\quad\ \ \code{-mg\_levels\_pc\_fieldsplit\_schur\_factorization\_type \only<4>{diag}\only<5>{lower}\only<6-7>{upper}}
+}
+
+\only<1>{
+\Huge
+\begin{center}\Huge System on each Coarse Level\end{center}
+\begin{equation*}
+R \left(
+\begin{matrix}
+ A    & B \\
+ B^T  & 0
+\end{matrix}
+\right) P
+\end{equation*}
+}
+\end{frame}
+\else
+  \relax
+\fi

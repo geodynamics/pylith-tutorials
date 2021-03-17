@@ -1,0 +1,335 @@
+\mode<presentation>
+{
+  %%\usetheme[right]{Hannover}
+  %%\usetheme{Goettingen}
+  %%\usetheme{Dresden}
+  \usetheme{Warsaw}
+  \useoutertheme{infolines}
+  \useinnertheme{rounded}
+
+  \setbeamercovered{transparent}
+}
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc} % Note that the encoding and the font should match. If T1 does not look nice, try deleting this line
+\usepackage{amsfonts, amsmath, subfigure, multirow}
+\usepackage{hyperref}
+\newlength\LL \settowidth\LL{1000}
+
+%\usepackage{beamerseminar}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{ulem}
+\usepackage{listings}
+\usepackage{xfrac}
+\usepackage{xspace}
+\usepackage{colortbl}
+\usepackage{alltt}
+
+\usepackage{mathtools}       % For \mathllap
+\usepackage[boxed]{algorithm}
+\usepackage{algpseudocode}   % For \Procedure on algorithm
+
+\usepackage{tikz}
+\usepackage{pgflibraryshapes}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{snakes}
+\usetikzlibrary{positioning}
+\input{figures/tikzColors}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+
+\usepackage[absolute,overlay]{textpos}
+\setlength{\TPHorizModule}{\textwidth}
+\setlength{\TPVertModule}{\textheight}
+\textblockorigin{0pt}{0pt} % start everything near the top-left corner
+
+% Text macros
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+\def\eg{{e.g}\onedot} \def\Eg{{E.g}\onedot}
+\def\ie{{i.e}\onedot} \def\Ie{{I.e}\onedot}
+\def\cf{{c.f}\onedot} \def\Cf{{C.f}\onedot}
+\def\etc{{etc}\onedot}
+\def\vs{{vs}\onedot}
+\def\wrt{w.r.t\onedot}
+\def\dof{d.o.f\onedot}
+\def\etal{{et al}\onedot}
+\makeatother
+
+\newenvironment{changemargin}[2]{%
+  \begin{list}{}{%
+    \setlength{\topsep}{0pt}%
+    \setlength{\leftmargin}{#1}%
+    \setlength{\rightmargin}{#2}%
+    \setlength{\listparindent}{\parindent}%
+    \setlength{\itemindent}{\parindent}%
+    \setlength{\parsep}{\parskip}%
+  }%
+  \item[]}{\end{list}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\E}{\mathcal{E}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\Q}{\mathcal{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\X}{\mathbb{X}}
+\newcommand{\kb}{\tt}
+\newcommand{\vF}{\Vec{F}}
+\newcommand{\vJ}{\Vec{J}}
+\newcommand{\vM}{\Vec{M}}
+\newcommand{\vN}{\Vec{N}}
+\newcommand{\vb}{\Vec{b}}
+\newcommand{\vd}{\Vec{d}}
+\newcommand{\vf}{\Vec{f}}
+\newcommand{\vj}{\Vec{j}}
+\newcommand{\vk}{\Vec{k}}
+\newcommand{\vn}{\Vec{n}}
+\newcommand{\vr}{\Vec{r}}
+\newcommand{\vu}{\Vec{u}}
+\newcommand{\vv}{\Vec{v}}
+\newcommand{\vx}{\Vec{x}}
+\newcommand{\vy}{\Vec{y}}
+\newcommand{\vz}{\Vec{z}}
+\newcommand\oneitem[1]{\begin{itemize} \item #1 \end{itemize}}
+\def\shell#1{{\tt \$ #1}}
+
+%   Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+
+% Color macros
+\newcommand{\black}{\textcolor{black}}
+\newcommand{\blue}{\textcolor{blue}}
+\newcommand{\green}{\textcolor{green}}
+\newcommand{\red}{\textcolor{red}}
+\newcommand{\brown}{\textcolor{brown}}
+\newcommand{\cyan}{\textcolor{cyan}}
+\newcommand{\magenta}{\textcolor{magenta}}
+\newcommand{\yellow}{\textcolor{yellow}}
+
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+% Nonlinear preconditioning
+\newcommand{\vecname}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\restrict}{\vecname{R}}
+\newcommand{\interp}{\vecname{P}}
+\newcommand{\inject}{\vecname{\widehat{R}}}
+\newcommand{\pc}{\ensuremath{-}}
+\newcommand{\lp}{\ensuremath{\pc_{L}}}
+\newcommand{\rp}{\ensuremath{\pc_{R}}}
+\newcommand{\lin}{\ensuremath{\backslash}}
+\newcommand{\solvername}[1]{\ensuremath{\begingroup\text{#1}\endgroup}}
+\newcommand {\NRICH}{\solvername{NRICH}}
+\newcommand {\NGMRES}{\solvername{NGMRES}}
+\newcommand {\NEWT}{\mathcal{N}}
+\newcommand {\NCG}{\solvername{NCG}}
+\newcommand {\NGS}{\solvername{NGS}}
+\newcommand {\FAS}{\solvername{FAS}}
+\newcommand {\QN}{\solvername{QN}}
+\newcommand {\NASM}{\solvername{NASM}}
+\newcommand {\RAS}{\solvername{RAS}}
+\newcommand {\ASM}{\solvername{ASM}}
+\newcommand {\MG}{\solvername{MG}}
+\newcommand {\GSN}{\solvername{GSN}}
+\newcommand {\GS}{\solvername{GS}}
+\newcommand {\GSPIN}{\solvername{GSPIN}}
+\newcommand {\SOR}{\solvername{SOR}}
+\newcommand {\ASPIN}{\solvername{ASPIN}}
+\newcommand {\CG}{\solvername{CG}}
+\newcommand {\GMRES}{\solvername{GMRES}}
+\newcommand {\krylov}{\solvername{K}}
+\newcommand {\FGMRES}{\solvername{FGMRES}}
+\newcommand {\ILU}{\solvername{ILU}}
+\newcommand {\LU}{\solvername{LU}}
+\newcommand {\NK}{\NEWT\lin\krylov}
+\newcommand {\AND}{\solvername{Anderson}}
+\newcommand {\GB}{\solvername{GB}}
+
+% Optimization macros
+\newcommand{\mini}{\mathop{\rm minimize}}
+\newcommand{\st}{\mbox{subject to }}
+
+% PDE macros
+\newcommand{\lap}[1]{\Delta #1}
+\newcommand{\grad}[1]{\nabla #1}
+\renewcommand{\div}[1]{\nabla \cdot #1}
+
+% Tutorial code macros
+\def\code#1{{\tt #1}}
+\def\enum#1{{\sc #1}}
+\def\class#1{{\tt\bf #1}}
+\def\function#1{\code{#1}}
+\def\Update#1{\frametitle{Code Update} \begin{center}\Huge Update to {Revision \green{#1}}\end{center}}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm\scriptsize,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\ttb\scriptsize\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\scriptsize\color{deepred},    % Custom highlighting style
+commentstyle=\scriptsize\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            % 
+}}
+
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
+
+% Python for inline
+\newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
+
+% C style for highlighting
+\newcommand\cstyle{\lstset{
+language=C,
+basicstyle=\ttm\scriptsize,
+otherkeywords={MPI_Comm,TS,SNES,KSP,NPC,PC,DM,Mat,Vec,VecScatter,IS,PetscSF,PetscSection,PetscObject,PetscInt,PetscScalar,PetscReal,PetscBool,InsertMode,PetscErrorCode}, % Add keywords here
+keywordstyle=\ttb\scriptsize\color{deepblue},
+emph={PETSC_COMM_WORLD,PETSC_NULL,SNES_NGMRES_RESTART_PERIODIC},          % Custom highlighting
+emphstyle=\ttb\scriptsize\color{deepred},    % Custom highlighting style
+commentstyle=\scriptsize\color{brown},
+stringstyle=\ttm\scriptsize\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            % 
+}}
+
+% C environment
+\lstnewenvironment{cprog}[1][]
+{
+\cstyle
+\lstset{#1}
+}
+{}
+
+% C for external files
+\newcommand\cexternal[2][]{{
+\cstyle
+\lstinputlisting[#1]{#2}}}
+
+% C for inline
+\newcommand\cinline[1]{{\cstyle\lstinline!#1!}}
+
+% bash style for highlighting
+\newcommand\bashstyle{\lstset{
+language=bash,
+basicstyle=\scriptsize\ttfamily,
+}}
+
+% bash environment
+\lstnewenvironment{bash}[1][]
+{
+\bashstyle
+\lstset{#1}
+}
+{}
+
+% bash for inline
+\newcommand\bashinline[1]{{\bashstyle\lstinline!#1!}}
+
+% C++ style for highlighting
+\newcommand\cppstyle{\lstset{
+language=C++,
+basicstyle=\ttm\scriptsize,
+otherkeywords={MPI_Comm,TS,SNES,KSP,PC,DM,Mat,Vec,VecScatter,IS,PetscSF,PetscSection,PetscObject,PetscInt,PetscScalar,PetscReal,PetscBool,InsertMode,PetscErrorCode}, % Add keywords here
+keywordstyle=\ttb\scriptsize\color{deepblue},
+emph={PETSC_COMM_WORLD,PETSC_NULL,SNES_NGMRES_RESTART_PERIODIC},          % Custom highlighting
+emphstyle=\ttb\scriptsize\color{deepred},    % Custom highlighting style
+commentstyle=\scriptsize\color{brown},
+stringstyle=\ttm\scriptsize\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            % 
+}}
+
+% C++ environment
+\lstnewenvironment{cpp}[1][]
+{
+\cppstyle
+\lstset{#1}
+}
+{}
+
+% Fortran style for highlighting
+\newcommand\fortranstyle{\lstset{
+language=Fortran,
+basicstyle=\ttm\scriptsize,
+otherkeywords={MPI_Comm,TS,SNES,KSP,PC,DM,Mat,Vec,VecScatter,IS,PetscSF,PetscSection,PetscObject,PetscInt,PetscScalar,PetscReal,PetscBool,InsertMode,PetscErrorCode}, % Add keywords here
+keywordstyle=\ttb\scriptsize\color{deepblue},
+emph={PETSC_COMM_WORLD,PETSC_NULL,SNES_NGMRES_RESTART_PERIODIC},          % Custom highlighting
+emphstyle=\ttb\scriptsize\color{deepred},    % Custom highlighting style
+commentstyle=\scriptsize\color{brown},
+stringstyle=\ttm\scriptsize\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            % 
+}}
+
+% Fortran environment
+\lstnewenvironment{fortran}[1][]
+{
+\fortranstyle
+\lstset{#1}
+}
+{}
+
+% Make style for highlighting
+\newcommand\makestyle{\lstset{
+language=Make,
+basicstyle=\ttm\scriptsize,
+otherkeywords={MPI_Comm,TS,SNES,KSP,PC,DM,Mat,Vec,VecScatter,IS,PetscSF,PetscSection,PetscObject,PetscInt,PetscScalar,PetscReal,PetscBool,InsertMode,PetscErrorCode}, % Add keywords here
+keywordstyle=\ttb\scriptsize\color{deepblue},
+emph={PETSC_COMM_WORLD,PETSC_NULL,SNES_NGMRES_RESTART_PERIODIC},          % Custom highlighting
+emphstyle=\ttb\scriptsize\color{deepred},    % Custom highlighting style
+commentstyle=\scriptsize\color{brown},
+stringstyle=\ttm\scriptsize\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            % 
+}}
+
+% Make environment
+\lstnewenvironment{make}[1][]
+{
+\makestyle
+\lstset{#1}
+}
+{}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection,hideothersubsections]
+  \end{frame}
+}
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[sectionstyle=show/hide,subsectionstyle=show/shaded/hide]
+  \end{frame}
+}

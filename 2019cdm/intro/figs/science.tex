@@ -1,0 +1,80 @@
+\input{../../palettes/figcolors}
+
+\tikzstyle{days} = [rectangle, 
+  text centered,
+  thin,
+  draw=dkyellow!80!black,
+  font=\bfseries,
+  top color=yellow,
+  bottom color=dkyellow]
+
+\tikzstyle{admin} = [rectangle, 
+  draw=orange!80!black,
+  top color=ltorange!50!white,
+  bottom color=orange]
+
+\tikzstyle{poster} = [rectangle, 
+  draw=green!80!black,
+  top color=ltgreen!20!white,
+  bottom color=green]
+
+\tikzstyle{presentation} = [rectangle, 
+  draw=blue!80!black,
+  top color=ltblue!20!white,
+  bottom color=blue]
+
+\tikzstyle{tinker} = [rectangle, 
+  draw=ltpurple!80!black,
+  top color=ltpurple!20!white,
+  bottom color=purple!70!white!100]
+
+\tikzstyle{discussion} = [rectangle, 
+  draw=ltred!80!black,
+  top color=ltred!20!white,
+  bottom color=red!70!white!100]
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75, transform shape,
+  node distance=2.0em,
+  text width=45mm,
+  thick]
+% Reference points
+\coordinate (o1) at (0mm,0mm);
+\coordinate (o2) at (+50mm,0mm);
+\coordinate (o3) at (+100mm,0mm);
+
+% Days
+\node[days] (wed) at ($(o1)$) {Wed};
+\node[days] (thu) at ($(o2)$) {Thu};
+\node[days] (fri) at ($(o3)$) {Fri};
+
+% Wed
+\node[admin, below of=wed] (intro) {Introductions};
+\node[presentation, below of=intro] (sessionI) {Session I};
+\node[presentation, below of=sessionI] (sessionII) {Session II};
+
+\node[tinker, below of=sessionII, yshift=-3em] (tinkerI) {Tinker Time};
+\node[presentation, below of=tinkerI] (sessionIII) {Session III};
+\node[presentation, below of=sessionIII] (lightning) {Lightning Talks};
+\node[poster, below of=lightning] (posterI) {Poster Session};
+
+% Thu
+
+\node[presentation, below of=thu] (sessionIV) {SessionIV};
+\node[discussion, below of=sessionIV] (greensfns) {Breakout Discussion};
+
+\node[tinker, below of=sessionIV, yshift=-7em] (tinkerII) {Tinker Time};
+\node[presentation, below of=tinkerII] (sessionV) {Session V};
+\node[poster, below of=sessionV] (posterII) {Poster Session};
+
+% Fri
+
+\node[presentation, below of=fri] (sessionVI) {Session VI};
+\node[discussion, below of=sessionVI] (discussionII) {Breakout Discussion};
+\node[admin, below of=discussionII] (wrapup) {Wrap up};
+
+\node[tinker, below of=wrapup, yshift=-3em] (tinkerIII) {Tinker Time};
+
+
+\end{tikzpicture}
+\end{center}

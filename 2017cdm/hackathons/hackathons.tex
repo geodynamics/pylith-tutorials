@@ -1,0 +1,87 @@
+% -*- TeX -*-
+\documentclass[aspectratio=169]{beamer}
+%\documentclass{beamer}
+
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{shapes,calc}
+
+\title{Crustal Deformation Modeling Tutorial}
+\subtitle{PyLith Hackathons}
+\author{Brad Aagaard, Charles Williams, and Matthew Knepley}
+\institute{\includegraphics[scale=0.4]{../../logos/cig_blackfg}}
+\date{June 27, 2017}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+\usetheme{CIG}
+
+\input{../style}
+
+% --------------------------------------------------------- DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+% ------------------------------------------------------------- LOGO
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_blackfg}}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Community Tools for Crustal Deformation}
+  \summary{}
+  
+  \important{Objective: Increase number of developers contributing to
+    a coherent crustal deformation modeling workflow}
+
+  \vfill
+  \begin{itemize}
+  \item Hackathon: Informal meetings ($\approx$week) focused on code
+    development. Participants focus on particular topic of research
+    interest.
+  \item Help improve manual
+    \begin{itemize}
+    \item Catch mistakes, suggest better wording, etc.
+    \item Improve/contribute examples in collaboration with PyLith developers.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Hackathon}
+  \summary{}
+  
+  \begin{itemize}
+  \item PyLith development
+    \begin{itemize}
+    \item Particle advection for material properties or fault evolution
+    \item Adjoint formulations for large data assimilation
+    \item Import MED mesh files from Gmsh/Salome/OpenCASCADE
+    \item Fault influence in adaptive time stepping
+    \end{itemize}
+  \item Integrated workflow
+    \begin{itemize}
+    \item Fault surface construction from Slab 1.0 contours (via Python)
+    \item Fault surface construction from UCERF3 fault model (via Python)
+    \end{itemize}
+  \item Spatial databases
+    \begin{itemize}
+    \item Arbitrary points interpolated via radial basis functions
+    \item Efficient spatial database from output
+    \item Interfaces to common community seismic velocity models
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+ 
+% ======================================================================
+\end{document}
+
+
+% End of file

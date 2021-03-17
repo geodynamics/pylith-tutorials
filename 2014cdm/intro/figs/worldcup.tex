@@ -1,0 +1,80 @@
+\input{../../palettes/figcolors}
+
+\tikzstyle{days} = [rectangle, 
+                    text width=15mm,
+                    text centered,
+                    minimum height=2em,
+                    thin,
+                    font=\bfseries,
+                    draw=dkyellow!80!black,
+                    top color=yellow,
+                    bottom color=dkyellow]
+\tikzstyle{game} = [rectangle, 
+                      draw=green!80!black,
+                      top color=ltgreen!20!white,
+                      bottom color=green]
+\tikzstyle{break} = [rectangle, 
+                      draw=blue!80!black,
+                      top color=ltblue!20!white,
+                      bottom color=blue]
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75, transform shape,
+  node distance=6.0em,
+  thick]
+
+% Reference points
+\coordinate (o1) at (0mm,0mm);
+\coordinate (o2) at (+25mm,0mm);
+\coordinate (o3) at (+50mm,0mm);
+\coordinate (o4) at (+75mm,0mm);
+\coordinate (o5) at (+100mm,0mm);
+
+
+  % Days
+  \node (mon) [days] at ($(o1)+(8.5mm,0mm)$) {Mon};
+  \node (tue) [days] at ($(o2)+(8.5mm,0mm)$) {Tue};
+  \node (wed) [days] at ($(o3)+(8.5mm,0mm)$) {Wed};
+  \node (thu) [days] at ($(o4)+(8.5mm,0mm)$) {Thu};
+  \node (fri) [days] at ($(o5)+(8.5mm,0mm)$) {Fri};
+
+  % Mon
+  \node (monb1) [break, below of=mon, yshift=+3.5em] {Breakfast};
+  \node (mong1) [game, below of=monb1, yshift=+3.5em] {AUS v ESP};
+  \node (mong2) [game, below of=mong1, yshift=+4.3em] {NED v CHI};
+  \node (monb2) [break, below of=mong2, yshift=+3.5em] {Lunch};
+  \node (mong3) [game, below of=monb2, yshift=+3.5em] {CMR v BRA};
+  \node (mong4) [game, below of=mong3, yshift=+4.3em] {CRO v MEX};
+
+  % Tue
+  \node (tueb1) [break, below of=tue, yshift=+3.5em] {Breakfast};
+  \node (tueg1) [game, below of=tueb1, yshift=+3.5em] {CSC v ENG};
+  \node (tueg2) [game, below of=tueg1, yshift=+4.3em] {ITA v URU};
+  \node (tueb2) [break, below of=tueg2, yshift=+3.5em] {Lunch};
+  \node (tueg3) [game, below of=tueb2, yshift=+3.5em] {GRE v CIV};
+  \node (tueg4) [game, below of=tueg3, yshift=+4.3em] {JAP v COL};
+
+  % Wed
+  \node (wedb1) [break, below of=wed, yshift=+3.5em] {Breakfast};
+  \node (wedg1) [game, below of=wedb1, yshift=+3.5em] {NIG v ARG};
+  \node (wedg2) [game, below of=wedg1, yshift=+4.3em] {BIH v IRN};
+  \node (wedb2) [break, below of=wedg2, yshift=+3.5em] {Lunch};
+  \node (wedg3) [game, below of=wedb2, yshift=+3.5em] {HON v SUI};
+  \node (wedg4) [game, below of=wedg3, yshift=+4.3em] {ECU v FRA};
+
+  % Thu
+  \node (thub1) [break, below of=thu, yshift=+3.5em] {Breakfast};
+  \node (thug1) [game, below of=thub1, yshift=+3.5em] {USA v GER};
+  \node (thug2) [game, below of=thug1, yshift=+4.3em] {POR v GHA};
+  \node (thub2) [break, below of=thug2, yshift=+3.5em] {Lunch};
+  \node (thug3) [game, below of=thub2, yshift=+3.5em] {ALG v RUS};
+  \node (thug4) [game, below of=thug3, yshift=+4.3em] {KOR v BEL};
+
+  % Fri
+  \node (frib1) [break, below of=fri, yshift=+3.5em] {Breakfast};
+  \node (frig1) [game, below of=frib1, yshift=+3.5em] {TBD};
+  \node (frib2) [break, below of=frig1, yshift=+1.8em] {Lunch};
+
+\end{tikzpicture}
+\end{center}
+
