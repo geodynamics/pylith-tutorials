@@ -1,0 +1,83 @@
+\input{../../palettes/figcolors}
+
+\tikzstyle{days} = [rectangle, 
+  text centered,
+  thin,
+  draw=dkyellow!80!black,
+  font=\bfseries,
+  top color=yellow,
+  bottom color=dkyellow]
+
+\tikzstyle{admin} = [rectangle, 
+  draw=orange!80!black,
+  top color=ltorange!50!white,
+  bottom color=orange]
+
+\tikzstyle{handson} = [rectangle, 
+  draw=green!80!black,
+  top color=ltgreen!20!white,
+  bottom color=green]
+
+\tikzstyle{presentation} = [rectangle, 
+  draw=blue!80!black,
+  top color=ltblue!20!white,
+  bottom color=blue]
+
+\tikzstyle{tinker} = [rectangle, 
+  draw=ltpurple!80!black,
+  top color=ltpurple!20!white,
+  bottom color=purple!70!white!100]
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75, transform shape,
+  node distance=2.0em,
+  text width=45mm,
+  thick]
+% Reference points
+\coordinate (o1) at (0mm,0mm);
+\coordinate (o2) at (+50mm,0mm);
+\coordinate (o3) at (+100mm,0mm);
+
+% Days
+\node[days] (fri) at ($(o1)$) {Fri};
+\node[days] (sat) at ($(o2)$) {Sat};
+\node[days] (sun) at ($(o3)$) {Sun};
+
+% Fri
+\node[admin, below of=fri] (intro) {Overview};
+\node[presentation, below of=intro] (version2) {PyLith 2.0 \& beyond};
+\node[handson, below of=version2] (refresher) {CUBIT, PyLith, ParaView};
+\node[tinker, below of=refresher] (sessionIQ) {Tinker Time};
+
+\node[presentation, below of=sessionIQ, yshift=-3em] (greensfns_intro) {Green's Fns: Overview};
+\node[handson, below of=greensfns_intro] (greensfns_2d) {Green's Fns: 2-D};
+\node[handson, below of=greensfns_2d] (greensfns_3d) {Green's Fns: 3-D};
+\node[tinker, below of=greensfns_3d] (sessionIIQ) {Tinker Time};
+
+
+% Sat
+
+\node[presentation, below of=sat] (debugging_intro) {Debugging Strategy};
+\node[handson, below of=debugging_intro] (debugging_handson) {Debugging Practice};
+\node[handson, below of=debugging_handson] (gravity) {Gravity and Initial Stress};
+\node[tinker, below of=gravity] (sessionIIIQ) {Tinker Time};
+
+
+\node[presentation, below of=sessionIIIQ, yshift=-3em] (friction) {Fault Friction};
+\node[handson, below of=friction] (friction1) {Example 1};
+\node[handson, below of=friction1] (friction2) {Example 2};
+\node[tinker, below of=friction2] (sessionIVQ) {Tinker Time};
+
+
+% Sun
+\node[handson, below of=sun] (meshing) {Meshing};
+\node[presentation, below of=meshing] (solver_intro) {Solvers: Overview};
+\node[handson, below of=solver_intro] (solver_linear) {Linear Solvers};
+\node[handson, below of=solver_linear] (solver_nonlinear) {Nonlinear Solvers};
+\node[tinker, below of=solver_nonlinear] (sessionIVQ) {Tinker Time};
+
+\node[tinker, below of=sessionIVQ, yshift=-1.2em] (sessionsVQ) {Tinker Time};
+
+
+\end{tikzpicture}
+\end{center}

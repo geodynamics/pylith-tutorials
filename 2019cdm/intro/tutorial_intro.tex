@@ -1,0 +1,289 @@
+% -*- TeX -*-
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{shapes,calc}
+
+\title{Crustal Deformation Modeling Tutorial}
+\subtitle{}
+\author{Brad Aagaard, Charles Williams, and Matthew Knepley}
+\institute{\includegraphics[scale=0.4]{../../logos/cig_blackfg}}
+\date{June 26-27, 2017}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+\usetheme{CIG}
+
+\input{../style}
+
+% --------------------------------------------------------- DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+% ========================================================== SECTION
+\section{Introduction}
+\subsection{Agenda}
+
+% ------------------------------------------------------------- LOGO
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_blackfg}}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Workshop Instructors}
+  \summary{}
+  
+  \begin{center}
+    \begin{tabular}{ccc}
+      \includegraphics[width=1.2in]{figs/brad} & 
+      \includegraphics[width=1.2in]{figs/charles} &
+      \includegraphics[width=1.2in]{figs/matt} \\
+      Brad Aagaard & Charles Williams & Matthew Knepley \\
+      USGS & GNS Science & Univ. of Buffalo \\
+      Menlo Park, CA & Lower Hutt, NZ & Buffalo, NY
+    \end{tabular}
+  \end{center}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Objectives of Tutorials}
+  \summary{}
+  
+  \begin{itemize}
+  \item \important{Learn more about numerical modeling of crustal deformation}
+  \item Increase the productivity and quality of your numerical models
+  \item Progress along the CUBIT/Trelis learning curve
+  \item Progress along the PyLith learning curve
+    \begin{itemize}
+    \item Make simple changes to examples
+    \item Create a simple model of your research problem of interest
+    \end{itemize}
+  \item Progress along the ParaView learning curve
+  \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Overview of Tutorials}
+  \summary{Agenda posted on geodynamics.org}
+  
+  \input{figs/overview}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Getting Started}
+  \summary{PyLith v3.0.0beta1 contains the examples we will be discussing}
+  
+  Download v3.0.0beta1 from
+  \url{https://github.com/geodynamics/pylith/releases}
+
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{CIG}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{What is CIG?}
+  \summary{Computational Infrastructure for Geodynamics
+    ({\tt www.geodynamics.org})}
+ 
+  \vfill
+
+  Objective: Develop, support, and disseminate software for the
+  geodynamics community.
+
+  \vfill
+
+  \begin{itemize}
+  \item Coordinated effort to develop reusable, well-documented,
+    open-source geodynamics software
+  \item Strategic partnerships with the larger world of
+    computational science and geoinformatics
+  \item Specialized training and workshops for both geodynamics and
+    larger Earth-science communities
+  \end{itemize}
+
+  \vfill
+ 
+  Underlying principle: Earth scientists need help from computational
+  scientists to develop state-of-the-art modeling codes
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{CIG: Institution-Based Organization}
+  \summary{Educational and not-for-profit organization}
+ 
+  \begin{itemize}
+  \item {\bf Open-organization}
+    \begin{itemize}
+    \item Any institution seeking to collaborate on the development of
+      open-source geodynamics software
+    \item No cost or size requirements
+    \end{itemize}
+  \item Current members
+    \begin{itemize}
+    \item 61 member institutions
+    \item 15 foreign affiliates
+    \end{itemize}
+ \end{itemize}
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{CIG Working Groups}
+  \summary{Organized by sub-disciplines}
+ 
+ \begin{itemize}
+ \item Short-term tectonics
+ \item Long-term tectonics
+ \item Mantle convection
+ \item Computational seismology
+ \item Geodynamo
+ \item Magma dynamics
+ \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Short-Term Tectonics Working Group}
+  \summary{}
+ 
+ \vfill
+ 
+ \textbf{Objective}: Simulate crustal deformation across spatial
+ scales from $1$ m to $10^3$ km and temporal scales ranging from
+ $0.01$ s to $10^5$ years.
+
+ \vfill
+ \begin{itemize}
+ \item Formed through efforts by Brad Hager and Mark Simons before CIG started
+ \item Strong connection to SCEC Stress and Deformation through Time
+   (SDOT) focus group
+ \item Building connections with SCEC Fault and Rupture Mechanics
+   (FARM) focus group
+ \end{itemize}
+\vfill
+
+\end{frame} 
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{CIG Activities}
+  \summary{}
+
+  \begin{itemize}
+  \item Software development: primary activity
+  \item Workshops
+    \begin{itemize}
+    \item Sponsors workshops organized by one or more working groups
+    \item Holds workshops focusing on scientific computing and geodynamics
+    \end{itemize}
+  \item Training in use of CIG software
+    \begin{itemize}
+    \item Tutorials at workshops
+    \item Specialized training sessions (like this one)
+    \end{itemize}
+  \item Web site: {\tt geodynamics.org}
+    \begin{itemize}
+    \item Distribution of software and documentation
+    \item Mailing lists for each working group
+    \item Wiki-like web pages for community involvement
+    \end{itemize}
+  \end{itemize}
+ 
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{CIG Software}
+  \summary{}
+
+  \vfill
+  \begin{center}
+    \includegraphics[width=4.5in]{figs/covers}
+  \end{center}
+  \vfill
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{CIG Software for Crustal Deformation}
+  \summary{}
+
+  \begin{itemize}
+  \item Relax
+    \begin{itemize}
+    \item Solves 3-D problems associated with earthquake faulting and
+      quasi-static viscoelastic deformation
+    \item Short-term tectonics in a homogeneous half-space where
+      geometry does not change significantly
+    \end{itemize}
+  \item PyLith
+    \begin{itemize}
+    \item Solves 2-D and 3-D problems associated with earthquake
+      faulting and quasi-static and dynamic viscoelastic deformation
+    \item Short-term tectonics where geometry does not change
+      significantly
+    \end{itemize}
+  \item Gale (obsolete) $\rightarrow$ Aspect
+    \begin{itemize}
+    \item Solves problems in orogenesis, rifting, and subduction,
+      including free surfaces with coupling to surface erosion models
+    \item Long-term tectonics where geometry changes significantly
+    \end{itemize}
+  \item Virtual Quake
+    \begin{itemize}
+    \item Boundary element code that simulates earthquakes on fault systems based on stress interactions
+    \end{itemize}
+  \end{itemize}
+ 
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Logistics}
+  \summary{Welcome to Golden!}
+
+  \begin{itemize}
+  \item Meals
+    \begin{itemize}
+    \item Breakfast and lunch are in Mines Market
+    \item Dinner is on your own
+    \end{itemize}
+  \item All sessions are in this room
+  \item Reimbursement: CIG and SCEC
+  \item We are all visitors, please be respectful to our hosts!
+  \end{itemize}
+  
+\end{frame}
+
+
+ 
+% ======================================================================
+\end{document}
+
+
+% End of file

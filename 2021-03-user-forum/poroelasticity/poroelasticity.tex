@@ -1,0 +1,495 @@
+% -*- TeX -*-
+\documentclass[aspectratio=169,hyperref=colorlinks]{beamer}
+
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{listings}
+\usepackage{booktabs}
+%\usepackage{enumitem}
+\usepackage{cancel}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,calc}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{fit,matrix}
+
+
+
+\title{Poroelasticity Implementation}
+\subtitle{PyLith Version 3}
+\author{Robert Walker}
+\institute{\includegraphics[scale=0.4]{../../logos/cig_blackfg}}
+\date{16 March 2021}
+
+% ---------------------------------------------------- CUSTOMIZATION
+%\renewcommand{\thispdfpagelabel}[1]{}
+\usetheme{CIG}
+
+\input{../style}
+
+% --------------------------------------------------------- DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_blackfg}}
+
+% ========================================================== SECTION
+\section{Introduction}
+\setbeamertemplate{footline}{}
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{What is Poroelasticity?}
+  \summary{Poroelasticity is the study of the interaction between fluid flow and solid deformation in a porous
+    medium.}
+    \begin{minipage}{0.60\textwidth}
+    \includefigure[height=0.9\textheight]{figs/chang-poro}
+    \end{minipage}
+    \begin{minipage}{0.38\textwidth}
+            \begin{enumerate} %[label=(\alph*)]
+                \item Sand
+                \item Sandstone
+                \item Volcanic rock
+                \item Fractured rock
+                \item Pervious concrete
+                \item Polyurethane doam
+                \item Metal foam
+                \item Bone
+                \item Articular cartilage
+                \item Nanoporous alumnina
+            \end{enumerate}
+
+    \end{minipage}
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Biot Formulation}
+  \begin{enumerate}
+   \item Conservation of Momentum
+    \begin{equation*}
+      \rho_{b} \ddot{\vec{u}} = \vec{f}\left(t\right) + \nabla \cdot \tensor{\sigma}\left(\vec{u},p\right)
+    \end{equation*}
+        {\tiny
+        \begin{itemize}
+          \item  Drawn directly from linear elasticity, with stress tensor modified to account for fluid pressure: $\tensor{\sigma} = \tensor{C}:\tensor{\epsilon} - \alpha \tensor{I} p$
+          \item Bulk density defined as $\rho_{b} = \left(1 - \phi\right) \rho_{s} + \phi \rho_{f}$
+        \end{itemize}}
+    \item Conservation of Mass
+        \begin{equation*}
+          \dot{\zeta} + \nabla \cdot \vec{q}\left(p\right) = \gamma\left(\vec{x},t\right)
+        \end{equation*}
+          {\tiny
+          \begin{itemize}
+            \item Specific discharge is defined by Darcy's Law: $\vec{q} = -\frac{\tensor{k}}{\mu_{f}} \cdot \left(\nabla p - \vec{f}_{f} \right)$.
+            \item Variation of fluid content is defined as $\zeta = \alpha \epsilon_{v} + \frac{p}{M}$
+            \item Biot Modulus is defined as: $M = \frac{K_{f}}{\phi} + \frac{K_{s}}{\alpha - \phi}$
+          \end{itemize}}
+  \end{enumerate}
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Governing Assumptions}
+  \summary{for Quasistatic, Isotropic Linear Poroelasticity}
+  \begin{itemize}
+    \item Infinitesimal strain formulation
+    \item Undrained condition
+    \item Linear elastic solid matrix
+    \item Slightly compressible fluid
+    \item Inertial term is negligible ($\rho_{b}\ddot{\vec{u}}$ = 0)
+    \item Solid phase mass is constant, fluid phase mass is conserved.
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Quasistatic Formulation}
+  \summary{Implicit Time Stepping}
+  \begin{itemize}
+    \item   We want to solve equations in which the weak form can be expressed
+  as:
+    \begin{gather*}
+      \lhs{F(t,s,\dot{s})} = \rhs{G(t,s)} \\
+      \lhs{F(t,s,\dot{s})} = \vec{0} \\
+      \lhs{F(t,s,\dot{s})} = \cancelto{\vec{0}}{\rhs{G(t,s)}}
+    \end{gather*} 
+    Thus, all terms are shifted to the Left Hand Side.
+    \item We include a volumetric strain relation,
+    \begin{equation*}
+      \nabla \cdot \vec{u} = \epsilon_{v}
+    \end{equation*}
+    and the volumetric strain term, $\epsilon_{v}$, to the solution vector to 
+    aid with stability close to incompressibility.
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Rheology Concept}
+  \summary{Elasticity and Rheologies}
+  
+    \begin{table}[htbp]
+      \resizebox{\textwidth}{!}{\begin{tabular}{lll}
+        \toprule
+        {\bf Material} & {\bf Bulk Rheology} & {\bf Description} \\
+        \midrule
+        Elasticity & IsotropicLinearElasticity & Isotropic, linear elasticity \\
+                   & IsotropicLinearMaxwell & Isotropic, linear Maxwell viscoelasticity \\
+                   & IsotropicLinearGenMaxwell & Isotropic, generalized Maxwell viscoelasticity \\
+                   & IsotropicPowerLaw & Isotropic, power-law viscoelasticity \\
+                   & IsotropicDruckerPrager & Isotropic, Drucker-Prager elastoplasticity \\
+        \bottomrule
+    \end{tabular}}
+    \end{table}
+    Poroelasticity has ONE rheology (at the moment).
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Auxiliary Fields}
+  \summary{for Quasistatic Linear Isotropic Poroelasticity}
+  
+      \begin{table}[htbp]
+      \resizebox{\textheight}{!}{\begin{tabular}{lllll}
+        \toprule
+        {\bf Origin} &{\bf Variable} & {\bf Description} & {\bf Position} & {\bf Notes} \\
+        \midrule
+        Material & $\rho_b$ & Rock Density    & $0$ &\\
+                 & $\rho_f$ & Fluid Density   & $1$ &\\
+                 & $\mu_f$  & Fluid Viscosity & $2$ &\\
+                 & $\phi$   & Porosity        & $3$ &\\
+                 & $\vec{f}_{b}$ & Body Force  & $+1$ &\\
+                 & $\vec{g}$ & Gravity        & $+1$ &\\
+                 & $\gamma$ & Fluid Source  & $+1$ &\\
+        \midrule
+        Rheology & $\tensor{\sigma}_{R}$ & Reference Stress & NumAux - 7 &\\
+                 & $\tensor{\epsilon}_{R}$ & Reference Strain & NumAux - 6 &\\
+                 & $G$ & Shear Modulus & NumAux - 5 &\\
+                 & $K_d$ & Drained Bulk Modulus & NumAux - 4 &\\
+                 & $\alpha$ & Biot Coefficient & NumAux - 3 &\\
+                 & $M$ & Biot Modulus & NumAux - 2 & $\frac{K_{f}}{\phi} + \frac{K_{s}}{\alpha - \phi}$ \\
+                 & $\tensor{k}$ & Permeability & NumAux - 1 & \\
+        \midrule
+         Input   & $K_s$ & Solid Grain Bulk Modulus & - & \\
+                         & $K_f$ & Fluid Bulk Modulus & - & \\            
+        \bottomrule
+    \end{tabular}}
+    \end{table}
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Residuals}
+  \summary{for Quasistatic, Isotropic Linear Poroelasticity}
+  {\small
+  \begin{align*}
+    % Displacement
+  F^u(t,s,\dot{s}) &= \int_\Omega \trialvec[u] \cdot \eqnannotatemat{\vec{f}(\vec{x},t)}{\vec{f}^u_0}
+                     + \nabla \trialvec[u] : \eqnannotaterhe{-\tensor{\sigma}(\vec{u},p_f)}{\tensor{f}^u_1} \, d\Omega
+                     + \int_{\Gamma_\tau} \trialvec[u] \cdot \eqnannotate{\vec{\tau}(\vec{x},t)}{\vec{f}^u_0} \, d\Gamma, \\
+% Pressure
+  F^p(t,s,\dot{s}) &= \int_\Omega  \trialscalar[p] \eqnannotaterhe{\left[\frac{\partial \zeta(\vec{u},p_f)}{\partial t} - \gamma(\vec{x},t) \right]}{f^p_0}
+                     + \nabla \trialscalar[p] \cdot \eqnannotaterhe{-\vec{q}(p_f)}{\vec{f}^p_1} \, d\Omega
+                     + \int_{\Gamma_q} \trialscalar[p] (\eqnannotate{q_0(\vec{x},t)}{f^p_0}) \, d\Gamma, \\
+ % Volumetric Strain
+  F^{\epsilon_{v}}(t,s,\dot{s}) &= \int_{\Omega} \trialscalar[\epsilon_{v}] \cdot \eqnannotatemat{\left(\nabla \cdot \vec{u} - \epsilon_{v} \right)}{f^{\epsilon_{v}}_{0}} \, d\Omega. 
+\end{align*}}
+Brown refers to Material, Green to Rheology
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Jacobians}
+  \summary{for Quasistatic, Isotropic Linear Poroelasticity}
+  \centering
+\resizebox{1.3\textheight}{!}{
+  \begin{minipage}{\linewidth}
+  \begin{align*}
+%
+% JF_UU
+% Jf3uu
+J_F^{uu} &= \frac{\partial F^u}{\partial u} + t_{shift} \frac{\partial F^u}{\partial \dot{u}} = \int_{\Omega} \trialscalar[u]_{i,k}
+\eqnannotaterhe{\left(-C_{ikjl}\right)}{J_{f3}^{uu}} \basisscalar[u]_{j,l} \ d\Omega \\
+%
+% JF_UP
+% Jf2up
+J_F^{up} &= \frac{\partial F^u}{\partial p} + t_{shift} \frac{\partial F^u}{\partial \dot{p}} = 
+\int_{\Omega} \trialscalar[u]_{i,j} \eqnannotatemat{\left(\alpha \delta_{ij}\right)}{J_{f2}^{up}} \basisscalar[p] \ d\Omega \\
+%
+% JF_UE
+% Jf2ue
+J_F^{u \epsilon_{v}} &= \frac{\partial F^u}{\partial \epsilon_{v}} + t_{shift} \frac{\partial F^u}{\partial \dot{\epsilon_{v}}} = \int_{\Omega} \nabla \trialvec[u] : \frac{\partial}{\partial \epsilon_{v}} \
+\left[-\left(2 \mu \tensor{\epsilon} + \lambda \tensor{I} \epsilon_{v} - \alpha \tensor{I} p \right) \right] d\Omega =
+\int_{\Omega} \trialscalar[u]_{i,j} \eqnannotaterhe{\left(-\lambda \delta_{ij} \right)}{J_{f2}^{u \epsilon_{v}}} \basisscalar[\epsilon_{v}] d\Omega  \\
+%
+% JF_PU
+%
+%J_F^{pu} &= \frac{\partial F^p}{\partial u} + t_{shift} \frac{\partial F^p}{\partial \dot{u}} = 0 \\
+%
+% JF_PP
+% Jf0pp
+J_F^{pp} &= \frac{\partial F^p}{\partial p} + t_{shift} \frac{\partial F^p}{\partial \dot{p}} = \int_{\Omega} \psi_{trial,k}^p \eqnannotaterhe{\left(-\frac{\tensor{k}}{\mu_{f}} \delta_{kl}\right)}{J_{f3}^{pp}} \psi_{basis,l}^p \ d\Omega +
+\int_{\Omega} \trialscalar[p] \eqnannotaterhe{\left(t_{shift} \frac{1}{M}\right)}{J_{f0}^{pp}} \basisscalar[p] \ d\Omega \\
+%
+% JF_PE
+% Jf0pe
+J_F^{p\epsilon_{v}} &= \frac{\partial F^p}{\partial \epsilon_{v}} + t_{shift} \frac{\partial
+F^p}{\partial \dot{\epsilon_{v}}} = \int_{\Omega} \trialscalar[p] \eqnannotaterhe{\left(t_{shift} \alpha \right)}{J_{f0}^{p\epsilon_{v}}}
+\basisscalar[\epsilon_{v}] \ d\Omega \\
+%
+% JF_EU
+% Jf1eu
+J_F^{\epsilon_{v}u} &= \frac{\partial F^{\epsilon_{v}}}{\partial u} + t_{shift} \frac{\partial F^{\epsilon_{v}}}{\partial \dot{u}} =
+\int_{\Omega} \psi_{trial}^{\epsilon_{v}} \nabla \cdot \vec{\psi}_{basis}^u \ d\Omega = \int_{\Omega}
+\basisscalar[\epsilon_{v}] \eqnannotatemat{\left(\delta_{ij}\right)}{J_{f1}^{\epsilon_{v}u}}
+\basisscalar[u]_{i,j} \ d\Omega\\
+%
+% JF_EP
+%
+%J_F^{\epsilon_{v}p} &= \frac{\partial F^{\epsilon_{v}}}{\partial p} + t_{shift} \frac{\partial F^{\epsilon_{v}}}{\partial \dot{p}} = 0 \\
+%
+% JF_EE
+%
+J_F^{\epsilon_{v}\epsilon_{v}} &= \frac{\partial F^\epsilon_{v}}{\epsilon_{v}} + t_{shift} \frac{\partial F^{\epsilon_{v}}}{\partial \dot{\epsilon_{v}}} =
+\int_{\Omega} \basisscalar[\epsilon_{v}] \eqnannotatemat{\left(-1\right)}{J_{f0}^{\epsilon_{v}\epsilon_{v}}} \basisscalar[\epsilon_{v}] \ d\Omega
+\end{align*}
+  \end{minipage}
+}
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Parameters}
+  \summary{for Quasistatic Isotropic Linear Poroelasticity}
+  \begin{table}[ht]
+  \resizebox{1.1\textheight}{!}{\begin{tabular}{lcp{3.5in}}
+    \hline
+    {\bf Category} & {\bf Symbol} & {\bf Description} \\
+    \hline
+    Unknowns           & $\vec{u}$ & Displacement field \\
+                       & $p$       & Pressure field (corresponds to pore fluid pressure) \\
+                       & $\epsilon_{v}$ & Volumetric (trace) strain \\
+    \hline
+    Derived quantities & $\tensor{\sigma}$ & Cauchy stress tensor \\
+                       & $\tensor{\epsilon}$ & Cauchy strain tensor \\
+                       & $\zeta$ & Variation of fluid content (variation of fluid vol. per unit vol. of PM), $\alpha \epsilon_{v} + \frac{p}{M}$ \\
+                       & $\rho_{b}$ & Bulk density, $\left(1 - \phi\right) \rho_{s} + \phi \rho_{f}$ \\
+                       & $\vec{q}$ & Darcy flux, $-\frac{\tensor{k}}{\mu_{f}} \cdot \left(\nabla p - \vec{f}_{f}\right)$ \\
+                       & $M$ & Biot Modulus, $\frac{K_{f}}{\phi} + \frac{K_{s}}{\alpha - \phi}$ \\
+    \hline
+    Common constitutive parameters & $\rho_{f}$ & Fluid density \\
+                       & $\rho_{s}$ & Solid (matrix) density \\
+                       & $\phi$ & Porosity \\
+                       & $\tensor{k}$ & Permeability \\
+                       & $\mu_{f}$ & Fluid viscosity \\
+                       & $K_{s}$ & Solid grain bulk modulus \\
+                       & $K_{f}$ & Fluid bulk modulus \\
+                       & $K_{d}$ & Drained bulk modulus \\
+                       & $\alpha$ & Biot coefficient, $1 - \frac{K_{d}}{K_{s}}$ \\
+    \hline
+    Source terms       & $\vec{f}$ & Body force per unit volume, for example: $\rho_{b} \vec{g}$ \\
+                       & $\vec{f}_{f}$ & Fluid body force, for example: $\rho_{f} \vec{g}$ \\
+                       & $\gamma$ & Source density; rate of injected fluid per unit volume of the porous solid \\
+    \hline
+  \end{tabular}}
+\end{table}
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Terzaghi's Problem Test Results}
+  \summary{}
+
+		\begin{minipage}{0.49\textwidth}
+			\includefigure[width=\textwidth]{figs/terzaghi_pressure.png}
+			%\caption{Mandel's Problem test result for pressure.}
+		\end{minipage}
+		\begin{minipage}{0.49\textwidth}
+			\includefigure[width=\textwidth]{figs/terzaghi_displacement.png}
+			%\caption{Mandel's Problem test result for displacement in the x direction}
+		\end{minipage}
+		%\caption{Examples of Horizontal Subfigures}
+
+	\begin{figure}
+	    \centering
+	    \includefigure[height=0.20\textwidth]{./figs/terzaghi_domain.png}	    
+	\end{figure}
+  
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Mandel's Problem Test Results}
+  \summary{}
+
+		\begin{minipage}{0.49\textwidth}
+			\includefigure[width=\textwidth]{figs/mandel_pressure_z_0.png}
+			%\caption{Mandel's Problem test result for pressure.}
+		\end{minipage}
+		\begin{minipage}{0.49\textwidth}
+			\includefigure[width=\textwidth]{figs/mandel_displacement_x.png}
+			%\caption{Mandel's Problem test result for displacement in the x direction}
+		\end{minipage}
+		%\caption{Examples of Horizontal Subfigures}
+
+	\begin{figure}
+	    \centering
+	    \includefigure[height=0.20\textwidth]{./figs/Mandels-Problem-Quarter-Domain.png}	    
+	\end{figure}
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Next Steps}
+  \summary{Ordered by Difficulty Level}
+  
+  \begin{itemize}
+  \item Straightforward
+    \begin{itemize}
+        \item Clean and test dynamic poroelasticity for functionality
+        \item Update functions for auxiliary variables
+        \item Conversion scripts for poroelastic benchmark cases (e.g. SPE10)
+    \end{itemize}
+  \item Medium
+    \begin{itemize}
+      \item Analytical tests for dynamic poroelasticity
+      \item Well model combined with point source
+    \end{itemize}
+  \item More difficult  
+    \begin{itemize}
+    \item Multiphase model
+    \item Fully poroelastic faults
+    \end{itemize}
+  \end{itemize}
+
+
+\end{frame}
+
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Dynamic Poroelasticity}
+  \summary{Explicit Time Stepping}
+  
+  \begin{itemize}
+    \item Explicit time stepping with the PETSc TS requires $\lhs{F(t,s,\dot{s})} = \dot{s}$.
+    \item Normally $\lhs{F(t,s,\dot{s})}$ contains the inertial term ($\rho \ddot{u}$).
+    \item  Therefore, when using explicit time stepping we transform our equation into the form:
+      \begin{align*}
+        \lhs{F^*(t,s,\dot{s})} = \lhs{\dot{s}} &= \rhs{G^*(t,s)} \\
+        \lhs{\dot{s}} &= \lhs{M^{-1}}\rhs{G(t,s)}.
+      \end{align*} 
+    \item Terms must be rewritten to ensure that the LHS consists only of time derivatives and coefficients.
+    \item Velocity is introduced as an unknown, again resulting in a three field solution
+  \end{itemize}
+\end{frame}
+
+% -------------------------------------------------------------- SLIDE
+\begin{frame}
+  \frametitle{Dynamic Poroelasticity}
+  \summary{Strong Formulation}
+{\small
+  For compatibility with PETSc TS algorithms, we want to turn the second
+order equation elasticity equation into two first order equations. We
+introduce the velocity as a unknown,
+$\vec{v}=\frac{\partial u}{\partial t}$, which leads to a slightly
+different three field problem,
+\begin{gather*}
+% Solution
+\vec{s}^{T} = \left(\vec{u} \quad p \quad \vec{v}\right) \\
+% Displacement
+\frac{\partial \vec{u}}{\partial t} = \vec{v} \text{ in } \Omega \\
+% Pressure
+\frac{1}{M}\frac{\partial p}{\partial t }  =  \gamma(\vec{x},t) - \alpha \left(\nabla \cdot \dot{\vec{u}} \right) - \nabla \cdot \vec{q}\left(p\right) = 0 \text{ in } \Omega \\
+% Velocity
+\rho_{b} \frac{\partial \vec{v}}{\partial t} = \vec{f}(\vec{x},t) + \nabla \cdot \tensor{\sigma}(\vec{u},p) \text{ in } \Omega \\
+% Neumann traction
+\tensor{\sigma} \cdot \vec{n} = \vec{\tau}(\vec{x},t) \text{ on } \Gamma_{\tau} \\
+% Dirichlet displacement
+\vec{u} = \vec{u}_{0}(\vec{x}, t) \text{ on } \Gamma_{u} \\
+% Neumann flow
+\vec{q} \cdot \vec{n} = q_{0}(\vec{x}, t) \text{ on } \Gamma_{q} \\
+% Dirichlet pressure
+p = p_{0}(\vec{x},t) \text{ on } \Gamma_{p}
+\end{gather*}}
+  
+\end{frame}
+
+
+
+% -------------------------------------------------------------- SLIDE
+\begin{frame}
+  \frametitle{Dynamic Poroelasticity}
+  \summary{Weak Formulation}
+Using trial functions $\trialvec[u]$, $\trialscalar[p]$, and $\trialvec[v]$, and incorporating the
+Neumann boundary conditions, the weak form may be written as:
+{\small
+\begin{align*}
+    % Displacement
+    \int_{\Omega} \trialvec[u] \cdot \left( \frac{\partial \vec{u}}{\partial t} \right)d \Omega &= \int_{\Omega} \trialvec[u] \cdot \left( \vec{v} \right) d \Omega \\
+    % Pressure
+    \int_{\Omega} \trialscalar[p] \left( \frac{1}{M}\frac{\partial p}{\partial t} \right) d\Omega &=
+    \int_{\Omega} \trialscalar[p] \left[\gamma(\vec{x},t) - \alpha \left(\nabla \cdot \dot{\vec{u}}\right) \right]  + \nabla \trialscalar[p] \cdot \vec{q}(p) \ d\Omega +
+    \int_{\Gamma_q} \trialscalar[p] (-q_0(\vec{x},t)) \ d\Gamma, \\
+   % Velocity
+   \int_\Omega \trialvec[v] \cdot \left( \rho_{b} \frac{\partial
+   \vec{v}}{\partial t} \right) \,
+   d\Omega &= \int_\Omega \trialvec[v] \cdot \vec{f}(\vec{x},t) + \nabla \trialvec[v] :
+   -\tensor{\sigma} (\vec{u},p_f) \, d\Omega + \int_{\Gamma_\tau} \trialvec[u]
+   \cdot \vec{\tau}(\vec{x},t) \, d\Gamma.
+\end{align*}}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Residual Functions}
+  \summary{for Dynamic Isotropic Linear Poroelasticity}
+  {\small
+  \begin{align*}
+ % Displacement
+ G^u(t,s) &= \int_\Omega \trialvec[u] \cdot \left(\eqnannotate{\vec{v}}{\vec{g}^u_0}\right) \, d\Omega \\
+ % Pressure
+  G^p(t,s) &= \int_\Omega  \trialscalar[p] \left[\eqnannotate{\gamma \left(\vec{x},t \right) - \alpha \left(\nabla \cdot \dot{\vec{u}} \right)}{g^p_0} \right]
+                     + \nabla \trialscalar[p] \cdot \eqnannotate{\vec{q}\left(p\right)}{\vec{g}^p_1} \, d\Omega
+                     + \int_{\Gamma_q} \trialscalar[p] \left(\eqnannotate{q_0(\vec{x},t)}{g^p_0}\right) \, d\Gamma, \\
+ % Velocity
+  G^v(t,s) &= \int_\Omega \trialvec[v] \cdot \eqnannotate{\vec{f}\left(\vec{x},t\right)}{\vec{g}^v_0}
+                     + \nabla \trialvec[v] : \eqnannotate{-\tensor{\sigma}\left(\vec{u},p\right)}{\tensor{g}^v_1} \, d\Omega
+                     + \int_{\Gamma_\tau} \trialvec[v] \cdot \eqnannotate{\vec{\tau}\left(\vec{x},t\right)}{\vec{g}^v_0} \, d\Gamma,
+\end{align*}}
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Jacobian Functions}
+   \summary{for Dynamic Isotropic Linear Poroelasticity}
+{\small
+These are the pointwise functions associated with $M_{u}$, $M_{p}$, and $M_{v}$ for computing the lumped LHS Jacobian. We premultiply the
+RHS residual function by the inverse of the lumped LHS Jacobian while s tshift remains on the LHS with $\dot{s}$ . As a result, we use
+LHS Jacobian pointwise functions, but set s tshift = 1 . The LHS Jacobians are:}
+
+\begin{align*}
+% Displacement
+M_{u} &= J_F^{uu} = \frac{\partial F^u}{\partial u} + s_{tshift} \frac{\partial F^u}{\partial \dot{u}} =
+\int_{\Omega} \trialscalar[u]_{i} \eqnannotate{s_{tshift} \delta_{ij}}{J^{uu}_{f0}} \basisscalar[u]_{j} \, d \Omega \\
+% Pressure
+M_{p} &= J_F^{pp} = \frac{\partial F^p}{\partial p} + t_{shift} \frac{\partial F^p}{\partial \dot{p}} =
+\int_{\Omega} \trialscalar[p] \eqnannotate{\left(s_{tshift} \frac{1}{M}\right)}{J_{f0}^{pp}} \basisscalar[p] \ d\Omega \\
+% Velocity
+M_{v} &= J_F^{vv} = \frac{\partial F^v}{\partial v} + t_{shift} \frac{\partial F^v}{\partial \dot{v}} =
+\int_{\Omega} \trialscalar[v]_{i}\eqnannotate{\rho_{b}(\vec{x}) s_{tshift} \delta_{ij}}{J^{vv}_{f0}} \basisscalar[v]_{j} \  d \Omega
+\end{align*}   
+   
+\end{frame}
+
+% --------------------------------------------------------- DOCUMENT
+\end{document}
+
+% End of file

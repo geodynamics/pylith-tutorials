@@ -1,0 +1,75 @@
+\input{../../palettes/figcolors}
+
+\tikzstyle{days} = [rectangle, 
+                    text centered,
+                    thin,
+                    draw=dkyellow!80!black,
+                    font=\bfseries,
+                    top color=yellow,
+                    bottom color=dkyellow]
+\tikzstyle{admin} = [rectangle, 
+                    draw=orange!80!black,
+                    top color=ltorange!50!white,
+                    bottom color=orange]
+\tikzstyle{tutorial} = [rectangle, 
+                    draw=green!80!black,
+                    top color=ltgreen!20!white,
+                    bottom color=green]
+\tikzstyle{break} = [rectangle, 
+                    draw=blue!80!black,
+                    top color=ltblue!20!white,
+                    bottom color=blue]
+\tikzstyle{tinker} = [rectangle, 
+                      draw=ltpurple!80!black,
+                      top color=ltpurple!20!white,
+                      bottom color=purple!70!white!100]
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75, transform shape,
+  node distance=2.0em,
+  text width=55mm,
+  thick]
+% Reference points
+\coordinate (o1) at (0mm,0mm);
+\coordinate (o2) at (+65mm,0mm);
+
+% Days
+\node[days] (mon) at ($(o1)$) {Mon};
+\node[days] (tue) at ($(o2)$) {Tue};
+
+% Mon
+\node[tutorial, below of=mon] (relax_intro) {Relax: Intro}; % relax 45min
+\node[tutorial, below of=relax_intro] (pylith_intro) {PyLith: Overview}; % pylith 30min
+\node[tutorial, below of=pylith_intro] (cubit_intro) {CUBIT: Overview}; % cubit 30min
+
+\node[break, below of=cubit_intro] (break_mon_am) {Break}; % break 15min
+
+\node[tutorial, below of=break_mon_am] (pylith_subduction) {PyLith: 2-D Subduction Zone}; % pylith 2hrs
+
+\node[break, below of=pylith_subduction] (lunch_mon) {Lunch}; % lunch 45min
+\node[tinker, below of=lunch_mon] (tinker_mon_A) {Tinker Time}; % tinker 90min
+\node[break, below of=tinker_mon_A] (break_mon_pm) {Break}; % break 30min
+
+\node[tutorial, below of=break_mon_pm] (pylith_friction) {PyLith: Intro to Friction}; % pylith 90min
+\node[tutorial, below of=pylith_friction] (relax_more) {Relax: More Examples}; % relax 45min
+\node[tinker, below of=relax_more] (tinker_mon_B) {Tinker Time}; % tinker 45min
+
+% Tue
+\node[tutorial, below of=tue] (cubit_nonplanar) {CUBIT: Nonplanar Geometry}; % cubit 85min
+\node[tutorial, below of=cubit_nonplanar] (pylith_solver) {PyLith: Solver Options}; % pylith 45min
+
+\node[break, below of=pylith_solver] (break_tue_am) {Break}; % break 15min
+
+\node[tutorial, below of=break_tue_am] (pylith_afterslip) {PyLith: Frictional Afterslip}; % pylith 30min
+\node[tutorial, below of=pylith_afterslip] (pylith_dynrup) {PyLith: Dynamic Rupture}; % pylith 60min
+
+\node[break, below of=pylith_dynrup] (lunch_tue) {Lunch}; lunch 60min
+\node[tinker, below of=lunch_tue] (tinker_tue_A) {Tinker Time}; % tinker 90min
+\node[break, below of=tinker_tue_A] (break_tue_pm) {Break}; % break 30min
+
+\node[tutorial, below of=break_tue_pm] (pylith_greensfns) {PyLith: Green's Functions}; % pylith 105min
+\node[tinker, below of=pylith_greensfns] (tinker_tue_B) {Tinker Time}; % tinker 75min
+
+
+\end{tikzpicture}
+\end{center}

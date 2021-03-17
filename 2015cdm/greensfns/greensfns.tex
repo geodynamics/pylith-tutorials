@@ -1,0 +1,244 @@
+% -*- TeX -*-
+\documentclass{beamer}
+
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{tikz}
+
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{fit,matrix}
+
+\title{Crustal Deformation Modeling Tutorial}
+\subtitle{Computing Static Green's Functions}
+\author{Charles Williams \\
+  Brad Aagaard \\
+  Matthew Knepley}
+\institute{\includegraphics[scale=0.4]{../../logos/cig_blackfg}}
+\date{August 24--25, 2015}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+%\newcommand{\thispdfpagelabel}[1]{}
+\newcommand{\pylith}[1]{{\color{green}#1}}
+\newcommand{\python}[1]{{\color{red}#1}}
+\usetheme{CIG}
+
+\newcommand{\tensor}[1]{\overline{#1}}
+
+% ========================================================= DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+% ------------------------------------------------------------ SLIDE
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_blackfg}}
+
+% ========================================================== SECTION
+\section{Introduction}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Concepts Covered in this Session}
+  \summary{}
+
+  \begin{itemize}
+  \item Generation of Green's functions in 2D and 3D
+  \item Solution output at a specified set of points (\pylith{OutputSolnPoints})
+  \item Postprocessing of HDF5 output using \python{h5py}
+  \item Simple linear inversion using \python{numpy}
+  \item Plotting of inversion results using \python{matplotlib}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ========================================================== SECTION
+\section{Overview}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Green's Functions}
+  \summary{}
+
+  \begin{itemize}
+  \item Compute deformation due to unit (i.e., 1 m) slip at fault
+    vertex for use in an inversion for fault slip
+    \begin{itemize}
+    \item Slip decreases {\bf linearly} to 0 at surrounding vertices
+    \item Similar but not equivalent to uniform slip over a patch
+      (Okada dislocation)
+    \end{itemize}
+  \item Provides ability to compute Green's functions with arbitrarily
+    complex elastic structure
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Green's Functions Examples}
+  \summary{}
+
+  \begin{itemize}
+  \item 2-D examples: {\tt\color{red} examples/2d/greensfns}
+    \begin{itemize}
+    \item Example components
+      \begin{enumerate}
+      \item Compute synthetic (fake) observations for an earthquake
+      \item Compute displacements at sites for Green's functions
+      \item Invert for fault slip
+      \end{enumerate}
+    \item See Section 7.15 of the PyLith User Manual
+    \end{itemize}
+  \item 3-D example: {\tt\color{red} examples/3d/hex8/step21}
+    \begin{itemize}
+    \item Limited to computing displacements at sites for Green's functions
+    \item No inversion
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ========================================================== SECTION
+\section{2-D Green's Fns}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{2-D Green's Functions Example}
+  \summary{Invert for slip on reverse fault}
+
+  \vfill
+  Files are in {\tt\color{red} examples/2d/greensfns/reverse}
+  \vfill
+
+  \begin{enumerate}
+  \item Generate mesh using CUBIT
+  \item Compute synthetic (fake) observations for an earthquake\\
+    {\tt pylith eqsim.cfg}
+  \item Compute displacements at sites for Green's functions\\
+    {\tt pylith --problem=pylith.problems.GreensFns}
+  \item Invert for fault slip\\
+    See README in {\tt examples/2d/greensfns}
+  \item Visualize inversion results using matplotlib Python package\\
+    See README in {\tt examples/2d/greensfns}
+  \end{enumerate}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Python Packages Needed}
+  \summary{}
+
+  \begin{description}
+  \item[numpy] Arrays plus scientific computing tools in Python
+    \begin{itemize}
+    \item Similar to numerical functions in Matlab
+    \item Included in PyLith binary distribution
+    \end{itemize}
+  \item[h5py] Python wrappers for HDF5 library
+    \begin{itemize}
+    \item Provides high-level access to HDF5 files
+    \item Included in PyLith binary distribution
+    \end{itemize}
+  \item[matplotlib] 2-D plotting for Python
+    \begin{itemize}
+    \item Designed to be very similar to Matlab
+    \item {\bf Not} included in PyLith binary distribution
+    \item Available from {\tt matplotlib.org}
+    \end{itemize}
+  \end{description}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Simple Linear Inversion}
+  \summary{Parameters}
+
+  \begin{description}
+  \item[\textit{G}] Green's function matrix
+  \item[\textit{d}] Unknown fault slip
+  \item[\begin{math}d_{apriori}\end{math}] A priori estimate of fault slip
+  \item[\begin{math}u_{obs}\end{math}] Observed displacement
+  \item[\textit{D}] Penalty matrix
+  \item[\begin{math}\theta\end{math}] Penalty parameter
+  \end{description}
+  
+  \vfill
+  The matrix \begin{math}{G_{ij}}\end{math} gives displacement component \textit{i} due to a unit of slip from component \textit{j}.
+  \vfill
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Simple Linear Inversion}
+  \summary{Equations}
+
+  \begin{itemize}
+  \item Original system of equations:
+    \begin{equation}
+      G d = u_{obs}
+    \end{equation}
+
+  \item Augmented system of equations:
+    \begin{equation}
+      G_a d = u_a \text{, where } 
+      G_a = \left[ \begin{array}{c} G \\ \theta D \end{array} \right]
+      \text{ and }
+      u_a = \left[ \begin{array}{c} u_{obs} \\ d_{apriori} \end{array} \right]
+    \end{equation}
+    
+  \item Generalized inverse:
+    \begin{gather}
+      G^{-g} = \left( G_a^T G_a \right)^{-1} G_a^T \\
+      d_{est} = G^{-g} u_a
+    \end{gather}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ========================================================== SECTION
+\section{3-D Green's Fns}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{3-D Green's Functions Example}
+  \summary{Demonstrate computing Green's functions; no inversion}
+
+  \vfill
+  Files are in {\tt\color{red} examples/3d/hex8}
+  \vfill
+
+  \begin{itemize}
+  \item Compute responses due to strike-slip and reverse slip separately
+  \item Parameters are distributed across multiple {\tt .cfg} files
+    \begin{description}
+    \item[{\tt pylithapp.cfg}] General parameters for this mesh
+    \item[{\tt greensfns.cfg}] General Green's function problem settings
+    \item[{\tt step21.cfg}] Parameters specific to this example
+    \end{description}
+  \end{itemize}
+
+  \vfill
+  {\tt pylith --problem=pylith.problems.GreensFns step21.cfg}
+  \vfill
+  
+\end{frame}
+
+
+
+
+% ======================================================================
+\end{document}
+
+
+% End of file

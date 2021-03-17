@@ -1,0 +1,83 @@
+\input{../../palettes/figcolors}
+
+\tikzstyle{days} = [rectangle, 
+  text centered,
+  thin,
+  draw=dkyellow!80!black,
+  font=\bfseries,
+  top color=yellow,
+  bottom color=dkyellow]
+
+\tikzstyle{admin} = [rectangle, 
+  draw=orange!80!black,
+  top color=ltorange!50!white,
+  bottom color=orange]
+
+\tikzstyle{handson} = [rectangle, 
+  draw=green!80!black,
+  top color=ltgreen!20!white,
+  bottom color=green]
+
+\tikzstyle{presentation} = [rectangle, 
+  draw=blue!80!black,
+  top color=ltblue!20!white,
+  bottom color=blue]
+
+\tikzstyle{questions} = [rectangle, 
+  draw=ltpurple!80!black,
+  top color=ltpurple!20!white,
+  bottom color=purple!70!white!100]
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75, transform shape,
+  node distance=2.0em,
+  text width=45mm,
+  thick]
+% Reference points
+\coordinate (o1) at (0mm,0mm);
+\coordinate (o2) at (+50mm,0mm);
+\coordinate (o3) at (+100mm,0mm);
+
+% Days
+\node[days] (mon) at ($(o1)$) {Mon};
+\node[days] (wed) at ($(o2)$) {Wed};
+\node[days] (fri) at ($(o3)$) {Fri};
+
+% Mon
+\node[admin, below of=mon] (intro) {Overview};
+\node[handson, below of=intro] (refresher) {CUBIT, PyLith, ParaView};
+\node[presentation, below of=refresher] (version2) {PyLith 2.0 \& beyond};
+\node[questions, below of=version2] (sessionIQ) {Q\&A};
+
+\node[handson, below of=sessionIQ, yshift=-3em] (meshing_2d) {Meshing 2-D};
+\node[handson, below of=meshing_2d] (meshing_3d) {Meshing 3-D};
+\node[handson, below of=meshing_3d] (meshing_dx) {Cell Size};
+\node[questions, below of=meshing_dx] (sessionIIQ) {Q\&A};
+
+
+% Wed
+\node[presentation, below of=wed] (greensfns_intro) {Green's Fns: Overview};
+\node[handson, below of=greensfns_intro] (greensfns_2d) {Green's Fns: 2-D};
+\node[handson, below of=greensfns_2d] (greensfns_3d) {Green's Fns: 3-D};
+\node[questions, below of=greensfns_3d] (sessionIIIQ) {Q\&A};
+
+\node[presentation, below of=sessionIIIQ, yshift=-3em] (solver_intro) {Solvers: Overview};
+\node[handson, below of=solver_intro] (solver_linear) {Linear Solvers};
+\node[handson, below of=solver_linear] (solver_nonlinear) {Nonlinear Solver};
+\node[questions, below of=solver_nonlinear] (sessionIVQ) {Q\&A};
+
+
+% Fri
+\node[presentation, below of=fri] (friction_intro) {Fault Friction: Overview};
+\node[handson, below of=friction_intro] (friction_quasi) {Friction: Quasi-static};
+\node[handson, below of=friction_quasi] (friction_dyn) {Friction: Dynamic};
+\node[questions, below of=friction_dyn] (sessionVQ) {Q\&A};
+
+\node[handson, below of=sessionVQ, yshift=-3em] (parallel_desktop) {Parallel: Desktop};
+\node[handson, below of=parallel_desktop] (parallel_cluster) {Parallel: Cluster};
+\node[handson, below of=parallel_cluster] (parallel_trouble) {Troubleshooting};
+\node[questions, below of=parallel_trouble] (sessionVIQ) {Q\&A};
+
+
+\end{tikzpicture}
+\end{center}

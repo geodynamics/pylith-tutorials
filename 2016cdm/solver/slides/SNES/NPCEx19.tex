@@ -1,0 +1,232 @@
+\begin{frame}[fragile]{Nonlinear Preconditioning}
+\only<1>{\subtitle{Also called \textit{globalization}}}
+\only<11>{\LARGE
+  See discussion in:\\
+  \vskip1em
+  \magenta{\Large\href{http://dx.doi.org/10.1137/130936725}{Composing Scalable Nonlinear Algebraic Solvers}},\\
+  {\large Peter Brune, Matthew Knepley, Barry Smith, and Xuemin Tu,\\
+  SIAM Review, {\bf 57}(4), 535--565, 2015.}\\
+  \magenta{\normalsize\href{http://www.mcs.anl.gov/uploads/cels/papers/P2010-0112.pdf}{http://www.mcs.anl.gov/uploads/cels/papers/P2010-0112.pdf}}
+}
+\only<10>{
+\begin{tabular}{l|ccccccc}
+Solver & T & N. It & L. It & Func & Jac & PC & NPC \\
+\hline
+$(\NK\pc\MG)$ & 9.83 & 17 & 352 & 34 & 85 & 370 & -- \\
+$\NGMRES\rp{}$ & 7.48 & 10 & 220 & 21 & 50 & 231 & 10 \\
+$\ (\NK\pc\MG)$&      &    &     &    &    &     & \\
+$\FAS$ & 6.23 & 162 & 0 & 2382 & 377 & 754 & -- \\
+$\FAS+(\NK\pc\MG)$ & 8.07 & 10 & 197 & 232 & 90 & 288 & -- \\
+$\FAS*(\NK\pc\MG)$ & 4.01 & 5 & 80 & 103 & 45 & 125 & -- \\
+$\NRICH\lp\FAS$ & 3.20 & 50 & 0 & 1180 & 192 & 384 & 50 \\
+$\NGMRES\rp\FAS$ & 1.91 & 24 & 0 & 447 & 83 & 166 & 24 \\
+\end{tabular}
+}
+\begin{overprint}\scriptsize
+\onslide<1>
+\begin{semiverbatim}
+./ex19 -lidvelocity 100 -grashof 5e4 -da_refine 4 -snes_monitor_short
+ -snes_type newtonls -snes_converged_reason
+ \blue{-pc_type lu}
+\end{semiverbatim}
+\onslide<2>
+\begin{semiverbatim}
+./ex19 -lidvelocity 100 -grashof 5e4 -da_refine 4 -snes_monitor_short
+ \blue{-snes_type fas} -snes_converged_reason
+ \blue{-fas_levels_snes_type gs -fas_levels_snes_max_it 6}
+\end{semiverbatim}
+\onslide<3>
+\begin{semiverbatim}
+./ex19 -lidvelocity 100 -grashof 5e4 -da_refine 4 -snes_monitor_short
+ -snes_type fas -snes_converged_reason
+ -fas_levels_snes_type gs -fas_levels_snes_max_it 6
+  \blue{-fas_coarse_snes_converged_reason}
+\end{semiverbatim}
+\onslide<4>
+\begin{semiverbatim}
+./ex19 -lidvelocity 100 -grashof 5e4 -da_refine 4 -snes_monitor_short
+ -snes_type fas -snes_converged_reason
+ -fas_levels_snes_type gs -fas_levels_snes_max_it 6
+  \blue{-fas_coarse_snes_linesearch_type basic}
+  -fas_coarse_snes_converged_reason
+\end{semiverbatim}
+\onslide<5>
+\begin{semiverbatim}
+./ex19 -lidvelocity 100 -grashof 5e4 -da_refine 4 -snes_monitor_short
+ \blue{-snes_type nrichardson -npc_snes_max_it 1} -snes_converged_reason
+ \blue{-npc_}snes_type fas \blue{-npc_}fas_coarse_snes_converged_reason
+  \blue{-npc_}fas_levels_snes_type gs \blue{-npc_}fas_levels_snes_max_it 6
+  \blue{-npc_}fas_coarse_snes_linesearch_type basic
+\end{semiverbatim}
+\onslide<6>
+\begin{semiverbatim}
+./ex19 -lidvelocity 100 -grashof 5e4 -da_refine 4 -snes_monitor_short
+ \blue{-snes_type ngmres} -npc_snes_max_it 1 -snes_converged_reason
+ -npc_snes_type fas -npc_fas_coarse_snes_converged_reason
+  -npc_fas_levels_snes_type gs -npc_fas_levels_snes_max_it 6
+  -npc_fas_coarse_snes_linesearch_type basic
+\end{semiverbatim}
+\onslide<7>
+\begin{semiverbatim}
+./ex19 -lidvelocity 100 -grashof 5e4 -da_refine 4 -snes_monitor_short
+ -snes_type ngmres -npc_snes_max_it 1 -snes_converged_reason
+ -npc_snes_type fas -npc_fas_coarse_snes_converged_reason
+ \blue{-npc_fas_levels_snes_type newtonls} -npc_fas_levels_snes_max_it 6
+  \blue{-npc_fas_levels_snes_linesearch_type basic}
+  \blue{-npc_fas_levels_snes_max_linear_solve_fail 30}
+  \blue{-npc_fas_levels_ksp_max_it 20 -npc_fas_levels_snes_converged_reason}
+  -npc_fas_coarse_snes_linesearch_type basic
+\end{semiverbatim}
+\onslide<8>
+\begin{semiverbatim}
+./ex19 -lidvelocity 100 -grashof 5e4 -da_refine 4 -snes_monitor_short
+ \blue{-snes_type composite -snes_composite_type additiveoptimal}
+ \blue{-snes_composite_sneses fas,newtonls} -snes_converged_reason  
+ \blue{-sub_0_fas_levels_snes_type gs -sub_0_fas_levels_snes_max_it 6}
+   \blue{-sub_0_fas_coarse_snes_linesearch_type basic}
+ \blue{-sub_1_snes_linesearch_type basic -sub_1_pc_type mg}
+\end{semiverbatim}
+\onslide<9>
+\begin{semiverbatim}
+./ex19 -lidvelocity 100 -grashof 5e4 -da_refine 4 -snes_monitor_short
+ -snes_type composite \blue{-snes_composite_type multiplicative}
+ -snes_composite_sneses fas,newtonls -snes_converged_reason  
+ -sub_0_fas_levels_snes_type gs -sub_0_fas_levels_snes_max_it 6
+   -sub_0_fas_coarse_snes_linesearch_type basic
+ -sub_1_snes_linesearch_type basic -sub_1_pc_type mg
+\end{semiverbatim}
+\end{overprint}
+
+\begin{overprint}\scriptsize
+\onslide<1>
+\begin{semiverbatim}
+lid velocity = 100, prandtl \# = 1, grashof \# = 50000
+  0 SNES Function norm 1228.95 
+  1 SNES Function norm 1132.29 
+  2 SNES Function norm 1026.17 
+  3 SNES Function norm 925.717 
+  4 SNES Function norm 924.778 
+  5 SNES Function norm 836.867 
+  \vdots
+ 21 SNES Function norm 585.143 
+ 22 SNES Function norm 585.142 
+ 23 SNES Function norm 585.142 
+ 24 SNES Function norm 585.142 
+  \vdots
+\end{semiverbatim}
+\onslide<2>
+\begin{semiverbatim}
+lid velocity = 100, prandtl \# = 1, grashof \# = 50000
+  0 SNES Function norm 1228.95 
+  1 SNES Function norm 574.793 
+  2 SNES Function norm 513.02 
+  3 SNES Function norm 216.721 
+  4 SNES Function norm 85.949 
+Nonlinear solve did not converge due to DIVERGED_INNER iterations 4
+\end{semiverbatim}
+\onslide<3>
+\begin{semiverbatim}
+lid velocity = 100, prandtl \# = 1, grashof \# = 50000
+  0 SNES Function norm 1228.95 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 12
+  1 SNES Function norm 574.793 
+    Nonlinear solve did not converge due to DIVERGED_MAX_IT its 50
+  2 SNES Function norm 513.02 
+    Nonlinear solve did not converge due to DIVERGED_MAX_IT its 50
+  3 SNES Function norm 216.721 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 22
+  4 SNES Function norm 85.949 
+    Nonlinear solve did not converge due to DIVERGED_LINE_SEARCH its 42
+Nonlinear solve did not converge due to DIVERGED_INNER iterations 4
+\end{semiverbatim}
+\onslide<4>
+\begin{semiverbatim}
+lid velocity = 100, prandtl \# = 1, grashof \# = 50000
+  0 SNES Function norm 1228.95 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 6
+  \vdots
+ 47 SNES Function norm 78.8401 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 5
+ 48 SNES Function norm 73.1185 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 6
+ 49 SNES Function norm 78.834 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 5
+ 50 SNES Function norm 73.1176 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 6
+  \vdots
+\end{semiverbatim}
+\onslide<5>
+\begin{semiverbatim}
+lid velocity = 100, prandtl \# = 1, grashof \# = 50000
+  0 SNES Function norm 1228.95 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 6
+  1 SNES Function norm 552.271 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 27
+  2 SNES Function norm 173.45 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 45
+  \vdots
+ 43 SNES Function norm 3.45407e-05 
+    Nonlinear solve converged due to CONVERGED_SNORM_RELATIVE its 2
+ 44 SNES Function norm 1.6141e-05 
+    Nonlinear solve converged due to CONVERGED_SNORM_RELATIVE its 2
+ 45 SNES Function norm 9.13386e-06 
+Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE iterations 45
+\end{semiverbatim}
+\onslide<6>
+\begin{semiverbatim}
+lid velocity = 100, prandtl \# = 1, grashof \# = 50000
+  0 SNES Function norm 1228.95 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 6
+  1 SNES Function norm 538.605 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 13
+  2 SNES Function norm 178.005 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 24
+  \vdots
+ 27 SNES Function norm 0.000102487 
+    Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE its 2
+ 28 SNES Function norm 4.2744e-05 
+    Nonlinear solve converged due to CONVERGED_SNORM_RELATIVE its 2
+ 29 SNES Function norm 1.01621e-05 
+Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE iterations 29
+\end{semiverbatim}
+\onslide<7>
+\begin{semiverbatim}
+lid velocity = 100, prandtl \# = 1, grashof \# = 50000
+  0 SNES Function norm 1228.95 
+    Nonlinear solve did not converge due to DIVERGED_MAX_IT its 6
+    \vdots
+        Nonlinear solve converged due to CONVERGED_SNORM_RELATIVE its 1
+    \vdots
+  1 SNES Function norm 0.1935 
+  2 SNES Function norm 0.0179938 
+  3 SNES Function norm 0.00223698 
+  4 SNES Function norm 0.000190461 
+  5 SNES Function norm 1.6946e-06 
+Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE iterations 5
+\end{semiverbatim}
+\onslide<8>
+\begin{semiverbatim}
+lid velocity = 100, prandtl \# = 1, grashof \# = 50000
+  0 SNES Function norm 1228.95
+  1 SNES Function norm 541.462
+  2 SNES Function norm 162.92
+  3 SNES Function norm 48.8138
+  4 SNES Function norm 11.1822
+  5 SNES Function norm 0.181469
+  6 SNES Function norm 0.00170909
+  7 SNES Function norm 3.24991e-08
+Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE iterations 7
+\end{semiverbatim}
+\onslide<9>
+\begin{semiverbatim}
+lid velocity = 100, prandtl \# = 1, grashof \# = 50000
+  0 SNES Function norm 1228.95
+  1 SNES Function norm 544.404
+  2 SNES Function norm 18.2513
+  3 SNES Function norm 0.488689
+  4 SNES Function norm 0.000108712
+  5 SNES Function norm 5.68497e-08
+Nonlinear solve converged due to CONVERGED_FNORM_RELATIVE iterations 5
+\end{semiverbatim}
+\end{overprint}
+\end{frame}

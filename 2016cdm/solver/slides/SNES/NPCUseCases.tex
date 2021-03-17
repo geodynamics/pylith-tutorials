@@ -1,0 +1,20 @@
+\begin{frame}[fragile]{Nonlinear Use Cases}
+
+{\bf Warm start Newton}
+\begin{semiverbatim}
+  -snes_type newtonls
+  -npc_snes_type nrichardson -npc_snes_max_it 5
+\end{semiverbatim}
+
+{\bf Cleanup noisy Jacobian}
+\begin{semiverbatim}
+  -snes_type ngmres -snes_ngmres_m 5
+  -npc_snes_type newtonls
+\end{semiverbatim}
+
+{\bf Additive-Schwarz Preconditioned Inexact Newton}
+\begin{semiverbatim}
+  -snes_type aspin -snes_npc_side left
+  -npc_snes_type nasm -npc_snes_nasm_type restrict
+\end{semiverbatim}
+\end{frame}

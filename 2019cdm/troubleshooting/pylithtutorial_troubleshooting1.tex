@@ -1,0 +1,204 @@
+% -*- TeX -*-
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,calc}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{fit,matrix}
+
+\usepackage{listings}
+\lstset{basicstyle=\tiny}
+
+\title{PyLith Modeling Tutorial}
+\subtitle{Troubleshooting PyLith Simulations}
+\author{Brad Aagaard}
+\institute{\includegraphics[scale=0.4]{../../logos/cig_blackfg}}
+\date{June 10, 2019}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+%\renewcommand{\thispdfpagelabel}[1]{}
+\usetheme{CIG}
+
+% Local macros
+\input{../style}
+
+
+% ========================================================= DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+% ------------------------------------------------------------ SLIDE
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_blackfg}}
+
+% ========================================================== SECTION
+\section{Troubleshooting}
+\subsection{Parameters}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{What parameters are available?}
+  \summary{Parameters are specified as a hierarchy of components and properties}
+
+  \begin{itemize}
+  \item Components (Facilities) are the object building blocks\\
+    \important{Appendix B of the PyLith manual lists all of the components}
+    \begin{itemize}
+    \item Problem \component{TimeDependent}
+    \item Boundary conditions \component{DirichletTimeDependent}
+    \item Faults \component{FaultCohesiveKin}
+    \item Materials \component{Elasticity}
+    \item Solution observers \component{OutputSolnBoundary}
+    \item Readers \component{MeshIOCubit}
+    \end{itemize}
+  \item Properties are the basic types
+    \begin{itemize}
+    \item String \property{mat\_viscoelastic.spatialdb}
+    \item Integer \property{4}
+    \item Float \property{2.3}
+    \item Dimensioned quantity \property{2.5*year}
+    \item Array of Strings, Integers, or Floats \property{[0, 0, 1]}
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Parameter Files}
+  \summary{Simple syntax for specifying parameters for properties and components}
+
+\begin{cfg}
+# Syntax
+<h>[pylithapp.COMPONENT.SUBCOMPONENT]</h> ; Inline comment
+<f>COMPONENT</f> = OBJECT
+<p>PARAMETER</p> = VALUE
+
+# Example
+<h>[pylithapp.mesh_generator]</h> ; Header indicates path of mesh_generator in hierarchy
+<f>reader</f> = pylith.meshio.MeshIOCubit ; Use mesh from CUBIT/Trelis
+<p>reader.filename</p> = mesh_quad4.exo ; Set filename of mesh.
+<p>reader.coordsys.space_dim</p> = 2 ; Set coordinate system of mesh.
+
+<h>[pylithapp.problem.solution_outputs.output]</h> ; Set output format
+<f>writer</f> = pylith.meshio.DataWriterHDF5
+<p>writer.filename</p> = axialdisp.h5
+
+<h>[pylithapp.problem]</h>
+<f>bc</f> = [x_neg, x_pos, y_neg] ; Create array of boundary conditions
+<f>bc.x_neg</f> = pylith.bc.DirichletTimeDependent ; Set type of boundary condition
+<f>bc.x_pos</f> = pylith.bc.DirichletTimeDependent
+<f>bc.y_neg</f> = pylith.bc.DirichletTimeDependent
+
+<h>[pylithapp.problem.bc.x_pos]</h> ; Boundary condition for +x
+<p>constrained_dof</p> = [0] ; Constrain x DOF
+<p>label</p> = edge_xpos ; Name of nodeset from CUBIT/Trelis
+<f>db_auxiliary_field</f> = spatialdata.spatialdb.SimpleDB ; Set type of spatial database
+<p>db_auxiliary_field.label</p> = Dirichlet BC +x edge
+<p>db_auxiliary_field.iohandler.filename</p> = axial_disp.spatialdb ; Filename for database
+\end{cfg}
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Parameters Graphical User-Interface}
+  \summary{{\tt cd parametersgui; ./pylith\_paramviewer}}
+
+  \includefigure[height=8.5cm]{figs/paramgui_snapshot}
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Parameters Graphical User-Interface}
+  \summary{Case study: {\tt examples/2d/box/step02\_sheardisp}}
+
+\begin{enumerate}
+\item Generate the JSON file with the parameters
+\begin{lstlisting}
+cd examples/2d/box
+pylithinfo step02_sheardisp.cfg
+\end{lstlisting}
+\item Start the web-server (start at your top-level PyLith directory)
+\begin{lstlisting}
+cd parametersgui
+./pylith_paramviewer
+\end{lstlisting}
+\item Point your web browser to {\tt http://127.0.0.1:9000}
+\item Load the parameter file
+\end{enumerate}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Show values of parameters using the command line}
+  \summary{Case study: {\tt examples/2d/box/step02\_sheardisp}}
+
+  \begin{itemize}
+  \item Components and properties for given component \cmdblurb{--help}
+    \begin{description}
+    \item[step02\_sheardisp.cfg] \cfgblurb{[pylithapp.problem.bc.y\_neg]}
+    \item[shell] \cmdblurb{pylith step02.cfg --problem.bc.y\_neg.help}
+    \end{description}
+  \item Current components of a given component \cmdblurb{--help-components}
+    \begin{description}
+    \item[step02\_sheardisp.cfg] \cfgblurb{[pylithapp.problem.bc.y\_neg]}
+    \item[shell] \cmdblurb{pylith step02\_sheardisp.cfg --problem.bc.y\_neg.help-components}
+    \end{description}
+  \item Current properties of a given component \cmdblurb{--help-properties}
+    \begin{description}
+    \item[step02\_sheardisp.cfg] \cfgblurb{[pylithapp.problem.bc.y\_neg]}
+    \item[shell] \cmdblurb{pylith step02\_sheardisp.cfg --problem.bc.y\_neg.help-properties}
+    \end{description}
+  \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{What about a GUI for editing parameters?}
+  \summary{On the wish list but will require time or a developer}
+
+  \begin{itemize}
+  \item Parameter viewer $\rightarrow$ editor
+    \begin{itemize}
+    \item See possible choices for components and properties
+    \item Basic validation of parameters
+    \item $\Rightarrow$ Generate JSON schema from component
+      specifications
+    \item $\Rightarrow$ Translate JSON schema into GUI
+    \end{itemize}
+  \item Export parameters to single file\\
+    Facilitates archiving parameters used in given simulation
+  \end{itemize}
+
+\end{frame}
+
+
+% ========================================================== SECTION
+\section{Error Messages}
+\subsection{}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Troubleshooting Examples}
+  \summary{See {\tt examples/troubleshooting/nofaults-2d}}
+
+  \highlight{Introduce common (and a few uncommon) errors into 2d/box
+    input files}
+  
+\end{frame}
+
+
+% ======================================================================
+\end{document}
+
+
+% End of file

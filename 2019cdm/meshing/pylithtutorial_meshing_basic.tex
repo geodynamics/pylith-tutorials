@@ -1,0 +1,146 @@
+% -*- TeX -*-
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{shapes,calc}
+
+\title{Crustal Deformation Modeling Tutorial}
+\subtitle{Meshing with Basic Two-Dimensional Geometry}
+\author{Charles Williams \\
+  Brad Aagaard \\
+  Matthew Knepley}
+\institute{\includegraphics[scale=0.4]{../../logos/cig_blackfg}}
+\date{June 10, 2019}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+\renewcommand{\thispdfpagelabel}[1]{}
+\usetheme{CIG}
+\input{../style}
+
+% --------------------------------------------------------- DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+% ========================================================== SECTION
+\section{Meshing}
+\subsection{General steps}
+
+% ------------------------------------------------------------- LOGO
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_blackfg}}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Meshing with Basic Two-Dimensional Geometry}
+  \summary{Steps in creating a mesh}
+  
+  \begin{itemize}
+  \item Determine geometric features needed
+    \begin{itemize}
+    \item Fault geometry
+    \item Topography
+    \item Sharp structural boundaries
+    \item Magma sources with complex geometry
+    \end{itemize}
+  \item Create spline curve (2D) or NURBS surface (3D) in CUBIT/Trelis
+  \item If using surface in several models export it for future use
+  \item Use surfaces within CUBIT/Trelis to webcut or split
+    volumes/surfaces
+  \item Choose discretization according to type of problem
+  \end{itemize}
+
+\end{frame}
+
+% ========================================================== SECTION
+\subsection{2-D Thrust Fault Meshing Example}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Meshing of a thrust fault with splay}
+  \summary{2-D coarse meshing of a planar thrust fault with a simulated splay fault}
+  
+  \begin{itemize}
+  \item Two-dimensional reverse fault example\\
+    \important{{\tt examples/2d/reverse}}
+    \begin{itemize}
+    \item All other journal files are called from either
+      \important{\tt mesh\_tri.jou} or \important{\tt
+        mesh\_quad\_tri.jou} using Cubit or Trelis.
+      \begin{itemize}
+      \item Generate basic geometry using \important{\tt
+          geometry.jou}.
+      \item Define mesh sizing information using \important{\tt
+          gradient.jou}
+      \item Define blocks and boundaries using \important{\tt
+          createbc.jou}
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+
+
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{Problem geometry}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Meshing of a thrust fault with splay}
+  \summary{Geometry with thrust (extended) and splay fault}
+ 
+  \vfill
+  \begin{center}
+    \includegraphics[height=6.1cm]{figs/reverse_geometry}
+  \end{center}
+  \vfill
+
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{Triangular mesh}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Triangular mesh generated for 2-D reverse fault example}
+  \summary{Graded mesh with approximately 2.7k cells}
+ 
+  \vfill
+  \begin{center}
+    \includegraphics[height=6.1cm]{figs/reverse_trimesh}
+  \end{center}
+  \vfill
+ 
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\subsection{What's missing}
+
+\begin{frame}
+  \frametitle{What's missing}
+  \summary{Additional modifications for real problems}
+  
+  \begin{itemize}
+  \item Mesh needs to be larger to move boundaries away from region of
+    interest. One option would be to enclose this mesh in a larger
+    box.
+  \item The mesh is too coarse.
+  \item Structural features such as the crust and slab could be added.
+  \item Real faults are more likely to be curved than planar.
+  \end{itemize}
+
+\end{frame}
+
+
+
+% ======================================================================
+\end{document}
+
+
+% End of file

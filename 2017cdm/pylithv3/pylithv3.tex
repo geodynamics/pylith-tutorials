@@ -1,0 +1,368 @@
+% -*- TeX -*-
+\documentclass[aspectratio=169,hyperref=colorlinks]{beamer}
+
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{listings}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,calc}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{fit,matrix}
+
+\title{Crustal Deformation Modeling Tutorial}
+\subtitle{PyLith Version 3}
+\author{Brad Aagaard \\
+  Matthew Knepley \\
+  Charles Williams}
+\institute{\includegraphics[scale=0.4]{../../logos/cig_blackfg}}
+\date{June 27, 2017}
+
+% ---------------------------------------------------- CUSTOMIZATION
+%\renewcommand{\thispdfpagelabel}[1]{}
+\usetheme{CIG}
+
+\input{../style}
+
+% --------------------------------------------------------- DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_blackfg}}
+
+% ========================================================== SECTION
+\section{Introduction}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{PyLith v3.0}
+  \summary{}
+
+  \begin{itemize}
+  \item Multiphysics through pointwise integration kernels
+  \item Higher order spatial and temporal discretizations
+  \item Adaptive time stepping via PETSc TS
+  \item Improved fault formulation for spontaneous rupture (v3.1)
+  \end{itemize}
+
+\end{frame}
+
+\abovedisplayskip=2pt
+\abovedisplayshortskip=2pt
+\belowdisplayskip=2pt
+\belowdisplayshortskip=2pt
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Aside: Finite-Element Method}
+  \summary{Strong form to weak form}
+
+  Solve governing equation in integrated sense:
+  \begin{equation}
+    \int_\Omega \trialscalar \cdot \mathit{PDE} \, d\Omega = 0,
+  \end{equation}
+  by minimizing the error with respect to the unknown coefficients.
+  \vfill
+  This leads to equations of the form:
+  \begin{equation}
+    \int_\Omega \trialscalar \cdot f_0(x,t) + \nabla \trialscalar \cdot f_1(x,t) \, d\Omega = 0.
+  \end{equation}
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Governing Equations}
+  \summary{}
+
+  We want to solve equations in which the weak form can be expressed
+  as
+  \begin{gather}
+    \lhs{F(t,s,\dot{s})} = \rhs{G(t,s)} \\
+    s(t_0) = s_0
+  \end{gather}
+  where $\lhs{F}$ and $\rhs{G}$ are vector functions, $t$ is time, and $s$ is the solution vector.
+  \vfill
+  Using the finite-element method and divergence theorem, we cast the weak form into
+  \begin{multline}
+    \int_\Omega \trialvec \cdot \lhs{\vec{f}_0(t,s,\dot{s})} + \nabla \trialvec : \lhs{\tensor{f}
+    _1(t,s,\dot{s})} \, 
+    d\Omega = \\
+    \int_\Omega \trialvec \cdot \rhs{\vec{g}_0(t,s)} + \nabla \trialvec : \rhs{\tensor{g}_1(t,s)} \, 
+    d\Omega,
+  \end{multline}
+  where $\vec{f}_0$ and $\vec{g}_0$ are vectors, and $\tensor{f}_1$ and
+  $\tensor{g}_1$ are tensors.
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Explicit Time Stepping}
+  \summary{}
+
+  Explicit time stepping with the PETSc TS requires $\lhs{F(t,s,\dot{s})} = \dot{s}$.
+  \vfill
+  Normally $\lhs{F(t,s,\dot{s})}$ contains the inertial term ($\rho \ddot{u}$).
+  \vfill
+  Therefore, when using explicit time stepping we transform our equation into the form:
+  \begin{align}
+    \lhs{F^*(t,s,\dot{s})} = \lhs{\dot{s}} &= \rhs{G^*(t,s)} \\
+    \lhs{\dot{s}} &= \lhs{M^{-1}}\rhs{G(t,s)}.
+  \end{align}  
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Solving the Equations}
+  \summary{Explicit time stepping requires a subset of the terms used in implicit time stepping.}
+
+  \begin{itemize}
+  \item PETSc TS object provides time-stepping and solver implementations
+    \begin{itemize}
+    \item Application code provides functions for computing RHS and LHS residuals and Jacobians
+    \end{itemize}
+  \item Explicit time stepping
+    \begin{itemize}
+    \item Compute RHS residual, $\rhs{G(t,s)}$
+    \item Compute lumped inverse of LHS, $\lhs{M^{-1}}$
+    \item No need to compute LHS residual, because $\lhs{F(t,s,\dot{s})} = \dot{s}$
+    \end{itemize}
+  \item Implicit time stepping (Krylov solvers)
+    \begin{itemize}
+    \item Compute RHS residual, $\rhs{G(t,s)}$
+    \item Compute LHS residual, $\lhs{F(t,s,\dot{s})}$
+    \item Compute RHS Jacobian, $\rhs{J_G}$ = $\rhs{\frac{\partial G}{\partial s}}$
+    \item Compute LHS Jacobian, $\lhs{J_F}$ = $\lhs{\frac{\partial F}{\partial s}} + t_\mathit{shift}\lhs{\frac{\partial F}{\partial \dot{s}}}$
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Example: Elasticity}
+  \summary{}
+
+      \begin{align}
+        \lhs{\rho \frac{\partial^2\vec{u}}{\partial t^2}} &= \rhs{\vec{f}(\vec{x},t) + \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u})} \text{ in } \Omega, \\
+        %
+        \tensor{\sigma} \cdot \vec{n} &= \vec{\tau}(\vec{x},t) \text{ on } \Omega_\tau, \\
+        %
+        \vec{u} &= \vec{u}_0(\vec{x},t) \text{ on } \Omega_u,
+      \end{align}
+
+      \vfill
+
+      {\bf Implicit Time Stepping without Inertia}
+
+      Displacement $\vec{u}$ is the unknown, $\vec{s}= \vec{u}$.
+      \begin{align}
+        \annotateL{0}{\vec{f}_0^u} &=
+  \int_\Omega \trialvec[u] \cdot \annotateR{\vec{f}(\vec{x},t)}{\vec{g}_0^u} + \nabla \trialvec[u] : \annotateR{-\tensor{\sigma}(\vec{u})}{\tensor{g}_1^u} \, d\Omega + \int_{\Omega_\tau} \trialvec[u] \cdot \annotateR{\vec{\tau}(\vec{x},t)}{\vec{g}_0^u} \, d\Omega_\tau
+      \end{align}
+
+      \vfill
+      Different constitutive models are encapsulated in alternative
+      kernels for $\tensor{\sigma}(\vec{u})$.
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Example: Elasticity (continued)}
+  \summary{}
+
+      {\bf Explicit Time Stepping with Inertia}
+
+      Form a first order equation using displacement $\vec{u}$ and velocity $\vec{v}$ as
+      unknowns, $\vec{s}^T = \left( \begin{array}{cc} \vec{u} & \vec{v} \end{array} \right)^T$
+      \begin{align}
+        \int_\Omega \trialvec[u] \cdot \annotateL{\frac{\partial \vec{u}}{\partial t}}{\dot{u}} \, d\Omega &= 
+        \int_\Omega \trialvec[u] \cdot \annotateR{\vec{v}}{\vec{g}_0^u} \, d\Omega, \\
+        %
+        \int_\Omega \trialvec[v] \cdot \annotateL{\frac{\partial \vec{v}}{\partial t}}{\dot{v}} \, d\Omega &=
+\frac{1}{\vec{m}} \left(
+  \int_\Omega \trialvec[v] \cdot \annotateR{\vec{f}(\vec{x},t)}{\vec{g}_0^v} + \nabla \trialvec[v] : \annotateR{-\tensor{\sigma}(\vec{u})}{\tensor{g}_1^v} \, d\Omega + \int_{\Omega_\tau} \trialvec[v] \cdot \annotateR{\vec{\tau}(\vec{x},t)}{\vec{g}_0^v} \, d\Omega_\tau \right), \\
+\vec{m} &= \int_\Omega \trialvec[v] \cdot {\annotateL{\rho}{J_{f0}^{vv}}} \basisvec[v] \, d\Omega
+      \end{align}
+
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Example: Elasticity (continued)}
+  \summary{Implementing the governing equations involves a small set of simple kernels.}
+
+  {\centering
+  \begin{tabular}{ccc}
+    & {\bf Implicit} & {\bf Explicit} \\ \hline
+    $\rhs{\vec{v}}$   &   --   &   $\rhs{\vec{g}_0^v}$ \\
+    $\rhs{\vec{f}(\vec{x},t)}$   &   $\rhs{\vec{g}_0^u}$   &   $\rhs{\vec{g}_0^v}$ \\
+    $\rhs{-\tensor{\sigma}(\vec{u})}$   & $\rhs{\tensor{g}_1^u}$   &   $\rhs{\tensor{g}_1^v}$ \\
+    $\rhs{\vec{\tau}(\vec{x},t)}$   &   $\rhs{\vec{g}_0^u}$   &   $\rhs{\vec{g}_0^v}$ \\
+    $\lhs{\vec{0}}$   &   $\lhs{\vec{f}_0^u}$ & -- \\
+    $\lhs{\rho}$ & -- & $\lhs{J_{f_0}^{uv}}$ \\
+    \hline
+  \end{tabular}\par}
+  \vfill
+  We also have simple kernels for the Jacobians needed in implicit time stepping.
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Example: Elasticity Stress Kernels for Residual}
+  \summary{}
+
+\begin{itemize}
+\item Volumetric Stress
+\lstset{language=C}
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+for (i=0; i < _dim; ++i) {
+   trace += disp_x[i] - initialstrain[i*_dim+i];
+   meanistress += initialstress[i*_dim+i];
+}
+meanistress /= (PylithReal) _dim;
+for (i = 0; i < _dim; ++i) {
+   stress[i*_dim+i] += lambda * trace + meanistress;
+}
+\end{lstlisting}
+\item Deviatoric Stress
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+for (i=0; i < _dim; ++i) {
+    meanistress += initialstress[i*_dim+i];
+}
+meanistress /= (PylithReal) _dim;
+    for (i=0; i < _dim; ++i) {
+      for (j=0; j < _dim; ++j) {
+          stress[i*_dim+j] += mu * (disp_x[i*_dim+j] + disp_x[j*_dim+i]
+              - initialstrain[i*_dim+j]) + initialstress[i*_dim+j];
+    }
+    stress[i*_dim+i] -= meanistress;
+}
+\end{lstlisting}
+\end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Example: Poroelasticity Neglecting Inertia}
+  \summary{}
+
+        We assume a compressible fluid completely saturates a porous
+        solid undergoing infinitesimal strain.
+
+        Elasticity equilibrium equation neglecting inertia:
+        \begin{alignat}{2}
+          0 &= \rhs{\vec{f}(\vec{x},t) + \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u},p_f)} \text{ in } \Omega, 
+          & \quad
+          \tensor{\sigma} \cdot \vec{n} = \vec{\tau}(\vec{x},t) \text{ on } \Omega_\tau, 
+          %
+          \vec{u} = \vec{u}_0(\vec{x},t) \text{ on } \Omega_u,
+        \end{alignat}
+        Mass balance of the fluid:
+        \begin{alignat}{2}
+          \lhs{\frac{\partial \zeta(\vec{u},p_f)}{\partial t}} = \rhs{\gamma(\vec{x},t) - \nabla \cdot \vec{q}(p_f)} \text{ in }\Omega,
+          & \quad
+          \vec{q} \cdot \vec{n} = q_0(\vec{x},t) \text{ on }\Omega_q,
+          %
+          p_f = p_0(\vec{x},t) \text{ on }\Omega_p,
+        \end{alignat}
+        Darcy's law:
+        \begin{alignat}{2}
+          \vec{q}(p_f) = -\kappa (\nabla p_f - \vec{f}_f), 
+          & \quad
+          \kappa = \frac{k}{\eta_f}
+        \end{alignat}
+        Constitutive behavior of the fluid:
+        \begin{alignat}{2}
+          \zeta(\vec{u},p_f) = \alpha (\nabla \cdot \vec{u}) + \frac{p_f}{M}, 
+          & \quad
+          \frac{1}{M} = \frac{\alpha-\phi}{K_s} + \frac{\phi}{K_f},
+        \end{alignat}
+        Constitutive behavior of the solid (linear elasticity):
+        \begin{equation}
+          \tensor{\sigma}(\vec{u},p_f) = \tensor{C} : \tensor{\epsilon} - \alpha p_f \tensor{I}
+        \end{equation}
+
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Example: Poroelasticity Neglecting Inertia}
+  \summary{}
+
+      Consider displacement $\vec{u}$ and fluid pressure $p_f$ as
+      unknowns, $\vec{s}^T = \left( \begin{array}{cc} \vec{u} & p_f \end{array} \right)^T$
+      \begin{align}
+        \annotateL{0}{\vec{f}_0^u} &= \int_\Omega \trialvec[u] \cdot \annotateR{\vec{f}(\vec{x},t)}{\vec{g}^u_0} + \nabla \trialvec[u] : \annotateR{-\tensor{\sigma}(\vec{u},p_f)}{\tensor{g}^u_1} \, d\Omega + \int_{\Omega_\tau} \trialvec[u] \cdot \annotateR{\vec{\tau}(\vec{x},t)}{\vec{g}^u_0} \, d\Omega_\tau, \\
+%
+ \int_\Omega  \trialscalar[p] \annotateL{\frac{\partial \zeta(\vec{u},p_f)}{\partial t}}{f^p_0} \, d\Omega &= 
+ \int_\Omega \trialscalar[p] \annotateR{\gamma(\vec{x},t)}{g^p_0} + \nabla \trialscalar[p] \cdot \annotateR{\vec{q}(p_f)}{\vec{f}^p_1} \, d\Omega
+ + \int_{\Omega_q} \trialscalar[p] \annotateR{(-q_0(\vec{x},t))}{g^p_0} \, d\Omega_q.
+      \end{align}
+
+      Poroelasticity involves many of the same kernels as elasticity plus a few additional ones.
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Finite-Element Discretization}
+  \summary{Specify discretizations for solution fields and auxiliary fields}
+
+  \begin{itemize}
+  \item Solution Fields \\
+    Specify basis functions and quadrature for each field in solution.
+  \item Auxiliary Fields 
+    \begin{itemize}
+    \item Fields associated with parameters and state variables for constitutive models \& boundary conditions.
+    \item Populated from spatial databases.
+    \item Specify basis functions for each subfield in the auxiliary fields.
+    \end{itemize}
+  \item PETSc DMPlex infrastructure unpacks/packs
+    information to/from solution and auxiliary fields and calling
+    finite-element kernels.
+  \end{itemize}
+
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Summary of Multiphysics Implementation}
+  \summary{}
+
+  We decouple the element definition from the fully-coupled equation,
+  using pointwise kernels that look like the PDE.
+
+  \vfill    
+  \begin{description}
+  \item[Flexibility] The cell traversal, handled by the library,
+    accommodates arbitrary cell shapes. The problem can be posed
+    in any spatial dimension with an arbitrary number of
+    physical fields.
+  \item[Extensibility] The library developer needs to maintain only a
+    single method, easing language transitions (CUDA, OpenCL). A new
+    discretization scheme could be enabled in a single place in the
+    code.
+  \item[Efficiency] Only a single routine needs to be
+    optimized. The application scientist is no longer
+    responsible for proper vectorization, tiling, and other
+    traversal optimization.
+  \end{description}
+
+\end{frame}
+
+
+% --------------------------------------------------------- DOCUMENT
+\end{document}
+
+% End of file

@@ -1,0 +1,390 @@
+% -*- TeX -*-
+%
+% ----------------------------------------------------------------------
+%
+%                           Brad T. Aagaard
+%                        U.S. Geological Survey
+%
+% ----------------------------------------------------------------------
+%
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage{listings}
+
+\title{Crustal Deformation Modeling Tutorial}
+\subtitle{Prescribed Fault Slip}
+\author{Brad Aagaard \\
+  Charles Williams \\
+  Matthew Knepley}
+\institute{\includegraphics[scale=0.4]{../../logos/cig_blackfg}}
+\date{June 26, 2016}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+%\newcommand{\thispdfpagelabel}[1]{}
+\usetheme{CIG}
+
+\input{../style}
+
+% ========================================================= DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+% ------------------------------------------------------------ SLIDE
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_blackfg}}
+
+% ========================================================== SECTION
+\section{Overview}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{3-D Subduction Zone: Steps 1--4}
+  \summary{Dirichlet boundary conditions and prescribed slip}
+
+  \begin{description}
+  \item[Step 1] Axial compression (discussed in manual)
+  \item[Step 2] Viscoelastic relaxation from coseismic slip on central
+    fault patch
+  \item[Step 3] Interseismic deformation with prescribed creep \& viscoelastic materials
+  \item[Step 4] Earthquake cycle with prescribed creep and
+    earthquake ruptures
+  \end{description}
+  
+\end{frame}
+
+% ========================================================== SECTION
+\section{Step 2}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 2: Uniform Slip on Central Patch}
+  \summary{Viscoelastic response to coseismic slip on subduction interface}
+
+  \includefigure[height=6.9cm]{figs/subduction3d_step02_diagram}
+  
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 2: Boundary Conditions}
+  \summary{}
+
+  \begin{itemize}
+  \item \highlight{How do we want the model to behave at the boundaries?}\pause
+    \begin{itemize}
+    \item We expect displacements to go to zero as distance increases.
+    \item Might have some tangential motion at the boundaries.
+    \item Expect motion perpendicular to the boundaries to be smaller.\pause
+    \item $\Rightarrow$ Impose zero displacements perpendicular to the boundary.\pause
+    \end{itemize}
+  \item \highlight{How many boundary conditions do we need?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ Five: east, west, north, south, bottom
+    \end{itemize}
+  \end{itemize}  
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 2: Material Properties}
+  \summary{}
+
+  \begin{itemize}
+  \item \highlight{How many materials do we need?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ Four: slab, mantle, crust, wedge\pause
+    \end{itemize}
+  \item \highlight{Which materials should we make viscoelastic?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ Linear Maxwell model w/depth dependent viscosity: mantle, slab
+    \item $\Rightarrow$ Elastic model: crust, wedge
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 2: Prescribed Slip on Subduction Interface Patch}
+  \summary{}
+
+  \begin{itemize}
+  \item \highlight{How many faults do we need?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ One: central patch of subduction interface\pause
+    \end{itemize}
+  \item \highlight{What type of slip time function should we use?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ Step slip-time function
+    \item $\Rightarrow$ Impose slip at 10 years
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 2: Time Stepping}
+  \summary{}
+
+  \begin{itemize}
+  \item \highlight{What duration should we use for our simulation?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ 200 years (roughly Maxwell relaxation time)\pause
+    \end{itemize}
+  \item \highlight{What should we use for a time step?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ 10 year (0.05--0.1 of the shortest Maxwell time)
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Step 2: Tour of Input Files}
+  \summary{Mesh is georeferenced, so georeference our parameters as well}
+
+  \begin{description}
+  \item[{\tt pylithapp.cfg}] Parameters (mostly) common to Steps 1--8
+  \item[{\tt step02.cfg}] Parameters specific to Step 2
+  \item[{\tt mat\_viscoelastic.cfg}] Material settings
+  \item[{\tt solver\_fieldsplit.cfg}] Solver settings
+  \item[{\tt spatialdb/mat\_viscosity.spatialdb}] Viscosity
+    spatial database
+  \item[{\tt spatialdb/fault\_slabtop\_coseismic.spatialdb}] Fault
+    slip spatial database
+  \end{description}
+
+  \vfill
+  Note: See the {\tt step02.cfg} file for a list of all {\tt .cfg}
+  files used in this simulation.
+  \vfill
+
+  Run the simulation:\\
+  \important{\tt pylith step02.cfg mat\_viscoelastic.cfg solver\_fieldsplit.cfg}
+  
+\end{frame}
+
+
+% ========================================================== SECTION
+\section{Step 3}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 3:  Interseismic Deformation}
+  \summary{}
+
+  \includefigure[height=6.9cm]{figs/subduction3d_step03_diagram}
+  
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 3: Boundary Conditions}
+  \summary{}
+
+  \begin{itemize}
+  \item \highlight{How do we want the model to behave at the boundaries?}\pause
+    \begin{itemize}
+    \item Expect displacements in mantle to go to zero as distance increases.
+    \item Want slab to move to the east and downward.
+    \item Expect north-south motion on north and south boundaries to be small.\pause
+    \item $\Rightarrow$ Impose zero displacements perpendicular to the
+      boundary, except on slab (free).\pause
+    \end{itemize}
+  \item \highlight{How many boundary conditions do we need?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ Five: east, west, north, south, bottom
+    \end{itemize}
+  \end{itemize}  
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 3: Material Properties}
+  \summary{}
+
+  \begin{center}
+    \highlight{Same as Step 2.}
+  \end{center}
+  
+  \vfill
+  
+  \begin{itemize}
+  \item Linear Maxwell model w/depth dependent viscosity: mantle, slab
+  \item Elastic model: crust, wedge
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 3: Prescribed Creep on Slab}
+  \summary{}
+
+  \begin{itemize}
+  \item \highlight{How many faults do we need?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ Two: Top and bottom of the slab\pause
+    \end{itemize}
+  \item \highlight{What type of slip time function should we use?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ Constant slip rate slip-time function\pause
+    \end{itemize}
+  \item \highlight{What sense of slip do we impose on the faults?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ Subduction interface: reverse w/right-lateral\pause
+    \item $\Rightarrow$ Subduction interface: normal w/left-lateral
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 3: Tour of Input Files}
+  \summary{}
+
+  \begin{description}
+  \item[{\tt step03.cfg}] Parameters specific to Step 3
+  \item[{\tt spatialdb/fault\_slabtop\_creep.cfg}] Fault slip spatial database
+  \end{description}
+  
+  \vfill
+  Note: See the {\tt step03.cfg} file for a list of all {\tt .cfg}
+  files used in this simulation.
+  \vfill
+
+  Run the simulation:\\
+  \important{\tt pylith step03.cfg mat\_viscoelastic.cfg solver\_fieldsplit.cfg}
+
+\end{frame}
+
+
+% ========================================================== SECTION
+\section{Step 4}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 4: Earthquake Cycle w/Prescribed Earthquakes}
+  \summary{}
+
+  \includefigure[height=6.9cm]{figs/subduction3d_step04_diagram}
+  
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 4: Boundary Conditions and Materials}
+  \summary{}
+
+  \begin{center}
+    \highlight{Same as Step 3.}
+  \end{center}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 4: Earthquake Cycle}
+  \summary{}
+
+  \begin{itemize}
+  \item Creep on deep portion of subduction interface
+  \item Creep on bottom of slab
+  \item Earthquake at 100 years and 200 years on subduction interface
+  \item Earthquake at 150 years on splay fault
+  \end{itemize}
+  
+  \begin{itemize}
+  \item \highlight{How many faults do we need?}\pause
+    \begin{itemize}
+    \item $\Rightarrow$ Three: Top and bottom of the slab plus splay fault
+    \end{itemize}
+  \item \highlight{How many earthquake sources do we need?}\pause
+    \begin{itemize}
+    \item Splay fault?\pause \quad $\Rightarrow$ 1\pause
+    \item Bottom of slab?\pause \quad $\Rightarrow$ 1\pause
+    \item Top of slab?\pause \quad $\Rightarrow$ 3
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 4: Tour of Input Files}
+  \summary{}
+
+  \begin{description}
+  \item[{\tt step04.cfg}] Parameters specific to Step 4
+  \item[{\tt spatialdb/fault\_slabtop\_creep.cfg}] Fault slip spatial database
+  \end{description}
+  
+  \vfill
+  Note: See the {\tt step04.cfg} file for a list of all {\tt .cfg}
+  files used in this simulation.
+  \vfill
+
+  Run the simulation:\\
+  \important{\tt pylith step04.cfg mat\_viscoelastic.cfg solver\_fieldsplit.cfg}
+
+\end{frame}
+
+
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Group Exercise}
+  \summary{}
+ 
+  \highlight{Work in groups of 3--4 to complete some of the exercises listed
+  in the manual.}
+
+  \begin{itemize}
+  \item Easy
+    \begin{itemize}
+    \item Adjust values for material properties and faults
+    \item Change the slip in Step 2 to the splay fault
+    \end{itemize}
+  \item Intermediate
+    \begin{itemize}
+    \item Step 2: Create simultaneous rupture on the subduction
+      interface rupture patch and the splay fault rupture patch.
+    \item Prescribe coseismic slip on the central patch for splay fault
+      and the subduction interface below the intersection with the splay fault.
+    \item Add additional earthquakes with different amplitudes and
+      depth variations in slip, keeping the total equal to the overall
+      slip rate.
+    \end{itemize}
+  \item Advanced
+    \begin{itemize}
+    \item Make the splay fault and the deeper portion of the
+      subduction interface form the through-going fault and the upper
+      portion of the subduction interface is the secondary fault.
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+% ======================================================================
+\end{document}
+
+
+% End of file

@@ -1,0 +1,75 @@
+\input{../../palettes/figcolors}
+
+\tikzstyle{days} = [rectangle, 
+  text centered,
+  thin,
+  draw=dkyellow!80!black,
+  font=\bfseries,
+  top color=yellow,
+  bottom color=dkyellow]
+
+\tikzstyle{admin} = [rectangle, 
+  draw=orange!80!black,
+  top color=ltorange!50!white,
+  bottom color=orange]
+
+\tikzstyle{handson} = [rectangle, 
+  draw=green!80!black,
+  top color=ltgreen!20!white,
+  bottom color=green]
+
+\tikzstyle{presentation} = [rectangle, 
+  draw=blue!80!black,
+  top color=ltblue!20!white,
+  bottom color=blue]
+
+\tikzstyle{tinker} = [rectangle, 
+  draw=ltpurple!80!black,
+  top color=ltpurple!20!white,
+  bottom color=purple!70!white!100]
+
+\tikzstyle{exercise} = [rectangle, 
+  draw=ltred!80!black,
+  top color=ltred!20!white,
+  bottom color=red!70!white!100]
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75, transform shape,
+  node distance=2.0em,
+  text width=45mm,
+  thick]
+% Reference points
+\coordinate (o1) at (0mm,0mm);
+\coordinate (o2) at (+50mm,0mm);
+\coordinate (o3) at (+100mm,0mm);
+
+% Days
+\node[days] (mon) at ($(o1)$) {Mon};
+\node[days] (tue) at ($(o2)$) {Tue};
+
+% Mon
+\node[admin, below of=mon] (intro) {Overview};
+\node[presentation, below of=intro] (pylithv3) {PyLith 3.0};
+\node[handson, below of=pylithv3] (meshingI) {Meshing I};
+\node[exercise, below of=meshingI] (exerciseI) {Group Exercise};
+
+\node[handson, below of=exerciseI, yshift=-3em] (matbc) {Mats \& BCs};
+\node[exercise, below of=matbc] (exerciseII) {Group Exercise};
+\node[handson, below of=exerciseII] (trouble1) {Troubleshooting I};
+
+
+% Tue
+
+\node[handson, below of=tue] (faults) {Faults};
+\node[tinker, below of=faults] (tinkerI) {Tinker Time};
+\node[handson, below of=tinkerI] (gravity) {Gravity};
+
+
+\node[tinker, below of=gravity, yshift=-3em] (tinkerII) {Tinker Time};
+\node[handson, below of=tinkerII] (trouble2) {Troubleshooting II};
+\node[tinker, below of=trouble2] (tinkerIII) {Tinker Time};
+\node[handson, below of=tinkerIII] (meshingII) {Meshing II};
+
+
+\end{tikzpicture}
+\end{center}

@@ -1,0 +1,26 @@
+\begin{frame}{Why isn't SNES converging?}
+
+\begin{itemize}
+  \item The Jacobian is wrong (maybe only in parallel)
+  \begin{itemize}
+    \item Check with \code{-snes\_check\_jacobian -snes\_check\_jacobian\_view}
+  \end{itemize}
+  \item The linear system is not solved accurately enough
+  \begin{itemize}
+    \item Check with \code{-pc\_type lu}
+    \item Check \code{-ksp\_monitor\_true\_residual}, try right preconditioning
+  \end{itemize}
+  \item The Jacobian is singular with inconsistent right side
+  \begin{itemize}
+    \item Use \class{MatNullSpace} to inform the \class{KSP} of a known null space
+    \item Use a different Krylov method or preconditioner
+  \end{itemize}
+  \item The nonlinearity is just really strong
+  \begin{itemize}
+    \item Run with \code{-info} or \code{-snes\_ls\_monitor} to see line search
+    \item Try using trust region instead of line search \code{-snes\_type tr}
+    \item Try grid sequencing if possible \code{-snes\_grid\_sequence}
+    \item Use a continuation
+  \end{itemize}
+\end{itemize}
+\end{frame}

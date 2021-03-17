@@ -1,0 +1,84 @@
+\input{../../palettes/figcolors}
+
+\tikzstyle{days} = [rectangle, 
+                    text centered,
+                    thin,
+                    draw=dkyellow!80!black,
+                    font=\bfseries,
+                    top color=yellow,
+                    bottom color=dkyellow]
+\tikzstyle{admin} = [rectangle, 
+                    draw=orange!80!black,
+                    top color=ltorange!50!white,
+                    bottom color=orange]
+\tikzstyle{science} = [rectangle, 
+                    draw=green!80!black,
+                    top color=ltgreen!20!white,
+                    bottom color=green]
+\tikzstyle{breakout} = [rectangle, 
+                    draw=red!80!black,
+                    top color=ltred!20!white,
+                    bottom color=red]
+\tikzstyle{break} = [rectangle, 
+                    draw=blue!80!black,
+                    top color=ltblue!20!white,
+                    bottom color=blue]
+\tikzstyle{tinker} = [rectangle, 
+                      draw=ltpurple!80!black,
+                      top color=ltpurple!20!white,
+                      bottom color=purple!70!white!100]
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75, transform shape,
+  node distance=2.0em,
+  text width=45mm,
+  thick]
+% Reference points
+\coordinate (o1) at (0mm,0mm);
+\coordinate (o2) at (+50mm,0mm);
+\coordinate (o3) at (+100mm,0mm);
+
+% Days
+\node[days] (wed) at ($(o1)$) {Wed};
+\node[days] (thu) at ($(o2)$) {Thu};
+\node[days] (fri) at ($(o3)$) {Fri};
+
+% Wed
+\node[science, below of=wed] (posters) {Poster Summaries}; % 45min
+\node[break, below of=posters] (break_wedam) {Break}; % break 30min
+
+\node[science, below of=break_wedam] (postseismic1) {Postseismic I}; % pylith 2 hr
+\node[admin, below of=postseismic1] (shuttle) {Airport Shuttle}; % tinker 90min
+
+\node[break, below of=shuttle] (lunch_wed) {Lunch}; % lunch 60min
+\node[tinker, below of=lunch_wed] (tinker_wed) {Tinker Time}; % tinker 90min
+
+\node[science, below of=tinker_wed] (postseismic2) {Postseismic II};
+\node[breakout, below of=postseismic2] (breakout) {Breakout Groups};
+
+
+% Thu
+\node[science, below of=thu] (cycle1) {Earthquake Cycle I};
+\node[breakout, below of=cycle1] (breakout2) {Breakout Summaries};
+\node[break, below of=breakout2] (break_thuam) {Break};
+
+\node[science, below of=break_thuam] (cycle2) {Earthquake Cycle II};
+
+\node[break, below of=cycle2] (lunch_thu) {Lunch}; % lunch 60min
+\node[tinker, below of=lunch_thu] (tinker_thu) {Tinker Time}; % tinker 90min
+
+\node[science, below of=tinker_thu] (gravity) {Stress and Gravity};
+
+
+% Fri
+\node[science, below of=fri] (strain) {Strain Localization};
+\node[break, below of=strain] (break_friam) {Break};
+
+\node[science, below of=break_friam] (rheology) {Rheology Model};
+\node[admin, below of=rheology] (wrapup) {Wrapup Discussion}; % tinker 90min
+
+\node[break, below of=wrapup] (lunch_fri) {Lunch}; % lunch 60min
+
+
+\end{tikzpicture}
+\end{center}
