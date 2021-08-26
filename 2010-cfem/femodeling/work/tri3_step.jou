@@ -1,0 +1,13 @@
+playback 'geometry.jou'
+
+surface 1 scheme trimesh
+surface 1 interval 4
+mesh surface 1
+
+group "refinecells1" add node in curve 4
+refine node in refinecells1 depth 2.5
+
+surface all smooth scheme edge length
+smooth surface all
+
+export mesh "tri3_step.exo" dimension 2 overwrite

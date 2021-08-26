@@ -1,0 +1,13 @@
+window_sizes 1350 787 260 1080 725 0
+motifplus_style
+diagrams
+  active  componentdiagram_ref 128100 // step01
+    868 662 84 25 0 0
+end
+show_stereotypes
+selected componentdiagram_ref 128100 // step01
+open
+  componentview_ref 128100 // PyLith
+  classview_ref 128100 // PyLith
+end
+end

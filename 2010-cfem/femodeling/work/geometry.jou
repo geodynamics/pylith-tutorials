@@ -1,0 +1,16 @@
+# ----------------------------------------------------------------------
+# Create surface
+# ----------------------------------------------------------------------
+# Domain is 100m x 100m
+# -50 m <= x <= 50 m
+# -50 m <= y <= 50 m
+
+reset
+
+create vertex -50 -50 0
+create vertex -50 +50 0
+create vertex +50 +50 0
+create vertex +50 -50 0
+
+create surface vertex 1 2 3 4
+
