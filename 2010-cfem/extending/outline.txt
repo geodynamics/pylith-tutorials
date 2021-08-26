@@ -1,0 +1,36 @@
+How can PyLith be extended?
+
+  Any component can be replaced
+
+  What would be difficult
+    Changing the governing equations
+
+Overview of PyLith component
+  Python
+  Swig
+  C/C++
+
+Getting started
+
+  What module(s) do I want to replace?
+  What interfaces must my new module honor?
+  What are the parameters of my new module?
+  Are the parameters uniform or do they vary spatially?
+
+
+Steps in creating custom component
+
+  Create the Python object
+    Setup the user-specified parameters
+    Transfer parameters to C++
+
+  Create the C++ object
+    Functions/methods to satisfy interface
+    Accessor functions/methods to accept parameters from Python
+    Functions/methods to implement functionality
+
+  Use SWIG to glue Python and C++ together
+    Create interface file from C++ header
+
+Example: Bulk constitutive model
+

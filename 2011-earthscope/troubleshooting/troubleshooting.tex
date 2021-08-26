@@ -1,0 +1,196 @@
+% -*- TeX -*-
+%
+% ----------------------------------------------------------------------
+%
+%                           Brad T. Aagaard
+%                        U.S. Geological Survey
+%
+% {LicenseText}
+%
+% ----------------------------------------------------------------------
+%
+
+\documentclass{beamer}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{mpmulti}
+
+\title{PyLith Troubleshooting Tips/Tricks}
+\subtitle{}
+\author{Brad Aagaard \\
+  Charles Williams \\
+  Matt Knepley}
+\institute{}
+\date{May 17, 2011}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+\newcommand{\thispdfpagelabel}[1]{}
+\newcommand{\important}[1]{{\bf\color{red}#1}}
+\usetheme{CIG}
+
+% ========================================================= DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+% ------------------------------------------------------------ SLIDE
+\logo{\includegraphics[height=4.5ex]{../../logos/cig}}
+
+% ========================================================== SECTION
+\section{Troubleshooting}
+\subsection{Overview}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Outline}
+  \summary{}
+
+  \begin{itemize}
+  \item General numerical modeling tips
+  \item Mesh generation
+  \item Running PyLith
+  \end{itemize}
+  
+\end{frame}
+
+% ========================================================== SECTION
+\subsection{General}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{General Numerical Modeling Tips}
+  \summary{Start simple and progressively add complexity and increase
+    resolution}
+ 
+  \begin{itemize}
+  \item \important{Start in 2-D, if possible, and then go to 3-D}
+    \begin{itemize}
+    \item Much smaller problems $\Rightarrow$ much faster turnaround
+    \item Experiment with meshing, boundary conditions, solvers, etc
+    \item Keep in mind how physics differs from 3-D
+    \end{itemize}
+  \item \important{Start with coarse resolution and then increase resolution}
+    \begin{itemize}
+    \item Much smaller problems $\Rightarrow$ much faster turnaround
+    \item Experiment with meshing, boundary conditions, solvers, etc.
+    \item Increase resolution until solution resolves features of interest
+      \begin{itemize}
+      \item Resolution will depend on spatial scales in BC, initial
+        conditions, deformation, and geologic structure
+      \item Is geometry of domain important? At what resolution?
+      \item Displacement field is integral of strains/stresses
+      \item Resolving stresses/strains requires fine resolution simulations
+      \end{itemize}
+    \end{itemize}
+  \item \important{Use your intuition and analogous solutions to check
+      your results!}
+  \end{itemize}
+
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{Meshing}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Mesh Generation Tips}
+  \summary{There is no silver bullet in finite-element mesh generation}
+ 
+  \begin{itemize}
+  \item Hex/Quad versus Tet/Tri
+    \begin{itemize}
+    \item Hex/Quad are slightly more accurate and faster
+    \item Tet/Tri easily handle complex geometry
+    \item Easy to vary discretization size with Tet, Tri, and Quad cells
+    \item There is no easy answer\\
+      For a given accuracy, a finer resolution Tet mesh that varies
+      the discretization size in a more optimal way {\bf\it might} run
+      faster than a Hex mesh
+    \end{itemize}
+  \item Check and double-check your mesh
+    \begin{itemize}
+    \item Were there any errors when running the mesher?
+    \item Do all of the nodesets and blocks look correct?
+    \item Check mesh quality (aspect ratio should be close to 1)
+    \end{itemize}
+  \item CUBIT
+    \begin{itemize}
+    \item Name objects and use APREPRO or Python for robust scripts
+    \item Number of points in spline curves/surfaces has huge affect
+      on mesh generation runtime
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{PyLith}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{PyLith Tips}
+  \summary{}
+ 
+  \begin{itemize}
+  \item \important{Read the PyLith User Manual}
+  \item \important{Do not ignore error messages and warnings!}
+  \item Use an example/benchmark as a starting point
+  \item Quasi-static simulations
+    \begin{itemize}
+    \item Start with a static simulation and then add time dependence
+    \item \important{Check that the solution converges at every time step}
+    \end{itemize}
+  \item Dynamic simulations
+    \begin{itemize}
+    \item Start with a static simulation
+    \item \important{Shortest wavelength seismic waves control cell size}
+    \end{itemize}
+  \item CIG Short-Term Crustal Dynamics mailing list\\
+    {\tt cig-short@geodynamics.org}
+  \item Short-Term Crustal Dynamics wiki (under construction)
+  \item CIG bug tracking system\\
+    {\tt http://www.geodynamics.org/roundup}
+  \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{PyLith Debugging Tools}
+  \summary{}
+
+  \begin{itemize}
+  \item {\tt pylithinfo [--verbose] [PyLith args]}\\
+    Dumps all parameters with their current values to text file
+  \item Command line arguments
+    \begin{itemize}
+    \item {\tt --help}
+    \item {\tt --help-components}
+    \item {\tt --help-properties}
+    \item {\tt --petsc.start\_in\_debugger} (run in xterm)
+    \item {\tt --nodes=N} (to run on N processors on local machine)
+    \end{itemize}
+  \item Journal info flags turn on writing progress/inf\\
+    {\tt [pylithapp.journal.info]}\\
+    {\tt timedependent = 1} \\
+    \begin{itemize}
+    \item Turns on/off info for each type of component independently
+    \item Examples turn on writing lots of info to stdout using journal flags
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+
+
+% ======================================================================
+\end{document}
+
+
+% End of file

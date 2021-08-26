@@ -1,0 +1,12 @@
+window_sizes 1394 856 279 1109 798 0
+diagrams
+  active  componentdiagram_ref 128100 // axialdisp
+    1105 778 92 25 0 0
+end
+show_stereotypes
+selected componentdiagram_ref 128100 // axialdisp
+open
+  componentview_ref 128100 // PyLith
+  classview_ref 128100 // PyLith
+end
+end

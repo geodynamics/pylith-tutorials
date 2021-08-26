@@ -1,0 +1,72 @@
+# Distorted cells
+reset
+
+# Triangle (condition number = 1.21)
+create node location -1 -1 0
+create node location +1 -1 0
+create node location -1 +1 0
+create tri node 1 2 3
+group "dcells" add tri 1
+
+# Quad (condition number = 1.0)
+create node location 2 -1 0
+create node location 4 -1 0
+create node location 4 +1 0
+create node location 2 +1 0
+create face node 4 5 6 7
+group "dcells" add face 1
+
+# Tet (condition number = 1.22)
+create node location 5 -1 0
+create node location 7 -1 0
+create node location 5 -1 -2
+create node location 5 +1 0
+create tet node 8 9 10 11
+group "dcells" add tet 1
+
+# Hex (condition number = 1)
+create node location 8 -1 0
+create node location 10 -1 0
+create node location 10 +1 0
+create node location 8 +1 0
+create node location 8 -1 -2
+create node location 10 -1 -2
+create node location 10 +1 -2
+create node location 8 +1 -2
+create hex node  16 17 18 19 12 13 14 15
+group "dcells" add hex 1
+
+# Triangle (condition number = 3.00)
+create node location -1 -4 0
+create node location -0.6 -4 0
+create node location -1 -2 0
+create tri node 20 21 22
+group "dcells" add tri 2
+
+# Quad (condition number = 5.25)
+create node location 2 -4 0
+create node location 4.5 -3 0
+create node location 2.5 -2 0
+create node location 2 -2 0
+create face node 23 24 25 26
+group "dcells" add face 2
+
+# Tet (condition number = 2.346)
+create node location 5 -2.7 0
+create node location 7 -2.7 0
+create node location 6 -3 -1
+create node location 6 -3 +1
+create tet node 27 28 30 29
+group "dcells" add tet 2
+
+# Hex (condition number = 2.426)
+create node location 8 -4 0
+create node location 10 -4 0
+create node location 10 -2 0
+create node location 8.8 -2.7 0
+create node location 9 -4 -2
+create node location 10 -4 -2
+create node location 10 -2 -2
+create node location 8 -2 -2
+create hex node  35 36 37 38 31 32 33 34
+group "dcells" add hex 2

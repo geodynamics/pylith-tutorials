@@ -1,0 +1,268 @@
+format 74
+
+componentcanvas 128100 component_ref 128100 // PyLithApp
+  draw_component_as_icon default show_component_req_prov no show_component_rea no show_stereotype_properties no
+  color green xyzwh 13.3461 7.1517 3011 103 49
+end
+componentcanvas 128343 component_ref 128484 // SimpleDB
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 189.594 599.416 2000 99 49
+end
+componentcanvas 128356 component_ref 128356 // TimeDependent
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 13.7136 114.001 2000 139 49
+end
+componentcanvas 128471 component_ref 129892 // OutputMatElastic
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 9.78657 548.54 2000 153 49
+end
+componentcanvas 128599 component_ref 130020 // CellFilterAvgMesh
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 25.8865 663.288 2000 159 49
+end
+componentcanvas 128727 component_ref 128996 // ElasticIsotropic3D
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 16.7796 407.957 2000 163 49
+end
+arrowjunctioncanvas 128740 class_ref 128356 // problem
+  xyz 61.838 71.7725 3005 label_xy 42 88
+arrowjunctioncanvas 128855 class_ref 128087 // lower_crust
+  xyz 81.5021 340.438 3005 label_xy 51 362
+arrowjunctioncanvas 129111 class_ref 129508 // db_properties
+  xyz 163.634 487.983 2000 label_xy 126 509
+arrowjunctioncanvas 129367 class_ref 129124 // output
+  xyz 78.9555 487.797 3005 label_xy 65 509
+arrowjunctioncanvas 129636 class_ref 128228 // mesh_generator
+  xyz 265.988 22.9711 3005 label_xy 214 40
+arrowjunctioncanvas 129879 class_ref 130276 // cell_filter
+  xyz 79.3823 616.203 3005 label_xy 57 635
+componentcanvas 130020 component_ref 128612 // MeshImporter
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 355.826 8.94503 2000 129 49
+end
+componentcanvas 130263 component_ref 128740 // FacilityArray
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 577.126 498.032 3011 121 49
+end
+arrowjunctioncanvas 130276 class_ref 128612 // reader
+  xyz 607.836 25.8888 3005 label_xy 592 42
+componentcanvas 130519 component_ref 128215 // OutputSolnSubset
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 830.946 490.807 3011 163 49
+end
+componentcanvas 130532 component_ref 128228 // MeshIOCubit
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 745.858 8.75548 2000 121 49
+end
+arrowjunctioncanvas 130647 class_ref 128215 // domain
+  xyz 756.702 464.802 3005 label_xy 744 494
+componentcanvas 130788 component_ref 128740 // FacilityArray
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 275.527 168.573 2000 121 49
+end
+arrowjunctioncanvas 130903 class_ref 128343 // subdomain
+  xyz 766.293 531.98 3005 label_xy 737 560
+arrowjunctioncanvas 130916 class_ref 128740 // bc
+  xyz 214.009 179.247 3005 label_xy 215 194
+componentcanvas 131172 component_ref 129764 // NondimElasticQuasistatic
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 311.727 80.6547 2000 219 49
+end
+arrowjunctioncanvas 131300 class_ref 129636 // normalizer
+  xyz 240.462 124.246 3005 label_xy 208 142
+componentcanvas 131812 component_ref 128868 // DirichletBC
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 577.078 122.523 2000 109 49
+end
+arrowjunctioncanvas 131940 class_ref 129764 // x_neg
+  xyz 489.469 163.53 3005 label_xy 475 182
+arrowjunctioncanvas 132324 class_ref 129892 // x_pos
+  xyz 494.263 219.203 3005 label_xy 480 237
+componentcanvas 132580 component_ref 128868 // DirichletBC
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 566.665 200.303 2000 109 49
+end
+componentcanvas 132708 component_ref 128868 // DirichletBC
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 569.268 272.436 2000 109 49
+end
+arrowjunctioncanvas 132964 class_ref 130020 // z_neg
+  xyz 494.76 268.921 3005 label_xy 483 285
+componentcanvas 133348 component_ref 129252 // Implicit
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 277.451 286.328 2000 81 49
+end
+arrowjunctioncanvas 133476 class_ref 128996 // formulation
+  xyz 158.598 198.106 3005 label_xy 126 214
+arrowjunctioncanvas 133860 class_ref 129380 // materials
+  xyz 77.5162 196.247 3005 label_xy 55 212
+componentcanvas 134116 component_ref 128740 // FacilityArray
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 31.2457 255.79 2000 121 49
+end
+componentcanvas 134372 component_ref 128996 // ElasticIsotropic3D
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 234.05 505.262 2000 163 49
+end
+arrowjunctioncanvas 134500 class_ref 130404 // upper_crust
+  xyz 240.861 451.232 3005 label_xy 210 469
+arrowjunctioncanvas 135140 class_ref 129508 // db_properties
+  xyz 440.425 527.805 3005 label_xy 396 547
+componentcanvas 135396 component_ref 128484 // SimpleDB
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 499.402 568.061 2000 99 49
+end
+componentcanvas 135652 component_ref 128484 // SimpleDB
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 829.925 129.625 2000 99 49
+end
+componentcanvas 135780 component_ref 128484 // SimpleDB
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 820.223 203.72 2000 99 49
+end
+componentcanvas 135908 component_ref 128484 // SimpleDB
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 807.973 281.194 2000 99 49
+end
+arrowjunctioncanvas 136036 class_ref 128868 // db_initial
+  xyz 738.358 293.548 3005 label_xy 714 310
+arrowjunctioncanvas 136420 class_ref 128868 // db_initial
+  xyz 746.795 219.08 3005 label_xy 721 238
+arrowjunctioncanvas 136804 class_ref 128868 // db_initial
+  xyz 749.659 143.226 3005 label_xy 725 160
+componentcanvas 137188 component_ref 129508 // TimeStepUniform
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 547.092 426.874 2000 153 49
+end
+componentcanvas 137316 component_ref 129380 // SolverLinear
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 553.863 359.977 2005 119 49
+end
+componentcanvas 137444 component_ref 129124 // OutputSoln
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 809.491 403.065 2000 111 49
+end
+arrowjunctioncanvas 137572 class_ref 129124 // output
+  xyz 443.211 462.044 3005 label_xy 428 483
+arrowjunctioncanvas 138084 class_ref 129252 // solver
+  xyz 451.126 334.659 3017 label_xy 438 354
+arrowjunctioncanvas 138724 class_ref 130148 // time_step
+  xyz 462.198 397.571 3012 label_xy 432 416
+componentcanvas 139108 component_ref 129892 // OutputMatElastic
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 336.612 612.333 2000 153 49
+end
+arrowjunctioncanvas 139364 class_ref 129124 // output
+  xyz 334.976 566.254 2000 label_xy 321 584
+componentcanvas 139748 component_ref 130020 // CellFilterAvgMesh
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  xyzwh 603.948 633.741 2000 159 49
+end
+arrowjunctioncanvas 139876 class_ref 130276 // cell_filter
+  xyz 476.689 681.151 3005 label_xy 455 698
+line 128868 ---(
+  from ref 128100 z 3006 to ref 128740
+line 128983 ---( decenter_begin 456
+  from ref 134116 z 3006 to ref 128855
+line 128996 ---O
+  from ref 128356 z 3006 to ref 128740
+line 129239 ---(
+  from ref 128727 z 2001 to ref 129111
+line 129495 ---(
+  from ref 128727 z 3006 to ref 129367
+line 129623 ---O decenter_begin 88
+  from ref 128343 z 2001 to ref 129111
+line 129751 ---O decenter_begin 474
+  from ref 128471 z 3006 to ref 129367
+line 129764 ---(
+  from ref 128100 z 3012 to ref 129636
+line 130007 ---(
+  from ref 128471 z 3006 to ref 129879
+line 130135 ---O
+  from ref 128599 z 3006 to ref 129879
+line 130148 ---O
+  from ref 130020 z 3006 to ref 129636
+line 130404 ---(
+  from ref 130020 z 3006 to ref 130276
+line 130660 ---O
+  from ref 130532 z 3006 to ref 130276
+line 130775 ---(
+  from ref 130263 z 3012 to ref 130647
+line 131031 ---(
+  from ref 130263 z 3012 to ref 130903
+line 131044 ---(
+  from ref 128356 z 3006 to ref 130916
+line 131415 ---O
+  from ref 137444 z 3006 to ref 130647
+line 131428 ---(
+  from ref 128356 z 3006 to ref 131300
+line 131543 ---O
+  from ref 130519 z 3012 to ref 130903
+line 131556 ---O
+  from ref 131172 z 3006 to ref 131300
+line 131671 ---O
+  from ref 130263 z 3012 to ref 137572
+line 131684 ---O
+  from ref 130788 z 3006 to ref 130916
+line 131799 ---O
+  from ref 128727 z 3006 to ref 128855
+line 132068 ---(
+  from ref 130788 z 3006 to ref 131940
+line 132196 ---O
+  from ref 131812 z 3006 to ref 131940
+line 132452 ---(
+  from ref 130788 z 3006 to ref 132324
+line 132836 ---O
+  from ref 132580 z 3006 to ref 132324
+line 133092 ---(
+  from ref 130788 z 3006 to ref 132964
+line 133220 ---O
+  from ref 132708 z 3006 to ref 132964
+line 133604 ---(
+  from ref 128356 z 3006 to ref 133476
+line 133732 ---O
+  from ref 133348 z 3006 to ref 133476
+line 133988 ---(
+  from ref 128356 z 3006 to ref 133860
+line 134244 ---O
+  from ref 134116 z 3006 to ref 133860
+line 134628 ---(
+  from ref 134116 z 3006 to ref 134500
+line 135012 ---O
+  from ref 134372 z 3006 to ref 134500
+line 135268 ---(
+  from ref 134372 z 3006 to ref 135140
+line 135524 ---O
+  from ref 135396 z 3006 to ref 135140
+line 136164 ---(
+  from ref 132708 z 3006 to ref 136036
+line 136292 ---O
+  from ref 135908 z 3006 to ref 136036
+line 136548 ---(
+  from ref 132580 z 3006 to ref 136420
+line 136676 ---O
+  from ref 135780 z 3006 to ref 136420
+line 136932 ---(
+  from ref 131812 z 3006 to ref 136804
+line 137060 ---O
+  from ref 135652 z 3006 to ref 136804
+line 137700 ---(
+  from ref 133348 z 3006 to ref 137572
+line 138212 ---(
+  from ref 133348 z 3018 to ref 138084
+line 138340 ---O
+  from ref 137316 z 3018 to ref 138084
+line 138852 ---(
+  from ref 133348 z 3013 to ref 138724
+line 138980 ---O
+  from ref 137188 z 3013 to ref 138724
+line 139492 ---(
+  from ref 134372 z 2001 to ref 139364
+line 139620 ---O
+  from ref 139108 z 2001 to ref 139364
+line 140004 ---(
+  from ref 139108 z 3006 to ref 139876
+line 140132 ---O
+  from ref 139748 z 3006 to ref 139876
+preferred_whz 1007 695 0.84486
+end

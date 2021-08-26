@@ -1,0 +1,25 @@
+Friction
+  how implemented
+  parameters (initial stress, fault constitutive model)
+  fault constitutive models
+    static friction
+    linear slip-weakening
+    rate and state friction
+  must use nonlinear solver with sparse system Jacobian matrix
+  Example
+
+Finite-strain
+  Stress/strain measures
+    Green-Lagrange strains
+    Second Piola-Kirchhoff stresses
+    stress/strain tensors are with respect to undeformed coordinates
+  Features included
+    rigid body motion
+    small strains
+  nonlinear solver with sparse system Jacobian matrix selected automatically
+  Example - step ??
+
+Plasticity
+  Drucker-Prager
+    summary of equations
+  must use nonlinear solver with sparse system Jacobian matrix

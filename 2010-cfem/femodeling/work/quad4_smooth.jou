@@ -1,0 +1,21 @@
+playback 'geometry.jou'
+
+curve all interval 4
+curve all scheme bias factor 1.0
+
+curve 1 interval 7
+curve 1 scheme bias factor 1.15 start vertex 1
+
+curve 3 interval 7
+curve 3 scheme bias factor 1.15 start vertex 4
+
+curve 4 interval 8
+curve 4 scheme bias factor 1.0
+
+surface 1 scheme pave
+mesh surface 1
+
+surface all smooth scheme laplacian
+smooth surface all
+
+export mesh "quad4_smooth.exo" dimension 2 overwrite
