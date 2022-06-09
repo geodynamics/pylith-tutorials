@@ -1,0 +1,175 @@
+% -*- TeX -*-
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{tikz}
+
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{fit,matrix}
+\usetikzlibrary{shapes,calc}
+\defbeamertemplate{description item}{align left}{\insertdescriptionitem\hfill}
+
+\title{Crustal Deformation Modeling Tutorial}
+\subtitle{Quasi-static Simulations with No Fault}
+\author{Charles Williams \\
+  Brad Aagaard \\
+  Matthew Knepley}
+\institute{\includegraphics[scale=0.4]{../../logos/cig_blackfg}}
+\date{June 20, 2022}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+\renewcommand{\thispdfpagelabel}[1]{}
+\newcommand{\pylith}[1]{{\color{green}#1}}
+\newcommand{\python}[1]{{\color{red}#1}}
+\usetheme{CIG}
+\input{../style}
+
+% ========================================================= DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+% ------------------------------------------------------------ SLIDE
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_blackfg}}
+
+% ========================================================== SECTION
+\section{Simple 2D simulations with no faults}
+
+% ========================================================== SUBSECTION
+\subsection{Concepts covered}
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Concepts Covered in this Session}
+  \summary{}
+
+  \begin{itemize}
+  \item Ingredients for a PyLith simulation
+  \item PyLith \pylith{MeshIOAscii} mesh format
+  \item PyLith \pylith{.cfg} files
+  \item Usage of \pylith{ZeroDB}, \pylith{UniformDB}, and \pylith{SimpleDB} spatial databases
+  \item Simple Dirichlet (displacement) boundary conditions
+  \item Simple Neumann (traction) boundary conditions
+  \item Running a simulation
+  \item Visualization of simulation results using Paraview
+  \end{itemize}
+
+  
+\end{frame}
+
+
+% ========================================================== SUBSECTION
+\subsection{Ingredients for a PyLith simulation}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Overview of a PyLith simulation}
+  \summary{}
+
+  \vfill
+  \begin{center}
+      \includegraphics[height=6.1cm]{figs/pylith_simulation}
+  \end{center}
+  \vfill
+  
+\end{frame}
+
+% ========================================================== SECTION
+\subsection{Files used for simulations}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Files used in simulations}
+  \summary{Files are in directory \python{examples/box-2d}}
+
+  \setbeamertemplate{description item}[align left]
+  \begin{description}
+  \item[README.md] README file containing a brief description of the
+    various examples.
+  \item[*.cfg] PyLith parameter files.
+  \item[*.mesh] Finite-element mesh files generated manually using a
+    text editor.
+  \item[*.spatialdb] Files associated with the spatial databases.
+  \item[viz] Directory containing ParaView Python scripts and other
+    files for visualizing results.
+  \item[output] Directory containing simulation output. It is created
+    automatically when running the simulations.
+  \end{description}
+
+\end{frame}
+  
+% ========================================================== SECTION
+\subsection{Basic layout for simulations}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Two-dimensional Simple Simulations}
+  \summary{}
+
+  \vfill
+  \begin{center}
+      \includegraphics[height=6.1cm]{figs/geometry}
+  \end{center}
+  \vfill
+
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{step01-axialdisp}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 01}
+  \summary{Axial displacements applied to elastic material}
+
+  \vfill
+  \begin{center}
+      \includegraphics[height=6.1cm]{figs/step01-diagram}
+  \end{center}
+\vfill
+      
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{step02-sheardisp}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 02}
+  \summary{Shear displacements applied to elastic material}
+
+  \vfill
+  \begin{center}
+      \includegraphics[height=6.1cm]{figs/step02-diagram}
+  \end{center}
+\vfill
+      
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{step03-sheardisptract}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 03}
+  \summary{Shear displacements and tractions applied to elastic material}
+
+  \vfill
+  \begin{center}
+      \includegraphics[height=6.1cm]{figs/step02-diagram}
+  \end{center}
+\vfill
+      
+\end{frame}
+
+% ======================================================================
+\end{document}
+
+
+% End of file
