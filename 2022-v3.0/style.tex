@@ -1,4 +1,17 @@
 % Style information for PyLith presentations.
+\usepackage{amsmath}
+\usepackage{array}
+
+\usepackage{minted}
+\usemintedstyle{vs}
+
+\usepackage{tikz}
+
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{fit,matrix}
+\usetikzlibrary{shapes,calc}
+\usetikzlibrary{tikzmark,overlay-beamer-styles}
+\tikzstyle{physics-arrow} = [very thick, draw=red, -latex]
 
 % Colors
 \definecolor{ltorange}{rgb}{1.0, 0.74, 0.41} % 255/188/105
@@ -53,9 +66,8 @@
 \usefonttheme[onlymath]{serif}
 
 % minted shortcuts
-\newminted{cfg}{bgcolor=ltslate,autogobble,fontsize=\tiny}
-\newminted{bash}{bgcolor=ltltgreen,autogobble,fontsize=\tiny}
+\newminted{cfg}{bgcolor=ltslate,autogobble,fontsize=\scriptsize}
+\newminted{bash}{bgcolor=ltslate!50!white,autogobble,fontsize=\tiny}
 
 % PyLith components
 \newcommand{\pylith}[1]{{\ttfamily\color{magenta}#1}}
-
