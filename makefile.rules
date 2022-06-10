@@ -9,6 +9,9 @@ default: $(presentations)
 
 again:
 	for i in $(sources); do TEXINPUTS=./:../../texmf//: pdflatex --shell-escape $$i; done
+
+export:
+	for i in $(presentations); do mv $$i pylithtutorial_$$i; done
 	
 
 clean:
