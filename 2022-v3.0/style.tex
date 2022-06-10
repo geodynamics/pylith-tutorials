@@ -29,6 +29,7 @@
 \newcommand{\issue}[2]{\item[Issue:] {\color{red}#1}\\{\item[Soln:] \color{blue}#2}\\[4pt]}
 
 \setbeamercolor{alerted text}{fg=ltgreen}
+\setbeamertemplate{description item}[align left]
 
 
 \newcommand{\lhs}[1]{{\color{blue}#1}}
@@ -51,22 +52,10 @@
 
 \usefonttheme[onlymath]{serif}
 
+% minted shortcuts
+\newminted{cfg}{bgcolor=ltslate,autogobble,fontsize=\tiny}
+\newminted{bash}{bgcolor=ltltgreen,autogobble,fontsize=\tiny}
 
-% .cfg
-\lstdefinelanguage{cfg}{%
-  basicstyle=\tiny\ttfamily,
-  frame=tb,%
-  morecomment=[l][\color{orange}\itshape]{\#},
-  morecomment=[l][\color{orange}\itshape]{;},
-  moredelim=[is][\color{red}\bfseries]{<h>}{</h>},
-  moredelim=[is][\color{purple}\bfseries]{<p>}{</p>},
-  moredelim=[is][\color{blue}\bfseries]{<f>}{</f>},
-}
-\lstnewenvironment{cfg}{\lstset{language=cfg}}{}
+% PyLith components
+\newcommand{\pylith}[1]{{\ttfamily\color{magenta}#1}}
 
-\newcommand{\component}[1]{{\bfseries\color{blue}#1}}
-\newcommand{\property}[1]{{\bfseries\color{purple}#1}}
-\newcommand{\cfgblurb}[1]{{\tiny\tt\color{blue}#1}}
-\newcommand{\cmdblurb}[1]{{\tiny\tt\color{ltred}#1}}
-\newcommand{\errlabel}[1]{{\small\color{blue}#1}}
-\newcommand{\debuginfo}[1]{{\small\color{green}#1}}

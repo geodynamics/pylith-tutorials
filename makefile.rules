@@ -1,14 +1,14 @@
 sources = $(presentations:.pdf=.tex)
 
 %.pdf: %.tex
-	TEXINPUTS=./:../texmf//: pdflatex $^
+	TEXINPUTS=./:../../texmf//: pdflatex --shell-escape $^
 
 default: $(presentations)
 
 .PHONY: clean
 
 again:
-	for i in $(sources); do TEXINPUTS=./:../texmf//: pdflatex $$i; done
+	for i in $(sources); do TEXINPUTS=./:../../texmf//: pdflatex --shell-escape $$i; done
 	
 
 clean:
