@@ -32,7 +32,7 @@
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{Axial and Shear Deformation of a 2D Box}
+  \frametitle{Axial and Shear Deformation of a 2D Box: {\ttfamily examples/box-2d}}
   \summary{}
 
   \includefigure[height=6.1cm]{figs/geometry}
@@ -67,7 +67,7 @@
   \begin{itemize}
   \item Ingredients for a PyLith simulation
   \item PyLith \pylith{MeshIOAscii} mesh format
-  \item PyLith \pylith{.cfg} files
+  \item PyLith \pylith{.cfg} paremeter files
   \item \pylith{ZeroDB}, \pylith{UniformDB}, and \pylith{SimpleDB} spatial databases
   \item Dirichlet (displacement) boundary conditions
   \item Neumann (traction) boundary conditions
@@ -149,8 +149,8 @@
   \begin{minipage}{0.35\textwidth}
     {\scriptsize
     \begin{gather*}
-      \vec{s} = \left( \vec{u} \right)^T \\
-      \vec{0} = \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) \\
+      \vec{s} = \left(\begin{array}{c} \vec{u} \end{array}\right)^T \\
+      \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) = \vec{0} \\
       u_x = -u_0 \text{ on boundary\_xneg} \\
       u_x = +u_0 \text{ on boundary\_xpos} \\
       u_y = 0 \text{ on boundary\_yneg}
@@ -172,9 +172,9 @@
   \begin{minipage}[t]{0.35\textwidth}
     {\scriptsize
     \begin{gather*}
-      \vec{s} = \left(\begin{array}{c} \vec{u} \end{array}\right)^T \tikzmark{solution}\\
-      \vec{0} = \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) \tikzmark{material}\\
-      u_x = -u_0 \text{ on boundary\_xneg} \tikzmark{bc}\\
+      \vec{s} = \left(\begin{array}{c} \vec{u} \end{array}\right)^T \tikzmark{solution1}\\
+      \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) = \vec{0} \tikzmark{material1}\\
+      u_x = -u_0 \text{ on boundary\_xneg} \tikzmark{bc1}\\
       u_x = +u_0 \text{ on boundary\_xpos} \\
       u_y = 0 \text{ on boundary\_yneg}
     \end{gather*}}
@@ -183,7 +183,7 @@
   \begin{minipage}[t]{0.60\textwidth}
     % Solution
     \begin{onlyenv}<2>
-      \tikzmark{solution-cfg}
+      \tikzmark{solution1-cfg}
       \begin{cfgcode}
         # These are the defaults; not included in pylithapp.cfg.
         [pylithapp.problem]
@@ -196,7 +196,7 @@
     %
     % Governing equations
     \begin{onlyenv}<3>
-      \tikzmark{material-cfg}
+      \tikzmark{material1-cfg}
       \begin{cfgcode}
         # These are the defaults; not included in pylithapp.cfg.
         [pylithapp.problem]
@@ -210,7 +210,7 @@
     %
     % Boundary conditions
     \begin{onlyenv}<4>
-      \tikzmark{bc-cfg}
+      \tikzmark{bc1-cfg}
       \begin{cfgcode}
         [pylithapp.problem]
         bc = [bc_xneg, bc_xpos, bc_yneg]
@@ -228,9 +228,9 @@
 
     
   \begin{tikzpicture}[overlay,remember picture]
-    \draw[physics-arrow,visible on=<2>] ($(pic cs:solution-cfg)-(0,2em)$) to (pic cs:solution);
-    \draw[physics-arrow,visible on=<3>] ($(pic cs:material-cfg)-(0,2em)$) to (pic cs:material);
-    \draw[physics-arrow,visible on=<4>] ($(pic cs:bc-cfg)-(0,2em)$) to (pic cs:bc);
+    \draw[physics-arrow,visible on=<2>] ($(pic cs:solution1-cfg)-(0,2em)$) to (pic cs:solution1);
+    \draw[physics-arrow,visible on=<3>] ($(pic cs:material1-cfg)-(0,2em)$) to (pic cs:material1);
+    \draw[physics-arrow,visible on=<4>] ($(pic cs:bc1-cfg)-(0,2em)$) to (pic cs:bc1);
   \end{tikzpicture}
 
   
@@ -317,8 +317,8 @@ pylith step01_axialdisp.cfg
   \begin{minipage}{0.35\textwidth}
     {\scriptsize
     \begin{gather*}
-      \vec{s} = \left( \vec{u} \right)^T \\
-      \vec{0} = \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) \\
+      \vec{s} = \left(\begin{array}{c} \vec{u} \end{array}\right)^T \\
+      \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) = \vec{0} \\
       u_x = ax \text{ on boundary\_xneg} \\
       u_x = ax \text{ on boundary\_xpos} \\
       u_y = a(y+8\mathrm{km}) \text{ on boundary\_yneg} \\
@@ -341,9 +341,9 @@ pylith step01_axialdisp.cfg
   \begin{minipage}[t]{0.35\textwidth}
     {\scriptsize
     \begin{gather*}
-      \vec{s} = \left(\begin{array}{c} \vec{u} \end{array}\right)^T \tikzmark{solution}\\
-      \vec{0} = \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) \tikzmark{material}\\
-      u_x = ax \text{ on boundary\_xneg} \tikzmark{bc}\\
+      \vec{s} = \left(\begin{array}{c} \vec{u} \end{array}\right)^T \tikzmark{solution2}\\
+      \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) = \vec{0} \tikzmark{material2}\\
+      u_x = ax \text{ on boundary\_xneg} \tikzmark{bc2}\\
       u_x = ax \text{ on boundary\_xpos} \\
       u_y = a(y+8\mathrm{km}) \text{ on boundary\_yneg} \\
       u_y = a(y+8\mathrm{km}) \text{ on boundary\_ypos}
@@ -353,7 +353,7 @@ pylith step01_axialdisp.cfg
   \begin{minipage}[t]{0.60\textwidth}
     % Solution
     \begin{onlyenv}<2>
-      \tikzmark{solution-cfg}
+      \tikzmark{solution2-cfg}
       \begin{cfgcode}
         # These are the defaults; not included in pylithapp.cfg.
         [pylithapp.problem]
@@ -366,7 +366,7 @@ pylith step01_axialdisp.cfg
     %
     % Governing equations
     \begin{onlyenv}<3>
-      \tikzmark{material-cfg}
+      \tikzmark{material2-cfg}
       \begin{cfgcode}
         # These are the defaults; not included in pylithapp.cfg.
         [pylithapp.problem]
@@ -380,7 +380,7 @@ pylith step01_axialdisp.cfg
     %
     % Boundary conditions
     \begin{onlyenv}<4>
-      \tikzmark{bc-cfg}
+      \tikzmark{bc2-cfg}
       \begin{cfgcode}
         [pylithapp.problem]
         bc = [bc_xneg, bc_yneg, bc_xpos, bc_ypos]
@@ -399,9 +399,9 @@ pylith step01_axialdisp.cfg
 
     
   \begin{tikzpicture}[overlay,remember picture]
-    \draw[physics-arrow,visible on=<2>] ($(pic cs:solution-cfg)-(0,2em)$) to (pic cs:solution);
-    \draw[physics-arrow,visible on=<3>] ($(pic cs:material-cfg)-(0,2em)$) to (pic cs:material);
-    \draw[physics-arrow,visible on=<4>] ($(pic cs:bc-cfg)-(0,2em)$) to (pic cs:bc);
+    \draw[physics-arrow,visible on=<2>] ($(pic cs:solution2-cfg)-(0,2em)$) to (pic cs:solution2);
+    \draw[physics-arrow,visible on=<3>] ($(pic cs:material2-cfg)-(0,2em)$) to (pic cs:material2);
+    \draw[physics-arrow,visible on=<4>] ($(pic cs:bc2-cfg)-(0,2em)$) to (pic cs:bc2);
   \end{tikzpicture}
 
   
@@ -416,7 +416,7 @@ pylith step01_axialdisp.cfg
   \begin{description}
   \item[quad.mesh] Finite-element mesh as a text file
   \item[pylithapp.cfg] PyLith parameter file common to all steps
-  \item[step02-sheardisp.cfg] PyLith parameter file
+  \item[step02\_sheardisp.cfg] PyLith parameter file
   \item[sheardisp\_bc\_xneg.spatialdb] Displacement field on boundary\_xneg
   \item[sheardisp\_bc\_xpos.spatialdb] Displacement field on boundary\_xpos
   \item[sheardisp\_bc\_yneg.spatialdb] Displacement field on boundary\_yneg
@@ -492,8 +492,8 @@ pylith step02_sheardisp.cfg
   \begin{minipage}{0.35\textwidth}
     {\scriptsize
     \begin{gather*}
-      \vec{s} = \left( \vec{u} \right)^T \\
-      \vec{0} = \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) \\
+      \vec{s} = \left(\begin{array}{c} \vec{u} \end{array}\right)^T \\
+      \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) = \vec{0} \\
       \left. \begin{array}{c} u_x = a(y+8\mathrm{km}) \\ u_y = ax \end{array}\right\} \text{ on boundary\_xneg} \\
       \left. \begin{array}{c} u_x = a(y+8\mathrm{km}) \\ u_y = ax \end{array}\right\} \text{ on boundary\_xpos} \\
       \tau_t = -2\mu a \text{ on boundary\_yneg} \\
@@ -516,9 +516,9 @@ pylith step02_sheardisp.cfg
   \begin{minipage}[t]{0.35\textwidth}
     {\scriptsize
     \begin{gather*}
-      \vec{s} = \left(\begin{array}{c} \vec{u} \end{array}\right)^T \tikzmark{solution}\\
-      \vec{0} = \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) \tikzmark{material}\\
-      \left. \begin{array}{c} u_x = a(y+8\mathrm{km}) \\ u_y = ax \end{array}\right\} \text{ on boundary\_xneg} \tikzmark{bc} \\
+      \vec{s} = \left(\begin{array}{c} \vec{u} \end{array}\right)^T \tikzmark{solution3}\\
+      \boldsymbol{\nabla} \cdot \boldsymbol{\sigma}(\vec{u}) = \vec{0} \tikzmark{material3}\\
+      \left. \begin{array}{c} u_x = a(y+8\mathrm{km}) \\ u_y = ax \end{array}\right\} \text{ on boundary\_xneg} \tikzmark{bc3} \\
       \left. \begin{array}{c} u_x = a(y+8\mathrm{km}) \\ u_y = ax \end{array}\right\} \text{ on boundary\_xpos} \\
       \tau_t = -2\mu a \text{ on boundary\_yneg} \\
       \tau_t = -2\mu a \text{ on boundary\_ypos}
@@ -528,7 +528,7 @@ pylith step02_sheardisp.cfg
   \begin{minipage}[t]{0.60\textwidth}
     % Solution
     \begin{onlyenv}<2>
-      \tikzmark{solution-cfg}
+      \tikzmark{solution3-cfg}
       \begin{cfgcode}
         # These are the defaults; not included in pylithapp.cfg.
         [pylithapp.problem]
@@ -541,7 +541,7 @@ pylith step02_sheardisp.cfg
     %
     % Governing equations
     \begin{onlyenv}<3>
-      \tikzmark{material-cfg}
+      \tikzmark{material3-cfg}
       \begin{cfgcode}
         # These are the defaults; not included in pylithapp.cfg.
         [pylithapp.problem]
@@ -555,7 +555,7 @@ pylith step02_sheardisp.cfg
     %
     % Boundary conditions
     \begin{onlyenv}<4>
-      \tikzmark{bc-cfg}
+      \tikzmark{bc3-cfg}
       \begin{cfgcode}
         [pylithapp.problem]
         bc = [bc_xneg, bc_yneg, bc_xpos, bc_ypos]
@@ -574,9 +574,9 @@ pylith step02_sheardisp.cfg
 
     
   \begin{tikzpicture}[overlay,remember picture]
-    \draw[physics-arrow,visible on=<2>] ($(pic cs:solution-cfg)-(0,2em)$) to (pic cs:solution);
-    \draw[physics-arrow,visible on=<3>] ($(pic cs:material-cfg)-(0,2em)$) to (pic cs:material);
-    \draw[physics-arrow,visible on=<4>] ($(pic cs:bc-cfg)-(0,2em)$) to (pic cs:bc);
+    \draw[physics-arrow,visible on=<2>] ($(pic cs:solution3-cfg)-(0,2em)$) to (pic cs:solution3);
+    \draw[physics-arrow,visible on=<3>] ($(pic cs:material3-cfg)-(0,2em)$) to (pic cs:material3);
+    \draw[physics-arrow,visible on=<4>] ($(pic cs:bc3-cfg)-(0,2em)$) to (pic cs:bc3);
   \end{tikzpicture}
 
   
@@ -591,7 +591,7 @@ pylith step02_sheardisp.cfg
   \begin{description}
   \item[quad.mesh] Finite-element mesh as a text file
   \item[pylithapp.cfg] PyLith parameter file common to all steps
-  \item[step03-sheardisptract.cfg] PyLith parameter file
+  \item[step03\_sheardisptract.cfg] PyLith parameter file
   \item[sheardisp\_bc\_xneg.spatialdb] Displacement field on boundary\_xneg
   \item[sheardisp\_bc\_xpos.spatialdb] Displacement field on boundary\_xpos
   \end{description}
