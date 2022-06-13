@@ -1,4 +1,4 @@
 presentations = \
-	pylithtutorial_greensfns.pdf
+	greensfns.pdf
 
-include ../makefile.rules
+include ../../makefile.rules
