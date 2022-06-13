@@ -209,7 +209,7 @@
   \begin{itemize}
   \item Import finite-element meshes from Gmsh (open source) in addition to Cubit (Exodus II) and LaGriT
   \item Default PETSc options based on specified materials (governing equations)
-  \item Static Green's functions with user-specified discretization of fault slip impulses.
+  \item Static Green's functions with user-specified discretization of fault slip impulses
   \item Modular approach for initial conditions
   \item Output of subfields with user-defined basis order
   \item Simulation metadata with command line utility for searching metadata
@@ -655,7 +655,7 @@ F^u(t,s,\dot{s}) = \int_\Omega \trialvec[u] \cdot \eqnannotate{\vec{f}(\vec{x},t
     \hitem{Pointwise functions for the residuals and Jacobian are selected automatically}
     \hitem{Fields and Subfields}
     \begin{itemize}
-    \item Finite-element coefficients for the basis functions (values at vertices, on edges and faces, or in cells) are stored in a `Field`
+    \item Finite-element coefficients for the basis functions (values at vertices, on edges and faces, or in cells) are stored in a \pylith{Field}
     \item A \pylith{Field} is composed of a \pylith{Section}, which associates the points (vertices, edges, faces, and cells) with the finite-element coefficients, and a PETSc \pylith{Vec}, which is a vector storing the finite-element coefficients
     \item A \pylith{Field} may hold one or more subfields, such as the density, shear modulus, and bulk modulus for an isotropic, linear elastic material
     \end{itemize}
@@ -774,8 +774,8 @@ F^u(t,s,\dot{s}) = \int_\Omega \trialvec[u] \cdot \eqnannotate{\vec{f}(\vec{x},t
     \item Alternative implementations use the same interfaces to allow plug-n-play
     \item Top-level interfaces in Python with computational code in C++
       \begin{itemize}
-      \item Python dynamic typing permits adding new modules at runtime.
-      \item Users can add functionality without modifying the PyLith code.
+      \item Python dynamic typing permits adding new modules at runtime
+      \item Users can add functionality without modifying the PyLith code
       \end{itemize}
     \end{itemize}
   \end{minipage}\hfill
