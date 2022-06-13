@@ -1,4 +1,4 @@
 presentations = \
-	pylithtutorial_v3.pdf
+	pylith_v3.pdf
 
-include ../makefile.rules
+include ../../makefile.rules
