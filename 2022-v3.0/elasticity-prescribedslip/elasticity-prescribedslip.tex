@@ -1,0 +1,752 @@
+% -*- TeX -*-
+\documentclass[aspectratio=169]{beamer}
+
+\title{PyLith v3.0 Tutorial}
+\subtitle{Quasi-static Elasticity with Prescribed Fault Slip}
+\author{Brad Aagaard\\
+  Charles Williams \\
+  Matthew Knepley}
+\institute{\includegraphics[scale=1.5]{../../logos/cig_logo_dots}%
+  \hspace{4em}%
+\raisebox{1em}{\includegraphics[scale=1.0]{../../logos/cig_short_pylith}}}
+\date{June 20, 2022}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+\usetheme{CIG}
+\input{../style}
+
+% ========================================================= DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_short_pylith}}
+
+% ========================================================== SECTION
+\section{{\ttfamily examples/reverse-2d}}
+
+% ========================================================== SUBSECTION
+\subsection{Overview}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Vertical Cross-Section of Reverse Fault (2D): {\ttfamily examples/reverse-2d}}
+  \summary{}
+
+  \includefigure[height=6.1cm]{figs/geometry}
+
+  \vfill
+  Solve the static and quasistatic boundary elasticity equation for a vertical cross-section of a reverse fault with a splay.
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Steps in example}
+  \summary{Steps 1-3 are covered in the gravitational body forces tutorial}
+
+  \begin{description}
+    \item[Step 1] Gravitational body forces and linear isotropic elasticity
+    \item[Step 2] Gravitational body forces and linear isotropic elasticity with a reference stress state
+    \item[Step 3] Gravitational body forces and linear isotropic incompressible elasticity
+    \item[Step 4] Surface tractions and linear isotropic linear elasticity
+    \item[Step 5] \highlight{Earthquake rupture on one fault and linear isotropic linear elasticity}
+    \item[Step 6] \highlight{Earthquake rupture on two faults and linear isotropic linear elasticity}
+    \item[Step 7] \highlight{Same as Step 6 but time-dependent with linear isotropic Maxwell viscoelastic rheology}
+    \item[Step 8] Same as Step 7 but with linear isotropic power-law viscoelastic rheology
+  \end{description}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Concepts covered}
+  \summary{}
+
+  \begin{itemize}
+  \item Generation of mesh using Gmsh and Cubit
+  \item Variable mesh size with distance from the fault
+  \item Static and quasi-static simulations for elasticity
+  \item Prescribed slip earthquake rupture in 2D
+  \item Prescribed slip on multiple faults
+  \item Elastic and viscoelastic bulk rheologies
+  \end{itemize}
+  
+\end{frame}
+
+% ========================================================== SUBSECTION
+\subsection{Finite-Element Mesh}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Gmsh: Geometry}
+  \summary{}
+
+  We construct the geometry by first creating points, then connecting the points into curves, and finally the curves into surfaces.
+  
+  \includefigure[height=6.5cm]{figs/geometry-gmsh}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Gmsh: Creating the finite-element mesh}
+  \summary{}
+
+  \begin{onlyenv}<1>
+    \begin{itemize}
+    \item Each curve in Gmsh has a direction (orientation).
+    \item The direction is from the starting point to the ending point.
+    \item When connecting curves into surfaces, you must connect the curves in a consistent direction.
+    \item We connect the curves in a counter-clockwise direction.
+    \item To reverse the direction of a curve, use the negative tag.
+    \end{itemize}
+  \end{onlyenv}
+  \begin{onlyenv}<2>
+  \includefigure[height=7.0cm]{figs/gmsh-tri}
+  \end{onlyenv}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Cubit: Geometry}
+  \summary{{\bfseries Note}: The provided parameter files use the Gmsh file}
+
+  We construct the geometry by using geometric primitives and splitting surfaces using points and curves.
+  
+  \includefigure[height=6.5cm]{figs/geometry-cubit}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Cubit: Creating the finite-element mesh}
+  \summary{{\bfseries Note}: The provided parameter files use the Gmsh file}
+
+  \includefigure[height=7.0cm]{figs/cubit-quad}
+  
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{Files used for simulations}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Files used in simulations}
+  \summary{Files are in directory {\tt examples/strikeslip-2d}}
+
+  \begin{description}
+  \item[README.md] Brief description of the various examples
+  \item[*.cfg] PyLith parameter files
+  \item[generate\_gmsh.py] Python script to generate mesh using Gmsh
+  \item[*.msh] Finite-element mesh files generated by Gmsh
+  \item[*.spatialdb] Spatial database files
+  \item[viz] Directory containing ParaView Python scripts
+  \item[output] Directory containing simulation output; created automatically when running the simulations
+  \end{description}
+
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{step05-onefault}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 5: Overview}
+  \summary{Uniform coseismic slip with Dirichlet (displacement) boundary conditions}
+
+  \includefigure[height=6.5cm]{figs/step05-diagram}
+      
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 5: Physics}
+  \summary{}
+
+  \begin{minipage}{0.3\textwidth}
+    {\scriptsize
+    \begin{gather*}
+    % Solution
+    \vec{s}^T = \left( \vec{u} \quad \vec{\lambda} \right)^T \\
+    % Elasticity
+    \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u}) = \vec{0} \\
+    % Dirichlet
+    u_x = 0 \text{ on boundary\_xneg} \\
+    u_x = 0 \text{ on boundary\_xpos} \\
+    u_y = 0 \text{ on boundary\_yneg} \\
+    % Prescribed slip
+    d = d(y) \text{ on fault}
+    \end{gather*}}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.67\textwidth}
+    \includefigure[width=\textwidth]{figs/step05-diagram}
+  \end{minipage}
+      
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t,fragile]
+  \frametitle{Step 5: Physics to simulation parameters}
+  \summary{}
+
+  \begin{minipage}[t]{0.3\textwidth}
+    {\scriptsize
+    \begin{gather*}
+    % Solution
+    % Solution
+    \vec{s}^T = \left( \vec{u} \quad \vec{\lambda} \right)^T \tikzmark{solution5}\\
+    % Elasticity
+    \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u}) = \vec{0} \tikzmark{material5}\\
+    % Dirichlet
+    u_x = 0 \text{ on boundary\_xneg} \tikzmark{bc5}\\
+    u_x = 0 \text{ on boundary\_xpos} \\
+    u_y = 0 \text{ on boundary\_yneg} \\
+    % Prescribed slip
+    d = d(y) \text{ on fault} \tikzmark{fault5}
+    \end{gather*}}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.67\textwidth}
+    % Solution
+    \begin{onlyenv}<2>
+      \tikzmark{solution5-cfg}
+      \begin{cfgcode}
+        [pylithapp.problem]
+        solution = pylith.problems.SolnDispLagrange
+        defaults.quadrature_order = 1
+        
+        [pylithapp.problem.solution.subfields]
+        displacement.basis_order = 1
+        lagrange_fault.basis_order = 1
+      \end{cfgcode}
+    \end{onlyenv}
+    %
+    % Governing equations
+    \begin{onlyenv}<3>
+      \tikzmark{material5-cfg}
+      \begin{cfgcode}
+        [pylithapp.problem]
+        materials = [slab, plate, wedge]
+
+        [pylithapp.problem.materials.slab]
+        description = Slab material below main fault
+        label_value = 1
+
+        db_auxiliary_field = spatialdata.spatialdb.SimpleDB
+        db_auxiliary_field.description = Elastic properties for slab
+        db_auxiliary_field.iohandler.filename = mat_elastic.spatialdb
+
+        auxiliary_subfields.density.basis_order = 0
+        bulk_rheology.auxiliary_subfields.bulk_modulus.basis_order = 0
+        bulk_rheology.auxiliary_subfields.shear_modulus.basis_order = 0
+
+        derived_subfields.cauchy_strain.basis_order = 1
+        derived_subfields.cauchy_stress.basis_order = 1
+      \end{cfgcode}
+    \end{onlyenv}
+    %
+    % Boundary conditions
+    \begin{onlyenv}<4>
+      \tikzmark{bc5-cfg}
+      \begin{cfgcode}
+        bc = [bc_xneg, bc_xpos, bc_yneg]
+        bc.bc_xneg = pylith.bc.DirichletTimeDependent
+        bc.bc_xpos = pylith.bc.DirichletTimeDependent
+        bc.bc_yneg = pylith.bc.DirichletTimeDependent
+        
+        [pylithapp.problem.bc.bc_xpos]
+        label = boundary_xpos
+        label_value = 11
+        constrained_dof = [0]
+        db_auxiliary_field = pylith.bc.ZeroDB
+        db_auxiliary_field.description = Dirichlet BC +x edge
+
+        auxiliary_subfields.initial_amplitude.basis_order = 0 
+      \end{cfgcode}
+    \end{onlyenv}
+    %
+    % Fault
+    \begin{onlyenv}<5>
+      \tikzmark{fault5-cfg}
+      \begin{cfgcode}
+        [pylithapp.problem]
+        interfaces = [fault]
+
+        [pylithapp.problem.interfaces.fault]
+        label = fault
+        label_value = 20
+        edge = fault_end
+        edge_value = 21
+        observers.observer.data_fields = [slip]
+
+        [pylithapp.problem.interfaces.fault.eq_ruptures.rupture]
+        db_auxiliary_field = spatialdata.spatialdb.UniformDB
+        db_auxiliary_field.description = Fault rupture auxiliary field spatial database
+        db_auxiliary_field.values = [initiation_time, final_slip_left_lateral, final_slip_opening]
+        db_auxiliary_field.data = [0.0*s, -2.0*m, 0.0*m]
+      \end{cfgcode}
+    \end{onlyenv}
+  \end{minipage}
+
+  \begin{tikzpicture}[overlay,remember picture]
+    \draw[physics-arrow,visible on=<2>] ($(pic cs:solution5-cfg)-(0,2em)$) to (pic cs:solution5);
+    \draw[physics-arrow,visible on=<3>] ($(pic cs:material5-cfg)-(0,2em)$) to (pic cs:material5);
+    \draw[physics-arrow,visible on=<4>] ($(pic cs:bc5-cfg)-(0,2em)$) to (pic cs:bc5);
+    \draw[physics-arrow,visible on=<5>] ($(pic cs:fault5-cfg)-(0,2em)$) to (pic cs:fault5);
+  \end{tikzpicture}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 5: Input files}
+  \summary{}
+
+  \begin{description}
+  \item[mesh\_tri.msh] Finite-element mesh generated using Gmsh
+  \item[pylithapp.cfg] PyLith parameter file common to all steps
+  \item[step05\_onefault.cfg] PyLith parameter file
+  \item[mat\_elastic.spatialdb] Spatial database for isotropic linear elastic properties
+  \end{description}
+    
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Step 5: Run the simulation}
+  \summary{}
+
+\begin{bashcode}
+pylith step05_onefault.cfg
+
+# Output
+ >> /software/unix/py39-venv/pylith-debug/lib/python3.9/site-packages/pylith/meshio/MeshIOObj.py:44:read
+ -- meshiopetsc(info)
+ -- Reading finite-element mesh
+ >> /src/cig/pylith/libsrc/pylith/meshio/MeshIO.cc:94:void pylith::meshio::MeshIO::read(pylith::topology::Mesh*)
+ -- meshiopetsc(info)
+ -- Component 'reader': Domain bounding box:
+    (-100000, 100000)
+    (-100000, 0)
+
+# -- many lines omitted --
+
+ >> /software/unix/py39-venv/pylith-debug/lib/python3.9/site-packages/pylith/problems/TimeDependent.py:139:run
+ -- timedependent(info)
+ -- Solving problem.
+0 TS dt 0.01 time 0.
+    0 SNES Function norm 2.129295960330e-02
+    Linear solve converged due to CONVERGED_ATOL iterations 43
+    1 SNES Function norm 1.577267844919e-12
+  Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
+1 TS dt 0.01 time 0.01
+ >> /software/unix/py39-venv/pylith-debug/lib/python3.9/site-packages/pylith/problems/Problem.py:201:finalize
+ -- timedependent(info)
+ -- Finalizing problem.
+\end{bashcode}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 5: Visualize results}
+  \summary{Run the {\tt viz/plot\_dispwarp.py} Python script from within ParaView}
+
+  \includefigure[height=7.0cm]{figs/step05-solution}
+    
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{step06-twofaults-elastic}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 6: Overview}
+  \summary{Uniform rupture on two faults with Dirichlet (displacement) boundary conditions}
+
+  \includefigure[height=6.5cm]{figs/step06-diagram}
+      
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 6: Physics}
+  \summary{}
+
+  \begin{minipage}{0.3\textwidth}
+    {\scriptsize
+    \begin{gather*}
+    % Solution
+    \vec{s}^T = \left( \vec{u} \quad \vec{\lambda} \right)^T \\
+    % Elasticity
+    \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u}) = \vec{0} \\
+    % Dirichlet
+    u_x = 0 \text{ on boundary\_xneg} \\
+    u_x = 0 \text{ on boundary\_xpos} \\
+    u_y = 0 \text{ on boundary\_yneg} \\
+    % Prescribed slip
+    d = d(y) \text{ on fault} \\
+    d = d(y) \text{ on splay}
+    \end{gather*}}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.67\textwidth}
+    \includefigure[width=\textwidth]{figs/step06-diagram}
+  \end{minipage}
+      
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t,fragile]
+  \frametitle{Step 6: Physics to simulation parameters}
+  \summary{}
+
+  \begin{minipage}[t]{0.3\textwidth}
+    {\scriptsize
+    \begin{gather*}
+    % Solution
+    % Solution
+    \vec{s}^T = \left( \vec{u} \quad \vec{\lambda} \right)^T \tikzmark{solution6}\\
+    % Elasticity
+    \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u}) = \vec{0} \tikzmark{material6}\\
+    % Dirichlet
+    u_x = 0 \text{ on boundary\_xneg} \tikzmark{bc6}\\
+    u_x = 0 \text{ on boundary\_xpos} \\
+    u_y = 0 \text{ on boundary\_yneg} \\
+    % Prescribed slip
+    d = d(y) \text{ on fault} \tikzmark{fault6} \\
+    d = d(y) \text{ on splay}
+    \end{gather*}}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.67\textwidth}
+    % Solution
+    \begin{onlyenv}<2>
+      \tikzmark{solution6-cfg}
+      \begin{cfgcode}
+        # Same as Step 5
+      \end{cfgcode}
+    \end{onlyenv}
+    %
+    % Governing equations
+    \begin{onlyenv}<3>
+      \tikzmark{material6-cfg}
+      \begin{cfgcode}
+        # Same as Step 5
+      \end{cfgcode}
+    \end{onlyenv}
+    %
+    % Boundary conditions
+    \begin{onlyenv}<4>
+      \tikzmark{bc6-cfg}
+      \begin{cfgcode}
+        # Same as Step 5
+      \end{cfgcode}
+    \end{onlyenv}
+    %
+    % Fault
+    \begin{onlyenv}<5>
+      \tikzmark{fault6-cfg}
+      \begin{cfgcode}
+        [pylithapp.problem]
+        interfaces = [fault, splay]
+
+        [pylithapp.problem.interfaces.fault]
+        label = fault
+        label_value = 20
+        edge = fault_end
+        edge_value = 21
+        observers.observer.data_fields = [slip]
+
+        [pylithapp.problem.interfaces.fault.eq_ruptures.rupture]
+        db_auxiliary_field = spatialdata.spatialdb.UniformDB
+        db_auxiliary_field.description = Fault rupture auxiliary field spatial database
+        db_auxiliary_field.values = [initiation_time, final_slip_left_lateral, final_slip_opening]
+        db_auxiliary_field.data = [0.0*s, -2.0*m, 0.0*m]
+      \end{cfgcode}
+    \end{onlyenv}
+    %
+    % PETSc
+    \begin{onlyenv}<6>
+      \tikzmark{petsc6-cfg}
+      \begin{cfgcode}
+        # Wedge introduces null space; use ILU preconditioner
+        [pylithapp.petsc]
+        fieldsplit_displacement_pc_type = ilu
+      \end{cfgcode}
+    \end{onlyenv}
+  \end{minipage}
+
+  \begin{tikzpicture}[overlay,remember picture]
+    \draw[physics-arrow,visible on=<2>] ($(pic cs:solution6-cfg)-(0,2em)$) to (pic cs:solution6);
+    \draw[physics-arrow,visible on=<3>] ($(pic cs:material6-cfg)-(0,2em)$) to (pic cs:material6);
+    \draw[physics-arrow,visible on=<4>] ($(pic cs:bc6-cfg)-(0,2em)$) to (pic cs:bc6);
+    \draw[physics-arrow,visible on=<5>] ($(pic cs:fault6-cfg)-(0,2em)$) to (pic cs:fault6);
+    \draw[physics-arrow,visible on=<6>] ($(pic cs:petsc6-cfg)-(0,2em)$) to (pic cs:fault6);
+  \end{tikzpicture}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 6: Input files}
+  \summary{}
+
+  \begin{description}
+  \item[mesh\_tri.msh] Finite-element mesh generated using Gmsh
+  \item[pylithapp.cfg] PyLith parameter file common to all steps
+  \item[step06\_twofaults\_elastic.cfg] PyLith parameter file
+  \item[mat\_elastic.spatialdb] Spatial database for isotropic linear elastic properties
+  \end{description}
+    
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Step 6: Run the simulation}
+  \summary{}
+
+\begin{bashcode}
+pylith step06_twofaults_elastic.cfg
+
+# Output
+ >> /software/unix/py39-venv/pylith-debug/lib/python3.9/site-packages/pylith/meshio/MeshIOObj.py:44:read
+ -- meshiopetsc(info)
+ -- Reading finite-element mesh
+ >> /src/cig/pylith/libsrc/pylith/meshio/MeshIO.cc:94:void pylith::meshio::MeshIO::read(pylith::topology::Mesh*)
+ -- meshiopetsc(info)
+ -- Component 'reader': Domain bounding box:
+    (-100000, 100000)
+    (-100000, 0)
+
+# -- many lines omitted --
+
+ >> /software/unix/py39-venv/pylith-debug/lib/python3.9/site-packages/pylith/problems/TimeDependent.py:139:run
+ -- timedependent(info)
+ -- Solving problem.
+0 TS dt 0.01 time 0.
+    0 SNES Function norm 2.225574998436e-02
+    Linear solve converged due to CONVERGED_ATOL iterations 415
+    1 SNES Function norm 8.564274482242e-13
+  Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
+1 TS dt 0.01 time 0.01
+ >> /software/unix/py39-venv/pylith-debug/lib/python3.9/site-packages/pylith/problems/Problem.py:201:finalize
+ -- timedependent(info)
+ -- Finalizing problem.
+\end{bashcode}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 6: Visualize results}
+  \summary{Run the {\tt viz/plot\_dispwarp.py} Python script from within ParaView}
+
+  \includefigure[height=7.0cm]{figs/step06-solution}
+    
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{step07-twofaults-maxwell}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 7: Overview}
+  \summary{Uniform rupture on two faults with Dirichlet (displacement) boundary conditions}
+
+  Same as Step 6 with linear Maxwell viscoelastic bulk rheology for the slab.
+      
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t,fragile]
+  \frametitle{Step 7: Physics to simulation parameters}
+  \summary{}
+
+  \begin{minipage}[t]{0.3\textwidth}
+    {\scriptsize
+    \begin{gather*}
+    % Solution
+    % Solution
+    \vec{s}^T = \left( \vec{u} \quad \vec{\lambda} \right)^T \tikzmark{solution7}\\
+    % Elasticity
+    \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u}) = \vec{0} \tikzmark{material7}\\
+    \rho, v_p, v_s \text{ in crust and wedge} \\
+    \rho, v_p, v_s, \nu  \text{ in slab} \\
+    % Dirichlet
+    u_x = 0 \text{ on boundary\_xneg} \tikzmark{bc7}\\
+    u_x = 0 \text{ on boundary\_xpos} \\
+    u_y = 0 \text{ on boundary\_yneg} \\
+    % Prescribed slip
+    d = d(y) \text{ on fault} \tikzmark{fault7} \\
+    d = d(y) \text{ on splay}
+    \end{gather*}}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.67\textwidth}
+    % Solution
+    \begin{onlyenv}<2>
+      \tikzmark{solution7-cfg}
+      \begin{cfgcode}
+        [pylithapp.problem]
+        initial_dt = 4.0*year
+        start_time = -4.0*year
+        end_time = 100.0*year
+
+        normalizer.relaxation_time = 20.0*year
+      \end{cfgcode}
+    \end{onlyenv}
+    %
+    % Governing equations
+    \begin{onlyenv}<3>
+      \tikzmark{material7-cfg}
+      \begin{cfgcode}
+        [pylithapp.problem.materials.slab]
+        description = Slab material below main fault
+        label_value = 1
+        bulk_rheology = pylith.materials.IsotropicLinearMaxwell
+
+        db_auxiliary_field = spatialdata.spatialdb.SimpleDB
+        db_auxiliary_field.description = Elastic properties for slab
+        db_auxiliary_field.iohandler.filename = mat_maxwell.spatialdb
+
+        auxiliary_subfields.density.basis_order = 0
+        bulk_rheology.auxiliary_subfields.bulk_modulus.basis_order = 0
+        bulk_rheology.auxiliary_subfields.shear_modulus.basis_order = 0
+        bulk_rheology.auxiliary_subfields.maxwell_time.basis_order = 0
+        
+        derived_subfields.cauchy_strain.basis_order = 1
+        derived_subfields.cauchy_stress.basis_order = 1
+      \end{cfgcode}
+    \end{onlyenv}
+    %
+    % Boundary conditions
+    \begin{onlyenv}<4>
+      \tikzmark{bc7-cfg}
+      \begin{cfgcode}
+        # Same as Step 6
+      \end{cfgcode}
+    \end{onlyenv}
+    %
+    % Fault
+    \begin{onlyenv}<5>
+      \tikzmark{fault7-cfg}
+      \begin{cfgcode}
+        # Same as Step 6
+      \end{cfgcode}
+    \end{onlyenv}
+    %
+    % PETSc
+    \begin{onlyenv}<6>
+      \tikzmark{petsc7-cfg}
+      \begin{cfgcode}
+        # Wedge introduces null space; use ILU preconditioner
+        # Same as Step 6
+        [pylithapp.petsc]
+        fieldsplit_displacement_pc_type = ilu
+      \end{cfgcode}
+    \end{onlyenv}
+  \end{minipage}
+
+  \begin{tikzpicture}[overlay,remember picture]
+    \draw[physics-arrow,visible on=<2>] ($(pic cs:solution7-cfg)-(0,2em)$) to (pic cs:solution7);
+    \draw[physics-arrow,visible on=<3>] ($(pic cs:material7-cfg)-(0,2em)$) to (pic cs:material7);
+    \draw[physics-arrow,visible on=<4>] ($(pic cs:bc7-cfg)-(0,2em)$) to (pic cs:bc7);
+    \draw[physics-arrow,visible on=<5>] ($(pic cs:fault7-cfg)-(0,2em)$) to (pic cs:fault7);
+    \draw[physics-arrow,visible on=<6>] ($(pic cs:petsc7-cfg)-(0,2em)$) to (pic cs:fault7);
+  \end{tikzpicture}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 7: Input files}
+  \summary{}
+
+  \begin{description}
+  \item[mesh\_tri.msh] Finite-element mesh generated using Gmsh
+  \item[pylithapp.cfg] PyLith parameter file common to all steps
+  \item[step07\_twofaults\_maxwell.cfg] PyLith parameter file
+  \item[mat\_elastic.spatialdb] Spatial database for isotropic linear elastic properties
+  \item[mat\_maxwell.spatialdb] Spatial database for isotropic linear Maxwell properties
+  \end{description}
+    
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Step 7: Run the simulation}
+  \summary{}
+
+\begin{bashcode}
+pylith step07_twofaults_maxwell.cfg
+
+# Output
+ >> /software/unix/py39-venv/pylith-debug/lib/python3.9/site-packages/pylith/meshio/MeshIOObj.py:44:read
+ -- meshiopetsc(info)
+ -- Reading finite-element mesh
+ >> /src/cig/pylith/libsrc/pylith/meshio/MeshIO.cc:94:void pylith::meshio::MeshIO::read(pylith::topology::Mesh*)
+ -- meshiopetsc(info)
+ -- Component 'reader': Domain bounding box:
+    (-100000, 100000)
+    (-100000, 0)
+
+# -- many lines omitted --
+
+25 TS dt 0.2 time 4.8
+    0 SNES Function norm 2.589196279152e-05
+    Linear solve converged due to CONVERGED_ATOL iterations 339
+    1 SNES Function norm 6.643244443329e-13
+  Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
+26 TS dt 0.2 time 5.
+ >> /software/unix/py39-venv/pylith-debug/lib/python3.9/site-packages/pylith/problems/Problem.py:201:finalize
+ -- timedependent(info)
+ -- Finalizing problem.
+\end{bashcode}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 7: Visualize results}
+  \summary{Run the {\tt viz/plot\_dispwarp.py} Python script from within ParaView}
+
+  \includefigure[height=7.0cm]{figs/step07-solution}
+    
+\end{frame}
+
+
+
+% ======================================================================
+\end{document}
+
+
+% End of file
