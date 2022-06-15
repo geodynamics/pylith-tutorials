@@ -72,7 +72,16 @@
 % minted shortcuts
 \newminted{cfg}{bgcolor=ltslate,autogobble,fontsize=\scriptsize}
 \newminted{bash}{bgcolor=ltslate!50!white,autogobble,fontsize=\tiny}
+\newmintinline{cfg}{bgcolor=ltslate,fontsize=\scriptsize}
+\newmintinline{bash}{bgcolor=ltslate!50!white,fontsize=\scriptsize}
 
 % PyLith components
 \newcommand{\pylith}[1]{{\ttfamily\color{magenta}#1}}
 \newcommand{\python}[1]{{\ttfamily\color{purple}#1}}
+
+% troubleshooting
+\makeatletter
+\newcommand{\tserror}[1][\@empty]{\begingroup\scriptsize{\bfseries\color{red}Error message}: #1\endgroup}
+\newcommand{\tsdebug}[1][\@empty]{\begingroup\scriptsize{\bfseries\color{orange} Debug}: #1\endgroup}
+\newcommand{\tsfix}[1][\@empty]{\begingroup\scriptsize{\bfseries\color{green} Fix}: #1\endgroup}
+\makeatother
