@@ -1,4 +1,4 @@
 presentations = \
-	pylithtutorial_gravity.pdf
+	gravity.pdf
 
-include ../makefile.rules
+include ../../makefile.rules
