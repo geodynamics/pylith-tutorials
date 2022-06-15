@@ -314,7 +314,8 @@ pylith step01_gravity.cfg
     % Solution
     \vec{s} = \left(\begin{array}{c} \vec{u} \end{array}\right)^T \\
     % Elasticity
-    \rho(\vec{x}) \vec{g} + \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u}) = \vec{0} \\
+    \rho(\vec{x}) \vec{g} + \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u}) = \vec{0} \tikzmark{material2}\\
+    \tensor{\sigma} - \tensor{\sigma}^\mathit{ref} = \tensor{C} : \left(\tensor{\epsilon}-\tensor{\epsilon}^\mathit{ref}\right) \\
     % Dirichlet
     u_x = 0 \text{ on boundary\_xneg} \\
     u_x = 0 \text{ on boundary\_xpos} \\
@@ -662,7 +663,7 @@ pylith step03_gravity_incompressible.cfg
         u_x = +u_0 \text{ on boundary\_xpos} \\
         u_y = 0 \text{ on boundary\_yneg} \\
         % Neumann
-        \tau_n = \tau_0(\vec{x} \text{ on boundary\_ypos}
+        \tau_n = \tau_0(\vec{x}) \text{ on boundary\_ypos}
     \end{gather*}}
   \end{minipage}
   \hfill

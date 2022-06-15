@@ -142,7 +142,7 @@
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
   \frametitle{Files used in simulations}
-  \summary{Files are in directory {\tt examples/strikeslip-2d}}
+  \summary{Files are in directory {\tt examples/reverse-2d}}
 
   \begin{description}
   \item[README.md] Brief description of the various examples
@@ -240,7 +240,7 @@
       \tikzmark{material5-cfg}
       \begin{cfgcode}
         [pylithapp.problem]
-        materials = [slab, plate, wedge]
+        materials = [slab, crust, wedge]
 
         [pylithapp.problem.materials.slab]
         description = Slab material below main fault
