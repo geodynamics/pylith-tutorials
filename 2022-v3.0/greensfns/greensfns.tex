@@ -276,7 +276,7 @@
         db_auxiliary_field = pylith.bc.ZeroDB
         db_auxiliary_field.description = Dirichlet BC +x boundary
 
-        [pylithapp.problem.bc.bc_xpos]
+        [pylithapp.problem.bc.bc_xneg]
         ...
       \end{cfgcode}
     \end{onlyenv}
@@ -632,6 +632,26 @@ Option left: name:-ts_type value: beuler
       d_{est} = G^{-g} u_a
     \end{gather}
   \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Step 6: Run the inversion}
+  \summary{}
+
+\begin{bashcode}
+  ./invert_slip.py
+
+  # Output
+  Penalty parameter:  0.01
+  Residual norm:      0.061399064273600576
+  Penalty parameter:  0.1
+  Residual norm:      0.0654352564276682
+  Penalty parameter:  1.0
+  Residual norm:      0.5891193688946441
+\end{bashcode}
   
 \end{frame}
 
