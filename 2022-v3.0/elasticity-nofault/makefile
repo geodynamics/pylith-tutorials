@@ -1,4 +1,4 @@
 presentations = \
-	elasticity_nofault.pdf
+	elasticity-nofault.pdf
 
 include ../../makefile.rules
