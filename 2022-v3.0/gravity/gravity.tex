@@ -659,8 +659,8 @@ pylith step03_gravity_incompressible.cfg
         % Elasticity
         \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u}) = \vec{0} \\
         % Dirichlet
-        u_x = -u_0 \text{ on boundary\_xneg} \\
-        u_x = +u_0 \text{ on boundary\_xpos} \\
+        u_x = 0 \text{ on boundary\_xneg} \\
+        u_x = 0 \text{ on boundary\_xpos} \\
         u_y = 0 \text{ on boundary\_yneg} \\
         % Neumann
         \tau_n = \tau_0(\vec{x}) \text{ on boundary\_ypos}
@@ -687,8 +687,8 @@ pylith step03_gravity_incompressible.cfg
         % Elasticity
         \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u}) = \vec{0} \tikzmark{material4}\\
         % Dirichlet
-        u_x = -u_0 \text{ on boundary\_xneg} \tikzmark{bc4}\\
-        u_x = +u_0 \text{ on boundary\_xpos} \\
+        u_x = 0 \text{ on boundary\_xneg} \tikzmark{bc4}\\
+        u_x = 0 \text{ on boundary\_xpos} \\
         u_y = 0 \text{ on boundary\_yneg} \\
         % Neumann
         \tau_n = \tau_0(\vec{x}) \text{ on boundary\_ypos}
