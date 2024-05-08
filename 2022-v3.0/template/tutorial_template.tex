@@ -1,0 +1,202 @@
+% -*- TeX -*-
+\documentclass[aspectratio=169]{beamer}
+\usepackage{amsmath}
+\usepackage{array}
+
+\usepackage{minted}
+\usemintedstyle{vs}
+
+\usepackage{tikz}
+
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{fit,matrix}
+\usetikzlibrary{shapes,calc}
+
+\title{PyLith Tutorial}
+\subtitle{TEMPLATE}
+\author{Brad Aagaard}
+\institute{\includegraphics[scale=0.4]{../../logos/cig_blackfg}}
+\date{June 20, 2022}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+\usetheme{CIG}
+\input{../style}
+
+% ========================================================= DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+
+% ------------------------------------------------------------ SLIDE
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_logo_dots}}
+
+% ========================================================== SECTION
+\section{{\tt examples/DIR}}
+
+% ========================================================== SUBSECTION
+\subsection{Overview}
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{[Setting for example]}
+  \summary{}
+
+  [FIGURE: Cartoon of example seting]
+
+  \vfill
+  [Text description]
+  
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Steps in example}
+  \summary{}
+
+  % List all steps with steps covered in tutorial in bold
+  \begin{description}
+  \item[Step 1] [add description]
+  \end{description}
+  
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Concepts covered}
+  \summary{}
+
+  \begin{itemize}
+  \item List features covered in example
+  \end{itemize}
+  
+\end{frame}
+
+
+% ========================================================== SUBSECTION
+\subsection{Meshing}
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Generating the finite-element mesh}
+  \summary{}
+
+  [high-level description of how the finite-element mesh will be generated]
+  
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Geometry}
+  \summary{}
+
+  [FIGURE: diagram of geometry for mesh generation]
+  
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Steps in mesh generation}
+  \summary{}
+
+  \begin{enumerate}
+  \item List steps in mesh generation process
+  \end{enumerate}
+  
+  
+\end{frame}
+
+
+% ========================================================== SECTION
+\subsection{Step 1}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 1: Overview}
+  \summary{}
+
+  [FIGURE: Cartoon of boundary value problem]
+
+  \vfill
+  [Text description]
+      
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 1: Physics}
+  \summary{}
+
+  [FIGURE: Cartoon of boundary value problem]
+
+  \vfill
+  [Strong form of governing equations (only include terms being used) and boundary conditions;
+  provide solution for simple problems]
+      
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Step 1: Physics to simulation parameters}
+  \summary{}
+
+  [Strong form of governing equations (only include terms being used) and boundary conditions;
+  provide solution for simple problems]
+
+  \vfill
+  [Show mapping from physics to simulation parameters]
+
+\begin{cfgcode}
+[pylithapp.problem.solution]
+solution = pylith.problems.SolnDispLagrange
+\end{cfgcode}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 1: Input files}
+  \summary{}
+
+  \begin{description}
+    \item[FILENAME] [description of file]
+    \end{description}
+    
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Step 1: Run simulation}
+  \summary{}
+
+\begin{bashcode}
+pylith ARGS
+\end{bashcode}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Step 1: Visualize results}
+  \summary{}
+
+  [FIGURE: solution from manual]
+    
+\end{frame}
+
+
+% ======================================================================
+\end{document}
+
+
+% End of file

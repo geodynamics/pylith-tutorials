@@ -1,14 +1,17 @@
 sources = $(presentations:.pdf=.tex)
 
 %.pdf: %.tex
-	TEXINPUTS=./:../texmf//: pdflatex $^
+	TEXINPUTS=./:../../texmf//: pdflatex --shell-escape $^
 
 default: $(presentations)
 
 .PHONY: clean
 
 again:
-	for i in $(sources); do TEXINPUTS=./:../texmf//: pdflatex $$i; done
+	for i in $(sources); do TEXINPUTS=./:../../texmf//: pdflatex --shell-escape $$i; done
+
+export:
+	for i in $(presentations); do mv $$i pylithtutorial_$$i; done
 	
 
 clean:
