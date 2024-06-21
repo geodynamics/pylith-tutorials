@@ -349,6 +349,120 @@
 \end{frame}
 
 
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Bonus Content: Including Topography}
+  \summary{}
+
+  \begin{itemize}
+    \hitem{Resources}
+    \begin{itemize}
+      \item \href{https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-multi-resolution-terrain-elevation}{Digital Elevation -- Global Multi-resolution Terrain Elevation Data 2010 (GMTED2010)}
+    \item \href{https://earthexplorer.usgs.gov/}{Earth Explorer -- USGS} for browsing and downloading data
+    \item \href{https://gdal.org}{GDAL} is a translator library for raster and vector geospatial data formats
+    \item \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.Delaunay.html}{scipy.spatial.Delaunay} for creating triangulations of DEM data
+    \item \href{https://numpy-stl.readthedocs.io/en/latest/usage.html}{numpy-stl} for creating STL files from triangulations
+    \end{itemize}\pause
+    \hitem{General workflow}
+    \begin{enumerate}
+    \item Download elevation data (Earth Explorer)
+    \item Extract subset at desired resolution ({\ttfamily gdal\_translate})
+    \item Create surface
+    \item Build geometry using surface
+    \item Generate finite-element mesh for geometry
+    \end{enumerate}
+  \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Workflow \#1: Gmsh geometry engine}
+  \summary{\href{https://gitlab.onelab.info/gmsh/gmsh/blob/master/examples/api/terrain_stl.py}{Gmsh example: terrain\_stl.py}}
+
+  \begin{enumerate}
+    \hitem{Download elevation model -- Earth Explorer}
+    \begin{onlyenv}<1>
+      \begin{enumerate}
+      \item Select region
+      \item Select dataset
+      \item Download
+      \item Extract file
+      \end{enumerate}
+    \end{onlyenv}
+    \hitem{Extract subset at desired resolution -- {\ttfamily gdal\_translate} CLI or {\ttfamily gdal.Translate()} Python API}
+    \begin{onlyenv}<2>
+      \begin{enumerate}
+      \item Set model region
+      \item Set desired resolution
+      \item Set output format
+      \end{enumerate}
+    \end{onlyenv}
+    \hitem{Create STL file via Python script}
+    \begin{onlyenv}<3>
+      \begin{enumerate}
+      \item Read in elevation data for model region -- {\ttfamily netCDF4}
+      \item Transform to model coordinate system -- {\ttfamily spatialdata + proj} or {\ttfamily pyproj}
+      \item Create triangulation -- {\ttfamily scipy.spatial.Delaunay}
+      \item Create STL representation -- {\ttfamily numpy-stl}
+      \end{enumerate}
+    \end{onlyenv}
+    \hitem{Create geometry in Gmsh}
+    \begin{onlyenv}<4>
+      \begin{enumerate}
+      \item Load STL surface into Gmsh -- {\ttfamily gmsh.merge()}
+      \item Create geometry from STL surface -- {\ttfamily gmsh.model.mesh.classifySurfaces()} and {\ttfamily gmsh.model.mesh.createGeometry()}
+      \item Identify ids of points and curves -- GUI
+      \item Create points, curves, and surfaces to create volume
+      \end{enumerate}
+    \end{onlyenv}
+  \end{enumerate}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Workflow \#2: Gmsh Open Cascade engine}
+  \summary{\href{https://gitlab.onelab.info/gmsh/gmsh/blob/master/examples/api/terrain_bspline.py}{Gmsh example: terrain\_bspline.py}}
+
+  \begin{enumerate}
+    \hitem{Download elevation model -- Earth Explorer}
+    \begin{onlyenv}<1>
+      \begin{enumerate}
+      \item Select region
+      \item Select dataset
+      \item Download
+      \item Extract file
+      \end{enumerate}
+    \end{onlyenv}
+    \hitem{Extract subset at desired resolution -- {\ttfamily gdal\_translate} CLI or {\ttfamily gdal.Translate()} Python API}
+    \begin{onlyenv}<2>
+      \begin{enumerate}
+      \item Set model region
+      \item Set desired resolution
+      \item Set output format
+      \end{enumerate}
+    \end{onlyenv}
+    \hitem{Create geometry in Gmsh}
+    \begin{onlyenv}<3>
+      \begin{enumerate}
+      \item Read in elevation data for model region -- {\ttfamily netCDF4}
+      \item Transform to model coordinate system -- {\ttfamily spatialdata + proj} or {\ttfamily pyproj}
+      \item Add points -- {\ttfamily gmsh.model.occ.add\_point()}
+      \item Create BSpline surface from points -- {\ttfamily gmsh.model.occ.add\_bspline\_surface()}
+      \item Delete points -- {\ttfamily gmsh.model.occ.remove()}
+      \item Create box (extending above topography) -- {\ttfamily gmsh.model.occ.add\_box()}
+      \item Cut box with topgraphy -- {\ttfamily gmsh.model.occ.fragment()}
+      \item Remove portion of box above topography -- {\ttfamily gmsh.model.occ.remove()}
+      \end{enumerate}
+    \end{onlyenv}
+  \end{enumerate}
+
+\end{frame}
+
+
 
 
 % ======================================================================
