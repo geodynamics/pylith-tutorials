@@ -1,0 +1,239 @@
+% -*- TeX -*-
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage{mathtools} % equations
+\usepackage{booktabs} % tables
+
+\title{2025 PyLith Hackathon}
+\subtitle{}
+\author{Brad Aagaard}
+\institute{\includegraphics[scale=1.5]{../../logos/cig_logo_dots}%
+  \hspace{4em}%
+\raisebox{1em}{\includegraphics[scale=1.0]{../../logos/cig_short_pylith}}}
+\date{June 2, 2025}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+\usetheme{CIG}
+\input{../style}
+
+% --------------------------------------------------------- DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_short_pylith}}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Welcome!}
+  \summary{}
+  
+  \begin{itemize}
+  \item Introduction
+  \item Overview of agenda
+  \item Code of conduct
+  \item Participant introductions
+  \item PyLith development
+  \item VS Code and Git tutorial
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Hackathon objectives}
+  \summary{}
+  
+  \begin{enumerate}
+  \item Learn!
+    \begin{itemize}
+    \item Technical skills
+    \item Community code development
+    \end{itemize}
+  \item Contribute to PyLith (no matter how small)
+  \item Make connections
+  \end{enumerate}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Google drive folder}
+  \summary{}
+  
+  \begin{itemize}
+  \item Daily log (general notes for entire group)
+  \item Project logs (your notes)\\
+    \important{Add {\em your} goals for the hackathon}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Outline}
+  \summary{}
+  
+  \begin{itemize}
+  \item Overview of agenda
+  \item Code of conduct
+  \item Participant introductions
+  \item PyLith development
+  \item VS Code and Git tutorial
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+
+  \important{PyLith development}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{PyLith version 5 (main branch)}
+  \summary{}
+  
+  \begin{itemize}
+  \item What has changed?
+    \begin{itemize}
+    \item Specification of boundaries and interfaces using faces rather than vertices
+      \begin{itemize}
+      \item Cubit: nodesets $\rightarrow$ sidesets
+      \item Gmsh: {\ttfamily VertexGroup} to {\ttfamily BoundaryGroup}
+      \end{itemize}
+    \item Material.description is deprecated (not used); replaced by component name
+    \item Output: VTK legacy ASCII $\rightarrow$ VTU flavor of VTK
+    \end{itemize}
+  \item What is coming?
+    \begin{itemize}
+    \item Parallel creation of cohesive cells
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{PyLith version 6 (next major release)}
+  \summary{}
+  
+  \begin{itemize}
+  \item SWIG $\rightarrow$ pybind11
+    \begin{itemize}
+    \item Cleaner interface for C++ data structures
+    \item Simpler interface code
+    \end{itemize}
+  \item CIG Pyre $\rightarrow$ ``new'' Pyre
+    \begin{itemize}
+    \item Complete rewrite by original author, Michael Aivazis
+    \item Simpler Python
+    \item Components all have names
+    \item New configuration specification
+      \begin{itemize}
+      \item Use name (less cumbersome than hierarchy)
+      \item Support for YAML files
+      \end{itemize}
+    \item Needed for compatibility with Python 3.13+
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Code overview}
+  \summary{}
+  
+  \begin{enumerate}
+  \item Design overview
+  \item Python/C++ division
+  \item Application workflow
+  \item Code layout
+  \item Code structure
+  \item Testing
+  \item Contributing to PyLith
+  \end{enumerate}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Git workflow}
+  \summary{}
+  
+  \begin{itemize}
+  \item Git setup
+    \begin{minted}{bash}
+git config --global user.name 'YOUR_NAME'
+git config --global user.email 'YOUR EMAIL'
+\end{minted}
+  \item GitHub setup
+    \begin{enumerate}
+    \item Does everyone have a GitHub account?
+    \item Did everyone fork PyLith?
+    \item Did you create a personal access token?
+    \end{enumerate}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Git walkthrough}
+  \summary{}
+  
+
+  \begin{itemize}
+  \item Workflow diagrams
+  \item Create Branch
+    \begin{minted}{bash}
+git checkout main
+git pull upstream main
+git checkout -b branch_name
+    \end{minted}
+  \item Create commit
+  \begin{minted}{shell}
+git add FILE
+git commit -m ‘A short message describing the change
+\end{minted}
+\end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Visual Studio Code overview}
+  \summary{}
+  
+  \begin{enumerate}
+  \item Opening VS Code
+  \item Side panel
+  \item Explorer
+  \item Git status
+  \item Tasks
+    \begin{itemize}
+    \item Loading a file
+    \item Searching
+    \item Building
+    \item Running tests
+    \end{itemize}
+  \end{enumerate}
+  
+\end{frame}
+
+
+% ======================================================================
+\end{document}
