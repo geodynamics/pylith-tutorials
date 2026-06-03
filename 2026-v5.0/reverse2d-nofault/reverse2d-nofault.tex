@@ -1,7 +1,7 @@
 % -*- TeX -*-
 \documentclass[aspectratio=169]{beamer}
 
-\title{PyLith v4.1 Tutorial}
+\title{PyLith v5.0 Tutorial}
 \subtitle{Gravitational Body Forces and Surface Loading}
 \author{Charles Williams \\
   Brad Aagaard \\
@@ -9,7 +9,7 @@
 \institute{\includegraphics[scale=1.5]{../../logos/cig_logo_dots}%
   \hspace{4em}%
 \raisebox{1em}{\includegraphics[scale=1.0]{../../logos/cig_short_pylith}}}
-\date{June 10, 2024}
+\date{June 8, 2026}
 
 
 % ---------------------------------------------------- CUSTOMIZATION
@@ -304,26 +304,24 @@
 pylith step01a_gravity.cfg
 
 # Output
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/meshio/MeshIOObj.py:38:read
- -- meshiopetsc(info)
- -- Reading finite-element mesh
+ >> libsrc/pylith/utils/PetscOptions.cc:251:static void pylith::utils::_PetscOptions::write(pythia::journal::info_t &, const char *, const PetscOptions &)
 
-# -- many lines omitted --
+ # -- many lines omitted --
 
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/TimeDependent.py:132:run
- -- timedependent(info)
- -- Solving problem.
-0 TS dt 0.01 time 0.
-    0 SNES Function norm 1.002609960440e+00
-      Linear solve converged due to CONVERGED_ATOL iterations 1
-    1 SNES Function norm 4.010961748540e-14
+ >> libsrc/pylith/problems/TimeDependent.cc:473:void pylith::problems::TimeDependent::solve()
+ -- info (application-flow)
+ -- Component 'timedependent.problem': Solving equations.
+0 TS dt 0.001 time 0.
+    0 SNES Function norm 3.007829881319e+03
+      Linear solve converged due to CONVERGED_ATOL iterations 11
+    1 SNES Function norm 3.524241015389e-07
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
-1 TS dt 0.01 time 0.01
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+1 TS dt 0.001 time 0.001
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 \end{bashcode}
   
@@ -376,8 +374,8 @@ pylith step01a_gravity.cfg
       \tikzmark{solution1-cfg}
       \begin{cfgcode}
         # Refine to decrease discretization size by a factor of 2
-        [pylithapp.mesh_generator]
-        refiner = pylith.topology.RefineUniform
+        [pylithapp.problem.mesh_initializer.phases.refine_mesh]
+        refiner.levels = 1
       \end{cfgcode}
     \end{onlyenv}
   \end{minipage}
@@ -398,26 +396,22 @@ pylith step01a_gravity.cfg
 pylith step01b_gravity.cfg
 
 # Output
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/meshio/MeshIOObj.py:38:read
- -- meshiopetsc(info)
- -- Reading finite-element mesh
-
 # -- many lines omitted --
 
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/TimeDependent.py:132:run
- -- timedependent(info)
- -- Solving problem.
-0 TS dt 0.01 time 0.
-    0 SNES Function norm 5.201675538920e-01
-      Linear solve converged due to CONVERGED_ATOL iterations 1
-    1 SNES Function norm 9.260131489264e-14
+ >> libsrc/pylith/problems/TimeDependent.cc:473:void pylith::problems::TimeDependent::solve()
+ -- info (application-flow)
+ -- Component 'timedependent.problem': Solving equations.
+0 TS dt 0.001 time 0.
+    0 SNES Function norm 1.560502661676e+03
+      Linear solve converged due to CONVERGED_ATOL iterations 15
+    1 SNES Function norm 1.774213563982e-07
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
-1 TS dt 0.01 time 0.01
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+1 TS dt 0.001 time 0.001
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 \end{bashcode}
   
@@ -496,26 +490,23 @@ pylith step01b_gravity.cfg
 pylith step01c_gravity.cfg
 
 # Output
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/meshio/MeshIOObj.py:38:read
- -- meshiopetsc(info)
- -- Reading finite-element mesh
 
 # -- many lines omitted --
 
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/TimeDependent.py:132:run
- -- timedependent(info)
- -- Solving problem.
-0 TS dt 0.01 time 0.
-    0 SNES Function norm 6.077245184729e-01
-      Linear solve converged due to CONVERGED_ATOL iterations 1
-    1 SNES Function norm 1.142719067266e-13
+ >> libsrc/pylith/problems/TimeDependent.cc:473:void pylith::problems::TimeDependent::solve()
+ -- info (application-flow)
+ -- Component 'timedependent.problem': Solving equations.
+0 TS dt 0.001 time 0.
+    0 SNES Function norm 1.823173555419e+03
+      Linear solve converged due to CONVERGED_ATOL iterations 25
+    1 SNES Function norm 2.032090382978e-07
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
-1 TS dt 0.01 time 0.01
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+1 TS dt 0.001 time 0.001
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 \end{bashcode}
   
@@ -685,29 +676,26 @@ pylith step01c_gravity.cfg
 pylith step02_gravity_refstate.cfg
 
 # Output
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/meshio/MeshIOObj.py:38:read
- -- meshiopetsc(info)
- -- Reading finite-element mesh
 
 # -- many lines omitted --
 
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/TimeDependent.py:132:run
- -- timedependent(info)
- -- Solving problem.
-0 TS dt 0.01 time 0.
-    0 SNES Function norm 2.202667950718e-15
+ >> libsrc/pylith/problems/TimeDependent.cc:473:void pylith::problems::TimeDependent::solve()
+ -- info (application-flow)
+ -- Component 'timedependent.problem': Solving equations.
+0 TS dt 0.001 time 0.
+    0 SNES Function norm 6.916025621683e-12
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 0
-1 TS dt 0.01 time 0.01
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+1 TS dt 0.001 time 0.001
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 WARNING! There are options you set that were not used!
 WARNING! could be spelling mistake, etc!
 There is one unused database option. It is:
-Option left: name:-ksp_converged_reason (no value) source: code
+Option left: name:-mg_fine_ksp_max_it value: 5 source: code
 \end{bashcode}
   
 \end{frame}
@@ -869,26 +857,26 @@ Option left: name:-ksp_converged_reason (no value) source: code
 pylith step03_gravity_incompressible.cfg
 
 # Output
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/meshio/MeshIOObj.py:38:read
- -- meshiopetsc(info)
- -- Reading finite-element mesh
 
 # -- many lines omitted --
 
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/TimeDependent.py:132:run
- -- timedependent(info)
- -- Solving problem.
-0 TS dt 0.01 time 0.
-    0 SNES Function norm 1.002609960440e+00
+ >> libsrc/pylith/problems/TimeDependent.cc:473:void pylith::problems::TimeDependent::solve()
+ -- info (application-flow)
+ -- Component 'timedependent.problem': Solving equations.
+0 TS dt 0.001 time 0.
+    0 SNES Function norm 3.007829881319e+03
       Linear solve converged due to CONVERGED_ATOL iterations 1
-    1 SNES Function norm 1.673501255841e-13
+    1 SNES Function norm 3.268174844829e-10
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
-1 TS dt 0.01 time 0.01
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+ >> libsrc/pylith/topology/MeshOps.cc:239:static pylith::topology::Mesh *pylith::topology::MeshOps::createLowerDimMesh(const pylith::topology::Mesh &, const char *, const int, const char *)
+ -- warning (deprecation)
+ -- Creating lower dimension mesh from label with vertices. This feature will be removed in v6.0. In the future, you will need to mark boundaries instead of vertices.
+1 TS dt 0.001 time 0.001
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 \end{bashcode}
   
@@ -1057,26 +1045,23 @@ pylith step03_gravity_incompressible.cfg
 pylith step04a_surfload.cfg
 
 # Output
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/meshio/MeshIOObj.py:38:read
- -- meshiopetsc(info)
- -- Reading finite-element mesh
 
 # -- many lines omitted --
 
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/TimeDependent.py:132:run
- -- timedependent(info)
- -- Solving problem.
-0 TS dt 0.01 time 0.
-    0 SNES Function norm 1.806849275472e-02
-      Linear solve converged due to CONVERGED_ATOL iterations 1
-    1 SNES Function norm 3.848811582421e-16
+ >> libsrc/pylith/problems/TimeDependent.cc:473:void pylith::problems::TimeDependent::solve()
+ -- info (application-flow)
+ -- Component 'timedependent.problem': Solving equations.
+0 TS dt 0.001 time 0.
+    0 SNES Function norm 5.420547826416e+01
+      Linear solve converged due to CONVERGED_ATOL iterations 10
+    1 SNES Function norm 6.164969116127e-08
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
-1 TS dt 0.01 time 0.01
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+1 TS dt 0.001 time 0.001
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 \end{bashcode}
   
@@ -1129,8 +1114,8 @@ pylith step04a_surfload.cfg
     \begin{onlyenv}<2>
       \tikzmark{solution4-cfg}
       \begin{cfgcode}
-        [pylithapp.mesh_generator]
-        refiner = pylith.topology.RefineUniform
+        [pylithapp.problem.mesh_initializer.phases.refine_mesh]
+        refiner.levels = 1
       \end{cfgcode}
     \end{onlyenv}
   \end{minipage}
@@ -1151,26 +1136,23 @@ pylith step04a_surfload.cfg
 pylith step04b_surfload.cfg
 
 # Output
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/meshio/MeshIOObj.py:38:read
- -- meshiopetsc(info)
- -- Reading finite-element mesh
 
 # -- many lines omitted --
 
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/TimeDependent.py:132:run
- -- timedependent(info)
- -- Solving problem.
-0 TS dt 0.01 time 0.
-    0 SNES Function norm 1.282230294611e-02
-      Linear solve converged due to CONVERGED_ATOL iterations 1
-    1 SNES Function norm 8.657509862553e-16
+ >> libsrc/pylith/problems/TimeDependent.cc:473:void pylith::problems::TimeDependent::solve()
+ -- info (application-flow)
+ -- Component 'timedependent.problem': Solving equations.
+0 TS dt 0.001 time 0.
+    0 SNES Function norm 3.846690883833e+01
+      Linear solve converged due to CONVERGED_ATOL iterations 13
+    1 SNES Function norm 9.079319173555e-08
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
-1 TS dt 0.01 time 0.01
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+1 TS dt 0.001 time 0.001
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 \end{bashcode}
   
@@ -1250,26 +1232,23 @@ pylith step04b_surfload.cfg
 pylith step04c_surfload.cfg
 
 # Output
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/meshio/MeshIOObj.py:38:read
- -- meshiopetsc(info)
- -- Reading finite-element mesh
 
 # -- many lines omitted --
 
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/TimeDependent.py:132:run
- -- timedependent(info)
- -- Solving problem.
-0 TS dt 0.01 time 0.
-    0 SNES Function norm 1.351953324913e-02
-      Linear solve converged due to CONVERGED_ATOL iterations 1
-    1 SNES Function norm 1.106199721426e-15
+ >> libsrc/pylith/problems/TimeDependent.cc:473:void pylith::problems::TimeDependent::solve()
+ -- info (application-flow)
+ -- Component 'timedependent.problem': Solving equations.
+0 TS dt 0.001 time 0.
+    0 SNES Function norm 4.055859974739e+01
+      Linear solve converged due to CONVERGED_ATOL iterations 21
+    1 SNES Function norm 2.039209781709e-07
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
-1 TS dt 0.01 time 0.01
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+1 TS dt 0.001 time 0.001
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 \end{bashcode}
   
