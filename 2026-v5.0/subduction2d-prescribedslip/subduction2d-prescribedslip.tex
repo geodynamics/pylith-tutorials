@@ -1,15 +1,15 @@
 % -*- TeX -*-
 \documentclass[aspectratio=169]{beamer}
 
-\title{PyLith v4.1 Tutorial}
+\title{PyLith v5.0 Tutorial}
 \subtitle{Quasistatic Elasticity with Time-Dependent Prescribed Fault Slip}
-\author{Brad Aagaard\\
-  Charles Williams \\
+\author{Charles Williams \\
+  Brad Aagaard\\
   Matthew Knepley}
 \institute{\includegraphics[scale=1.5]{../../logos/cig_logo_dots}%
   \hspace{4em}%
 \raisebox{1em}{\includegraphics[scale=1.0]{../../logos/cig_short_pylith}}}
-\date{June 11, 2024}
+\date{June 9, 2026}
 
 
 % ---------------------------------------------------- CUSTOMIZATION
@@ -269,7 +269,6 @@
         materials = [continent_crust, ocean_crust, mantle]
 
         [pylithapp.problem.materials.continent_crust]
-        description = Continental crust
         label_value = 1
 
         db_auxiliary_field.description = Continental crust properties
@@ -290,7 +289,7 @@
         bc = [bc_east_mantle, bc_west, bc_bottom]
 
         [pylithapp.problem.bc.bc_east_mantle]
-        label = bndry_east_mantle
+        label = boundary_east_mantle
         label_value = 13
         constrained_dof = [0]
         db_auxiliary_field = pylith.bc.ZeroDB
@@ -308,8 +307,6 @@
         [pylithapp.problem.interfaces.fault_slabtop]
         label = fault_slabtop
         label_value = 21
-        edge = fault_slabtop_edge
-        edge_value = 31
 
         observers.observer.data_fields = [slip, traction_change]
 
@@ -358,27 +355,25 @@
   \frametitle{Step 2: Run the simulation}
   \summary{}
 
+% :TODO: Update
 \begin{bashcode}
 pylith step02_interseismic.cfg
 
 # Output
- >> /Users/baagaard/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
- >> /Users/baagaard/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/meshio/MeshIOObj.py:38:read
- -- meshiopetsc(info)
- -- Reading finite-element mesh
 
 # -- many lines omitted --
 
 30 TS dt 0.05 time 1.45
-    0 SNES Function norm 5.747931631940e-02
-      Linear solve converged due to CONVERGED_ATOL iterations 4
-    1 SNES Function norm 4.762638313664e-12
+    0 SNES Function norm 1.149639721004e+01
+      Linear solve converged due to CONVERGED_ATOL iterations 1
+    1 SNES Function norm 9.019309087447e-08
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
 31 TS dt 0.05 time 1.5
- >> /Users/baagaard/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 \end{bashcode}
   
@@ -517,30 +512,25 @@ pylith step02_interseismic.cfg
   \frametitle{Step 3: Run the simulation}
   \summary{}
 
+% :TODO: Update
 \begin{bashcode}
 pylith step03_eqcycle.cfg
 
 # Output
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/meshio/MeshIOObj.py:38:read
- -- meshiopetsc(info)
- -- Reading finite-element mesh
 
 # -- many lines omitted --
 
-1 TS dt 0.2 time 0.
-    0 SNES Function norm 1.471077126699e-12
-    Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 0
-2 TS dt 0.2 time 0.2
-    0 SNES Function norm 8.112736904302e-03
-      Linear solve converged due to CONVERGED_ATOL iterations 22
-    1 SNES Function norm 1.506999209164e-12
+60 TS dt 0.05 time 2.95
+    0 SNES Function norm 1.149639707584e+01
+      Linear solve converged due to CONVERGED_ATOL iterations 0
+    1 SNES Function norm 2.047766215711e-07
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
-3 TS dt 0.2 time 0.4
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+61 TS dt 0.05 time 3.
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 \end{bashcode}
   
