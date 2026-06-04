@@ -1,7 +1,7 @@
 % -*- TeX -*-
 \documentclass[aspectratio=169]{beamer}
 
-\title{PyLith v4.1 Tutorial}
+\title{PyLith v5.0 Tutorial}
 \subtitle{Static Green's Functions}
 \author{Charles Williams \\
   Brad Aagaard \\
@@ -9,7 +9,7 @@
 \institute{\includegraphics[scale=1.5]{../../logos/cig_logo_dots}%
   \hspace{4em}%
 \raisebox{1em}{\includegraphics[scale=1.0]{../../logos/cig_short_pylith}}}
-\date{June 11, 2024}
+\date{June 9, 2026}
 
 
 % ---------------------------------------------------- CUSTOMIZATION
@@ -240,7 +240,6 @@
         materials = [elastic_xneg, elastic_xpos]
 
         [pylithapp.problem.materials.elastic_xneg]
-        description = Material on the -x side of the fault
         label_value = 1
 
         db_auxiliary_field = spatialdata.spatialdb.UniformDB
@@ -312,7 +311,7 @@
   \frametitle{Step 4: Slip distribution}
   \summary{}
 
-  \includefigure[width=\textwidth]{figs/step04-slip}
+  \includefigure[height=7.0cm]{figs/step04-slip}
     
 \end{frame}
 
@@ -352,24 +351,23 @@
 pylith step04_varslip.cfg
 
 # Output
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/meshio/MeshIOObj.py:38:read
- -- meshiopetsc(info)
- -- Reading finite-element mesh
 
 # -- many lines omitted --
 
- -- Solving problem.
-0 TS dt 0.01 time 0.
-    0 SNES Function norm 4.861842436882e-03
-      Linear solve converged due to CONVERGED_ATOL iterations 20
-    1 SNES Function norm 1.613547624062e-12
+ >> libsrc/pylith/problems/TimeDependent.cc:473:void pylith::problems::TimeDependent::solve()
+ -- info (application-flow)
+ -- Component 'timedependent.problem': Solving equations.
+0 TS dt 0.001 time 0.
+    0 SNES Function norm 2.567358905251e+00
+      Linear solve converged due to CONVERGED_ATOL iterations 17
+    1 SNES Function norm 6.879508642723e-08
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
-1 TS dt 0.01 time 0.01
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+1 TS dt 0.001 time 0.001
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 \end{bashcode}
   
@@ -535,20 +533,21 @@ pylith step05_greensfns.cfg
 # Output
 # -- many lines omitted --
 
- >> /src/cig/pylith/libsrc/pylith/problems/GreensFns.cc:322:void pylith::problems::GreensFns::solve()
- -- greensfns(info)
- -- Component 'problem': Computing Green's function 13 of 13.
-  0 SNES Function norm 3.827089524838e-03
-    Linear solve converged due to CONVERGED_ATOL iterations 19
-  1 SNES Function norm 1.860597566035e-12
+ >> libsrc/pylith/problems/GreensFns.cc:318:void pylith::problems::GreensFns::solve()
+ -- info (application-flow)
+ -- Component 'greensfns.problem': Computing Green's function 13 of 13.
+  0 SNES Function norm 9.567723812071e-01
+    Linear solve converged due to CONVERGED_ATOL iterations 10
+  1 SNES Function norm 2.578211196432e-08
   Nonlinear solve converged due to CONVERGED_ITS iterations 1
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- greensfns(info)
+ >> lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 WARNING! There are options you set that were not used!
 WARNING! could be spelling mistake, etc!
-There are 3 unused database options. They are:
+There are 4 unused database options. They are:
 Option left: name:-ts_error_if_step_fails (no value) source: code
+Option left: name:-ts_exact_final_time value: matchstep source: code
 Option left: name:-ts_monitor (no value) source: code
 Option left: name:-ts_type value: beuler source: code
 \end{bashcode}
@@ -635,12 +634,12 @@ Option left: name:-ts_type value: beuler source: code
   ./invert_slip.py
 
   # Output
-  Penalty parameter:  0.01
-  Residual norm:      0.061399064273600576
+  Penalty parameter:  0.02
+  Residual norm:      0.07333208443148342
   Penalty parameter:  0.1
-  Residual norm:      0.0654352564276682
-  Penalty parameter:  1.0
-  Residual norm:      0.5891193688946441
+  Residual norm:      0.07867426092538606
+  Penalty parameter:  0.4
+  Residual norm:      0.2861278443377018
 \end{bashcode}
   
 \end{frame}
@@ -651,7 +650,7 @@ Option left: name:-ts_type value: beuler source: code
   \frametitle{Step 6: Visualize results}
   \summary{Run {\tt viz/plot\_inversion\_results.py} in a terminal}
 
-  \includefigure[width=\textwidth]{figs/step06-solution}
+  \includefigure[height=7.0cm]{figs/step06-solution}
   
 \end{frame}
 
