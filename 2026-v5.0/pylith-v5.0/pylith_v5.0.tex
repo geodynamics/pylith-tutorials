@@ -4,16 +4,18 @@
 \usepackage{mathtools} % equations
 \usepackage{booktabs} % tables
 
-\title{PyLith v4.1 Tutorial}
-\subtitle{Overview of PyLith v4.1}
+\title{PyLith v5.0 Tutorial}
+\subtitle{Overview of PyLith v5.0}
 \author{Brad Aagaard\\
   Matthew Knepley \\
   Charles Williams}
 \institute{\includegraphics[scale=1.5]{../../logos/cig_logo_dots}%
   \hspace{4em}%
 \raisebox{1em}{\includegraphics[scale=1.0]{../../logos/cig_short_pylith}}}
-\date{June 10, 2024}
+\date{June 8, 2026}
 
+
+% TODO - Update mesh generator (add HDF5)
 
 % ---------------------------------------------------- CUSTOMIZATION
 \usetheme{CIG}
@@ -32,117 +34,111 @@
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{PyLith}
-  \summary{A modern, community-driven code for crustal deformation modeling}
+  \frametitle{What is PyLith?}
+  \summary{}
+
+  \begin{itemize}
+    \hitem{Open-source community code for crustal deformation modeling with a focus on earthquake faulting}
+    \begin{itemize}
+    \item Developers seek to build and maintain a robust, flexible code for a broad user base.
+    \item Developers engage the community in setting priorities for code features and capabilities.
+    \item Developers work with users who want to contribute code enhancements.
+    \end{itemize}
+    \hitem{Goal: Accessible to new users with limited experience without impeding flexibility needed by advanced users.}
+    \begin{itemize}
+    \item Many components have default settings that work for the most common use cases.
+    \item Advanced users can assemble complex simulations by combining and adding new components.
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{What is PyLith used for?}
+  \summary{Primary use cases}
+
+  \begin{itemize}
+  \item Forward modeling of viscoelastic relaxation following earthquakes
+  \item Generating static Green's functions for 3D structure (inverting for interseismic deformation or static coseismic slip)
+  \item Forward modeling of quasi-static slip on faults with friction
+  \item Forward modeling of dynamic (inertia) slip on faults with friction\\
+  \noindent\vdots
+\end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{What is PyLith used for?}
+  \summary{Typical use cases}
   
-  \begin{itemize}
-  \item Principal Developers
-    \begin{itemize}
-    \item Brad Aagaard (USGS)
-    \item Matthew Knepley (University at Buffalo)
-    \item Charles Williams (GNS Science)
-    \end{itemize}
-  \item Use modern software engineering  to develop an open-source, community code 
-    \begin{itemize}
-    \item Modular design
-    \item Testing
-    \item Documentation
-    \item Distribution
-    \end{itemize}
-  \item PyLith v1.0 was released in 2007
-  \end{itemize}
+  \only<1>{\centering\remark{Typical use cases}\par}
+  \only<2>{\includegraphics[scale=0.2]{figs/typical-Bartlow-2010}}
+  \only<3>{\includegraphics[scale=0.2]{figs/typical-Diao-etal-2018}}
+  \only<4>{\includegraphics[scale=0.2]{figs/typical-Douilly-etal-2015}}
+  \only<5>{\includegraphics[scale=0.2]{figs/typical-Guo-etal-2020}}
+  \only<6>{\includegraphics[scale=0.2]{figs/typical-Todd-etal-2018}}
+  \only<7>{\includegraphics[scale=0.2]{figs/typical-Williams-Wallace-2018}}
+  \only<8>{\includegraphics[scale=0.2]{figs/typical-Yao-Yang-2022}}
 
 \end{frame}
 
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{What research questions is PyLith designed to address?}
-  \summary{Elasticity problems where geometry does not change significantly}
+  \frametitle{What is PyLith used for?}
+  \summary{Atypical use cases}
 
-  \vfill
-  Quasi-static modeling associated with earthquakes
-  \vfill
-
-  \begin{itemize}
-  \item Strain accumulation associated with interseismic deformation
-    \begin{itemize}
-    \item What is the stressing rate on faults X and Y?
-    \item Where is strain accumulating in the crust?
-    \end{itemize}
-  \item Coseismic stress changes and fault slip
-    \begin{itemize}
-    \item What was the slip distribution in earthquake A?
-    \item How did earthquake A change the stresses on faults X and Y?
-    \end{itemize}
-  \item Postseismic relaxation of the crust
-    \begin{itemize}
-    \item What rheology is consistent with observed postseismic deformation?
-    \item Can aseismic creep or afterslip explain the deformation?
-    \end{itemize}
-  \end{itemize}
-  \vfill
+  \only<1>{\centering\remark{Atypical use cases}\par}
+  \only<2>{\includegraphics[scale=0.2]{figs/atypical-Berne-etal-2023}}
+  \only<3>{\includegraphics[scale=0.2]{figs/atypical-Chen-etal-2025}}
+  \only<4>{\includegraphics[scale=0.2]{figs/atypical-Heckman-2013}}
+  \only<5>{\includegraphics[scale=0.2]{figs/atypical-Jha-Juanes-2014}}
+  \only<6>{\includegraphics[scale=0.2]{figs/atypical-McLaskey-etal-2014}}
+  \only<7>{\includegraphics[scale=0.2]{figs/atypical-Muirhead-etal-2025}}
+  \only<8>{\includegraphics[scale=0.2]{figs/atypical-Thompson-etal-2014}}
 
 \end{frame}
 
 
 % ------------------------------------------------------------ SLIDE
-\begin{frame}
-  \frametitle{What research questions is PyLith designed to address?}
-  \summary{Elasticity problems where geometry does not change significantly}
+\begin{frame}[t]
+  \frametitle{Impact of PyLith}
+  \summary{}
+
+  \highlight{Our estimate is 1000--3000 studies have used PyLith since its initial release in 2007.}
 
   \vfill
-  Dynamic modeling associated with earthquakes
-  \vfill
-
   \begin{itemize}
-  \item Modeling of strong ground motions
-    \begin{itemize}
-    \item Forecasting the amplitude and spatial variation in ground
-      motion for scenario earthquakes
-    \end{itemize}
-  \item Coseismic stress changes and fault slip
-    \begin{itemize}
-    \item How did earthquake A change the stresses on faults X and Y?
-    \end{itemize}
-  \item Earthquake rupture behavior
-    \begin{itemize}
-    \item What fault constitutive models/parameters are consistent
-      with the observed rupture propagation in earthquake A?
-    \end{itemize}
+  \item We do \underline{not} embed any tracking code in PyLith.
+  \item We track downloads of binary distributions and source code tarballs via GitHub.
+  \item We request that users self report publications that use PyLith (CIG website).
+  \item We request users cite the software version (DOI $\rightarrow$ archive on Zenodo) and our publications about PyLith (mainly 2013 JGR paper).
   \end{itemize}
-  \vfill
 
 \end{frame}
 
 
 % ------------------------------------------------------------ SLIDE
-\begin{frame}
-  \frametitle{What research questions is PyLith designed to address?}
-  \summary{Elasticity problems where geometry does not change significantly}
+\begin{frame}[t]
+  \frametitle{Quantifying the impact of PyLith}
+  \summary{}
+
+  \highlight{Our estimate is 1000--3000 studies have used PyLith since its initial release in 2007.}
 
   \vfill
-  Volcanic deformation associated with magma reservoirs and/or dikes
-  \vfill
+  \remark{Nearly 400 citations of the PyLith JGR paper (Aagaard et al., 2013) since publication.}
+  \begin{enumerate}
+  \item Use of PyLith in research (300+ papers; 30+ papers with 50+ citations)
+  \item Build on techniques, algorithms, etc. used in PyLith (12+ papers)
+  \item Example of a code for specific applications, using specific techniques, or open-source code development (10+ papers)
+  \end{enumerate}
   
-  \begin{itemize}
-  \item Inflation
-    \begin{itemize}
-    \item What is the geometry of the magma chamber?
-    \item What is the potential for an eruption?
-    \end{itemize}
-  \item Eruption
-    \begin{itemize}
-    \item Where is the deformation occurring?
-    \item What is the ongoing potential for an eruption?
-    \end{itemize}
-  \item Dike intrusions
-    \begin{itemize}
-    \item What is the geometry of the intrusion?
-    \item What is the pressure change and/or amount of opening/dilatation?
-    \end{itemize}
-  \end{itemize}
   \vfill
+  \remark{More than 10,000 downloads across 10 versions over the past 8 years.}
 
 \end{frame}
 
@@ -192,8 +188,84 @@
 \end{frame}
 
 
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t]
+\frametitle{People}
+
+{\scriptsize
+\begin{tabular}{p{0.48\textwidth}p{0.48\textwidth}}
+  \begin{minipage}{2.5cm}
+    \includegraphics[height=2.5cm]{figs/brad.jpg}
+  \end{minipage}\hfill
+  \begin{minipage}{0.3\textwidth}
+     {\bf Brad Aagaard} \\ U.S. Geological Survey
+  \end{minipage} &
+\begin{minipage}{2.5cm}
+    \includegraphics[height=2.5cm]{figs/charles.jpg}
+  \end{minipage}\hfill
+  \begin{minipage}{0.3\textwidth}
+     {\bf Charles Williams} \\ RPI $\rightarrow$ Earth Sciences New Zealand (formerly GNS Science)
+  \end{minipage}
+   \\[2cm]
+\begin{minipage}{2.5cm}
+    \includegraphics[height=2.5cm]{figs/matt.jpg}
+  \end{minipage}\hfill
+  \begin{minipage}{0.3\textwidth}
+{\bf Matt Knepley} \\ ANL $\rightarrow$ Rice $\rightarrow$ Univ. at Buffalo
+  \end{minipage} &
+\begin{minipage}{2.5cm}
+    \includegraphics[height=2.5cm]{figs/michael.jpg}
+  \end{minipage}\hfill
+  \begin{minipage}{0.3\textwidth}
+     {\bf Michael Aivazis} \\ Caltech CACR $\rightarrow$ ? $\rightarrow$ ParaSim
+  \end{minipage}
+      \\
+\end{tabular}}
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+\frametitle{Contributors to upcoming and recent releases}
+
+Grant Block \includegraphics[height=1em]{images/ORCIDiD_icon32x32}0009-0003-3402-0923 \\
+Daniel Douglas \includegraphics[height=1em]{images/ORCIDiD_icon32x32}0000-0002-7871-018X \\
+Lorraine Hwang \includegraphics[height=1em]{images/ORCIDiD_icon32x32}0000-0002-1021-3101 \\
+Evan Marschall \includegraphics[height=1em]{images/ORCIDiD_icon32x32}0009-0003-0916-6656 \\
+Ritwik Patil \includegraphics[height=1em]{images/ORCIDiD_icon32x32}0009-0008-3305-6728 \\
+Rezgar Shakeri \includegraphics[height=1em]{images/ORCIDiD_icon32x32}0000-0003-4790-7016 \\
+Robert Walker \includegraphics[height=1em]{images/ORCIDiD_icon32x32}0000-0001-7856-1949 \\
+Peng Zhai \includegraphics[height=1em]{images/ORCIDiD_icon32x32}0000-0001-5899-4421 \\
+Zechao Zhuo \includegraphics[height=1em]{images/ORCIDiD_icon32x32}0000-0002-8163-5731
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t]
+  \frametitle{A brief history of PyLith}
+
+  \begin{overlayarea}{\textwidth}{7.1cm}
+    \only<1>{\includegraphics[height=6.9cm]{figs/pylith-timeline-00}}
+    \only<2>{\includegraphics[height=6.9cm]{figs/pylith-timeline-01}}
+    \only<3>{\includegraphics[height=6.9cm]{figs/pylith-timeline-02}}
+    \only<4>{\includegraphics[height=6.9cm]{figs/pylith-timeline-03}}
+    \only<5>{\includegraphics[height=6.9cm]{figs/pylith-timeline-04}}
+    \only<6>{\includegraphics[height=6.9cm]{figs/pylith-timeline-05}}
+    \only<7>{\includegraphics[height=6.9cm]{figs/pylith-timeline-06}}
+    \only<8>{\includegraphics[height=6.9cm]{figs/pylith-timeline-07}}
+    \only<9>{\includegraphics[height=6.9cm]{figs/pylith-timeline-08}}
+    \only<10>{\includegraphics[height=6.9cm]{figs/pylith-timeline-09}}
+    \only<11>{\includegraphics[height=6.9cm]{figs/pylith-timeline-10}}
+    \only<12>{\includegraphics[height=6.9cm]{figs/pylith-timeline-11}}
+    \only<13>{\includegraphics[height=6.9cm]{figs/pylith-timeline-12}}
+    \only<13>{\includegraphics[height=6.9cm]{figs/pylith-timeline-13}}
+  \end{overlayarea}
+
+\end{frame}
+
+
 % ========================================================== SECTION
-\section{PyLith v4.1}
+\section{PyLith v5.0}
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
@@ -229,12 +301,12 @@
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{PyLith v3.0 $\rightarrow$ PyLith v4.1}
+  \frametitle{PyLith v4.2 $\rightarrow$ PyLith v5.0}
   \summary{}
 
   \begin{itemize}
-  \item v4.0 is very similar to v3.0; a few small changes to parameter files
-  \item v4.1 adds a visualization utility, new examples, some substantial performance improvements, and bugfixes
+  \item v5.0 is very similar to v4.x; a few small changes to parameter files
+  \item v5.0 includes scalable mesh loading and processing, updates to the 3D subduction zone example, improved performance, and bugfixes
   \end{itemize}
 
   \vfill\pause
@@ -253,22 +325,7 @@
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{PyLith v4.1 contributors}
-  \summary{We are getting contributions to PyLith development via hackathons and collaborations}
-
-  Brad Aagaard \\
-  Matthew Knepley \\
-  Charles Williams \\
-  Daniel Douglas (USGS/NSF intern) \\
-  Evan Marschall (2023 hackathon) \\
-  Zechao Zhuo (2023 hackathon)
-  
-\end{frame}
-
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}
-  \frametitle{PyLith v4.1}
+  \frametitle{PyLith v5.0}
   \summary{}
 
   \begin{itemize}
@@ -276,7 +333,6 @@
   \item A few additional features and under-the-hood improvements are almost ready
     \begin{itemize}
     \item Elasticity with inertia and prescribed fault slip
-    \item Parallel mesh loading
     \end{itemize}
   \item A few major features in v2.2 have not yet been implemented
     \begin{itemize}
@@ -293,7 +349,7 @@
 \newcommand{\statusinprogress}[1]{{\color{orange}#1}}
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{PyLith v4.1: Governing Equations}
+  \frametitle{PyLith v5.0: Governing Equations}
   \summary{}
 
   Elasticity
@@ -313,7 +369,7 @@
     \item \statusinprogress{Isotropic, Drucker-Prager elastoplasticity}
     \end{itemize}
   \end{itemize}
-  \hfill%
+  \vfill\hfill%
   \begin{minipage}{0.25\textwidth}
     \statusdone{Done}\\
     %\statusbuggy{Buggy}\\
@@ -324,7 +380,37 @@
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{PyLith v4.1: Governing Equations}
+  \frametitle{PyLith v5.0: Governing Equations}
+  \summary{}
+
+  Poroelasticity
+  \begin{itemize}
+  \item \statusdone{Static and quasi-static problems}
+  \item \statusdone{Infinitesimal strains}
+  \item \statusdone{Gravitational body forces}
+  \item \statusdone{Body forces}
+  \item Bulk rheologies (constitutive models)
+    \begin{itemize}
+    \item \statusdone{Isotropic, linear elasticity}
+    \item \statusinprogress{Isotropic, linear viscoelasticity}
+    \end{itemize}
+  \item \statusdone{Prescribed slip without poroelastic coupling across fault}
+  \item \statusinprogress{Prescribed slip with poroelastic fault properties}
+  \end{itemize}
+  \vfill\hfill%
+  \begin{minipage}{0.25\textwidth}
+    \statusdone{Done}\\
+    %\statusbuggy{Buggy}\\
+    \statusinprogress{In Progress}\\
+    \statuslater{Coming Later}
+  \end{minipage}  
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{PyLith v5.0: Governing Equations}
   \summary{}
 
   Incompressible elasticity
@@ -339,21 +425,7 @@
     \end{itemize}
   \end{itemize}
 
-  \vfill
-  Poroelasticity
-  \begin{itemize}
-  \item \statusdone{Static and quasi-static problems}
-  \item \statusdone{Infinitesimal strains}
-  \item \statusdone{Gravitational body forces}
-  \item \statusdone{Body forces}
-  \item Bulk rheologies (constitutive models)
-    \begin{itemize}
-    \item \statusdone{Isotropic, linear elasticity}
-    \end{itemize}
-  \item \statusdone{Prescribed slip without poroelastic coupling across fault}
-  \item \statusinprogress{Prescribed slip with poroelastic fault properties}
-  \end{itemize}
-  \hfill%
+  \vfill\hfill%
   \begin{minipage}{0.25\textwidth}
     \statusdone{Done}\\
     %\statusbuggy{Buggy}\\
@@ -366,7 +438,7 @@
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{PyLith v4.1: Boundary and Interface Conditions}
+  \frametitle{PyLith v5.0: Boundary and Interface Conditions}
   \summary{}
 
   \begin{itemize}
@@ -380,12 +452,12 @@
   \item Interface conditions
     \begin{itemize}
     \item \statusdone{Kinematic (prescribed slip) fault interfaces w/multiple ruptures}
-    \item \statuslater{Dynamic (friction) fault interfaces}
+    \item \statusinprogress{Dynamic (friction) fault interfaces}
       \begin{itemize}
-      \item \statuslater{Static friction}
+      \item \statusinprogress{Static friction}
       \item \statuslater{Linear slip-weakening}
       \item \statuslater{Linear time-weakening}
-      \item \statuslater{Dieterich-Ruina rate and state friction w/ageing law}
+      \item \statuslater{Dieterich-Ruina rate and state friction w/aging law}
       \end{itemize}
     \end{itemize}
   \end{itemize}
@@ -402,7 +474,7 @@
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{PyLith v4.1: Other Features}
+  \frametitle{PyLith v5.0: Other Features}
   \summary{}
 
   \begin{itemize}
@@ -411,9 +483,10 @@
     \item \statusdone{Gmsh}
     \item \statusdone{Cubit: Exodus II}
     \item \statusdone{ASCII: PyLith mesh ASCII format (intended for toy problems only)}
+    \item \statusdone{PETSc HDF5: parallel mesh loading}
     \end{itemize}
   \item \statusdone{Initial conditions}
-  \item Output: HDF5 and VTK files
+  \item Output: HDF5 and VTU files
     \begin{itemize}
     \item \statusdone{Solution over domain}
     \item \statusdone{Solution over domain boundary}
@@ -437,7 +510,7 @@
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{PyLith v4.1: Other Features  (cont.)}
+  \frametitle{PyLith v5.0: Other Features  (cont.)}
   \summary{}
 
   \begin{itemize}
@@ -523,168 +596,90 @@
   
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{Aside: Finite-Element Method}
-  \summary{Strong form to weak form}
+  \frametitle{Formulation of governing equations}
+  \summary{}
 
-  Solve governing equation in integrated sense:
-  \begin{equation}
-    \int_\Omega \trialscalar \cdot \mathit{PDE} \, d\Omega = 0,
-  \end{equation}
-  by minimizing the error with respect to the unknown coefficients.
+  \href{run:movies/formulation.mp4}{\includegraphics[width=\textwidth]{movies/formulation}}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t]
+  \frametitle{Nondimensionalization}
+  \summary{}
+
+\begin{equation}
+\rho(\vec{x})\frac{\partial^{2}\vec{u}}{\partial t^{2}}-\vec{f}(\vec{x},t)-\boldsymbol{\nabla}\cdot\boldsymbol{\sigma}=\vec{0}\text{ in }\Omega
+\end{equation}
+
+\begin{equation}
+\vec{x}^* = \frac{\vec{x}}{x_o} \quad
+\vec{u}^* = \frac{\vec{u}}{u_o} \quad
+\rho^* = \frac{\rho}{\rho_o} \quad
+\vec{f}^* = \frac{\vec{f}}{f_o} \quad
+\boldsymbol{\sigma}^* = \frac{\boldsymbol{\sigma}}{\sigma_o} \quad
+\vec{\tau}^* = \frac{\vec{\tau}}{\sigma_o}
+\end{equation}
+
+\begin{equation}
+\rho_o  \rho^*(\vec{x}^*) \frac{u_o}{t_o^2} \frac{\partial^{2}\vec{u}^*}{\partial {t^*}^{2}} - f_o \vec{f}^*(\vec{x}^*,t^*) - \frac{\sigma_o}{x_o} \boldsymbol{\nabla}^*\cdot\boldsymbol{\sigma}^* = \vec{0}\text{ in }\Omega
+\end{equation}
+
+\vfill
+\begin{tabular}{llll}
+$x_o$       & Length scale        & $\sigma_o = \mu_o \frac{u_o}{x_o}$ & Stress scale \\
+$u_o$       & Displacement scale  & $f_o = \frac{\sigma_o}{x_o}$ & Body force scale \\
+$\mu_o$     & Rigidity scale      & $\rho_o = \mu_o \frac{t_o^2}{x_o^2}$ & Density scale \\
+$t_o$       & Time scale          & & \\
+\end{tabular}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t]
+  \frametitle{Solver for quasi-static boundary value problems}
+  \summary{}
+
+  Solve $A s = b$ in which $A$ may be nonsymmetric due to bulk rheologies.
+
   \vfill
-  This leads to equations of the form:
-  \begin{equation}
-    \int_\Omega \trialscalar \cdot f_0(x,t) + \nabla \trialscalar \cdot f_1(x,t) \, d\Omega = 0.
-  \end{equation}
+  Use the Generaralized Minimal Residual (GMRES) method with restart ($A$ can be any square, invertible matrix) with the Krylov subspace iterative method.
 
-\end{frame}
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}
-  \frametitle{Governing Equations}
-  \summary{}
-
-  We want to solve equations in which the weak form can be expressed
-  as
-  \begin{gather}
-    \lhs{F(t,s,\dot{s})} = \rhs{G(t,s)} \\
-    s(t_0) = s_0
-  \end{gather}
-  where $\lhs{F}$ and $\rhs{G}$ are vector functions, $t$ is time, and $s$ is the solution vector.
   \vfill
-  Using the finite-element method and divergence theorem, we cast the weak form into
-  \begin{multline}
-    \int_\Omega \trialvec \cdot \lhs{\vec{f}_0(t,s,\dot{s})} + \nabla \trialvec : \lhs{\tensor{f}
-    _1(t,s,\dot{s})} \, 
-    d\Omega = \\
-    \int_\Omega \trialvec \cdot \rhs{\vec{g}_0(t,s)} + \nabla \trialvec : \rhs{\tensor{g}_1(t,s)} \, 
-    d\Omega,
-  \end{multline}
-  where $\vec{f}_0$ and $\vec{g}_0$ are vectors, and $\tensor{f}_1$ and
-  $\tensor{g}_1$ are tensors.
-
-\end{frame}
-
-\subsection{Elasticity}
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}
-  \frametitle{Example: Elasticity with Prescribed Slip}
-  \summary{Use domain decomposition and Lagrange multipliers to prescribe slip}
-
-  \highlight{Implicit time stepping without inertia}
-
-
-  \begin{gather}
-    % Solution
-    \vec{s}^T = \left( \vec{u} \quad \vec{\lambda} \right)^T \\
-    % Elasticity
-    \vec{f}(\vec{x},t) + \tensor{\nabla} \cdot \tensor{\sigma}(\vec{u}) = \vec{0} \text{ in }\Omega, \\
-    % Neumann
-    \tensor{\sigma} \cdot \vec{n} = \vec{\tau}(\vec{x},t) \text{ on }\Gamma_\tau, \\
-    % Dirichlet
-    \vec{u} = \vec{u}_0(\vec{x},t) \text{ on }\Gamma_u, \\
-    % Prescribed slip
-    \vec{u}^+(\vec{x},t) - \vec{u}^-(\vec{x},t) - \vec{d}(\vec{x},t) = \vec{0} \text{ on }\Gamma_f,  \\
-    \tensor{\sigma} \cdot \vec{n} = -\vec{\lambda}(\vec{x},t) \text{ on }\Gamma_{f^+}, \text{ and}\\
-    \tensor{\sigma} \cdot \vec{n} = +\vec{\lambda}(\vec{x},t) \text{ on }\Gamma_{f^-}.
-  \end{gather}
-
-\end{frame}
-
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}
-  \frametitle{Example: Elasticity with Prescribed Slip (cont.)}
-  \summary{}
-
-We create the weak form by taking the dot product with the trial function $\trialvec[u]$ or $\trialvec[\lambda]$ and integrating over the domain:
-\begin{gather}
-  % Elasticity
-  \begin{split}
-  \int_\Omega \trialvec[u] \cdot \vec{f}(\vec{x},t) + \nabla \trialvec[v] : -\tensor{\sigma}(\vec{u}) \, d\Omega
-  + \int_{\Gamma_\tau} \trialvec[u] \cdot \vec{\tau}(\vec{x},t) \, d\Gamma, \\
-  + \int_{\Gamma_{f}} \trialvec[u^+] \cdot \left(-\vec{\lambda}(\vec{x},t)\right)
-  + \trialvec[u^-] \cdot \left(+\vec{\lambda}(\vec{x},t)\right)\, d\Gamma = 0
-\end{split}\\
-  % Prescribed slip
-  \int_{\Gamma_{f}} \trialvec[\lambda] \cdot \left(
-    -\vec{u}^+(\vec{x},t) + \vec{u}^-(\vec{x},t) + \vec{d}(\vec{x},t) \right) \, d\Gamma = 0.
-\end{gather}
-
-\end{frame}
-
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}
-  \frametitle{Example: Elasticity with Prescribed Slip (cont.)}
-  \summary{}
-
-Identifying $F(t,s,\dot{s})$ and $G(t,s)$, we have
-\begin{gather}
-  % Fu
-  \begin{split}
-F^u(t,s,\dot{s}) = \int_\Omega \trialvec[u] \cdot \eqnannotate{\vec{f}(\vec{x},t)}{\vec{f}^u_0} + \nabla \trialvec[u] : \eqnannotate{-\tensor{\sigma}(\vec{u})}{\tensor{f^u_1}} \, d\Omega
-  + \int_{\Gamma_\tau} \trialvec[u] \cdot \eqnannotate{\vec{\tau}(\vec{x},t)}{\vec{f}^u_0} \, d\Gamma\\ 
-  + \int_{\Gamma_{f}} \trialvec[u^+] \cdot \eqnannotate{\left(-\vec{\lambda}(\vec{x},t)\right)}{\vec{f}^u_0}
-  + \trialvec[u^-] \cdot \eqnannotate{\left(+\vec{\lambda}(\vec{x},t)\right)}{\vec{f}^u_0}\, d\Gamma
-  \end{split}\\
-  % Fl
-  F^\lambda(t,s,\dot{s}) = \int_{\Gamma_{f}} \trialvec[\lambda] \cdot \eqnannotate{\left(
-    -\vec{u}^+(\vec{x},t) + \vec{u}^-(\vec{x},t) + \vec{d}(\vec{x},t) \right)}{\vec{f}^\lambda_0} \, d\Gamma, \\
-  % Gu
-  G^u(t,s) = 0 \\
-  % Gl
-  G^\lambda(t,s) = 0
-\end{gather}
-
-\end{frame}
-
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}
-  \frametitle{Example: Elasticity with Prescribed Slip (cont.)}
-  \summary{}
-
-  The LHS Jacobians are:
-\begin{gather}
-  % J_F uu
-  \begin{split}
-  J_F^{uu} = \frac{\partial F^u}{\partial u} + s_\mathit{tshift} \frac{\partial F^u}{\partial \dot{u}}
-      = \int_\Omega \nabla \trialvec[u] : -\tensor{C} : \frac{1}{2}(\nabla + \nabla^T)\basisvec[u] 
-\, d\Omega \\
-= \int_\Omega \trialscalar[u]_{i,k} \, \eqnannotate{\left( -C_{ikjl} \right)}{J_{f3}^{uu}} \, \basisscalar[u]_{j,l}\, d\Omega
-\end{split}\\
-  % J_F ul
-  J_F^{u\lambda} = \frac{\partial F^u}{\partial \lambda} + s_\mathit{tshift} \frac{\partial F^u}{\partial \dot{\lambda}}
-      = \int_{\Gamma_{f}} \trialscalar[u^+]_i \eqnannotate{\left(-\delta_{ij}\right)}{J^{u\lambda}_{f0}} \basisscalar[\lambda]_j
-                   + \trialscalar[u^-]_i \eqnannotate{\left(+\delta_{ij}\right)}{J^{u\lambda}_{f0}} \basisscalar[\lambda]_j\, d\Gamma, \\
-  % J_F lu
-  J_F^{\lambda u} = \frac{\partial F^\lambda}{\partial u} + s_\mathit{tshift} \frac{\partial F^\lambda}{\partial \dot{u}}
-      = \int_{\Gamma_{f}} \trialscalar[\lambda]_i 
-                    \eqnannotate{\left(-\delta_{ij}\right)}{J^{\lambda u}_{f0}} \basisscalar[u^+]_j
-                    + \trialscalar[\lambda]_i \eqnannotate{\left(+\delta_{ij}\right)}{J^{\lambda u}_{f0}} \basisscalar[u^-]_j \, d\Gamma, \\
-  % J_F ll
-  J_F^{\lambda \lambda} = \tensor{0}
-\end{gather}
-
-\end{frame}
-
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}
-  \frametitle{Example: Elasticity with Prescribed Slip (cont.)}
-  \summary{}
-
-  This LHS Jacobian has the structure
+  A Krylov solver builds a small model of a linear operator $A$, using a subspace defined by successive applications of $A$ to an initial residual vector:
   \begin{equation}
-    J_F = \left( \begin{array} {cc} J_F^{uu} & J_F^{u\lambda} \\ J_F^{\lambda u} & 0 \end{array} \right)
-    = \left( \begin{array} {cc} J_F^{uu} & C^T \\ C & 0 \end{array} \right),
-  \end{equation}
-  where $C$ contains entries of $\pm 1$ for degrees of freedom on the two sides of the fault.
-  The Schur complement of $J$ with respect to $J_F^{uu}$ is $-C\left(J_F^{uu}\right)^{-1}C^T$.
-
+    \kappa(r, A) = \text{span}\{r, Ar, A^{2}r, \ldots, A^k r\}.
+  \end{equation}\vspace*{-2em}
+  \begin{itemize}
+    \item Scalability suffers after many iterations; the solver does a lot of inner products.
+    \item GMRES+KSP requires a preconditioner to be effective.
+  \end{itemize}
+  
 \end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t]
+  \frametitle{Preconditioners}
+  \summary{}
+
+  Instead of solving $A s = b$ directly, solve an equivalent system:
+  \begin{equation}
+    P^{-1} A s = P^{-1} b,
+  \end{equation}
+  where $P$ is the preconditioner.
+
+  \vfill
+  A good preconditioner
+  \begin{itemize}
+  \item approximates $A^{-1}$, making $P^{-1}A$ close to the identity matrix, and
+  \item is inexpensive to compute and apply.
+  \end{itemize}
+  
+\end{frame}
+
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
@@ -733,25 +728,70 @@ F^u(t,s,\dot{s}) = \int_\Omega \trialvec[u] \cdot \eqnannotate{\vec{f}(\vec{x},t
 \end{frame}
 
 
-% ========================================================== SECTION
-\section{Using PyLith}
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{Fault Interface}
+  \summary{Fault tractions couple deformation across interface}
+
+  \includefigure[height=7.0cm]{figs/domain-decomposition}
+
+\end{frame}
+
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{Crustal Deformation Modeling}
-  \summary{Overview of workflow for typical research problem}
+  \frametitle{Implementation of faults}
+  \summary{}
 
-  \includefigure[height=7.0cm]{figs/workflow}
+  \href{run:movies/fault.mp4}{\includegraphics[width=\textwidth]{movies/fault}}
   
 \end{frame}
 
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
+  \frametitle{Implementation of faults with cohesive cells}
+  \summary{}
+
+  \begin{itemize}
+  \hitem{Advantages}
+    \begin{itemize}
+    \item Fault formulation is limited to cohesive cells
+    \item Bulk material formulation is independent of faults
+    \item Mesh generation only needs to mark the faces (edges in 2D) of faults
+    \end{itemize}
+  \hitem{Disadvantages}
+    \begin{itemize}
+    \item Domain decomposition with Lagrange multipliers yields a system of equations with a saddle-point
+      \begin{equation}
+        A s = b \text{, where }
+        A =
+        \begin{bmatrix}
+          \tensor{K} & \tensor{L}^{T} \\
+          \tensor{L} & \tensor{0}
+        \end{bmatrix}
+        \text{ and }
+        s = 
+        \begin{bmatrix}
+          \bm{u} \\
+          \bm{l}
+        \end{bmatrix}
+      \end{equation}
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+% ========================================================== SECTION
+\section{Using PyLith}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
   \frametitle{Overview of PyLith Workflow}
   \summary{}
 
-  \includefigure[height=7.0cm]{figs/pylith-simulation}
+  \includefigure[height=7.0cm]{figs/user-workflow}
 \end{frame}
 
 
@@ -771,57 +811,88 @@ F^u(t,s,\dot{s}) = \int_\Omega \trialvec[u] \cdot \eqnannotate{\vec{f}(\vec{x},t
 \end{frame}
 
 % ------------------------------------------------------------ SLIDE
-\begin{frame}[fragile]
-  \frametitle{Fault Interface}
-  \summary{Fault tractions couple deformation across interface}
+\begin{frame}
+  \frametitle{Code Architecture and Dependencies}
+  \summary{}
 
-  \includefigure[height=7.0cm]{figs/domain-decomposition}
+  \includefigure[width=\textwidth]{figs/pylith-packages}
 
 \end{frame}
 
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \frametitle{Implementation: Fault Interfaces}
-   \summary{Use zero volume/area cohesive cells to control fault behavior}
- 
-   \includefigure[height=6.0cm]{figs/cohesive-cell}
-   \vfill
-   See Aagaard, Knepley, and Williams, JGR, 2013
-   \href{http://dx.doi.org/10.1002/jgrb.50217}{doi:
-     10.1002/jgrb.50217} for more information.
- \end{frame}
+  \frametitle{Pyre Framework}
+  \summary{}
 
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}
-  \frametitle{PyLith Design: Focus on Geodynamics}
-  \summary{Leverage packages developed by computational scientists}
-
-  \includefigure[height=7.0cm]{figs/packages}
-
-\end{frame}
-
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}
-  \frametitle{PyLith as a Hierarchy of Components}
-  \summary{Components are the basic building blocks}
-
-  \begin{minipage}{0.53\textwidth}
+  \begin{minipage}{0.6\textwidth}
     \begin{itemize}
-    \item Separate functionality into discrete modules (components)
-    \item Alternative implementations use the same interfaces to allow plug-n-play
-    \item Top-level interfaces in Python with computational code in C++
-      \begin{itemize}
-      \item Python dynamic typing permits adding new modules at runtime
-      \item Users can add functionality without modifying the PyLith code
+      \item Component-based architecture for building flexible scientific applications
+      \item Capture user-input with defaults and validation
+      \item Units management
+      \item Integrated C++ and Python logging
+      \item Launching MPI jobs
       \end{itemize}
-    \end{itemize}
-  \end{minipage}\hfill
-  \begin{minipage}{0.43\textwidth}
-    \includefigure[height=5cm]{figs/component}
   \end{minipage}
+  \hfill
+  \begin{minipage}{0.38\textwidth}
+    \includefigure[width=\textwidth]{figs/pyre-component}
+  \end{minipage}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{A Pyre application is a hierarchy of components}
+  \summary{}
+
+  \includefigure[height=7.2cm]{figs/component-hierarchy}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Portable Extensible Toolkit for Scientific Computation (PETSc)}
+  \summary{\url{petsc.org}}
+
+  \begin{itemize}
+    \item Toolkit for solving partial differential equations (PDEs)
+    \item Solvers + preconditioners
+    \item Parallel data structures (vectors, matrices)
+    \item Finite-element data structures
+    \item Mesh input (Gmsh, \ldots) and HDF5 output
+  \end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Meshing Software Compatible with PyLith}
+  \summary{}
+
+  \begin{itemize}
+    \hitem{Cubit}
+    \begin{itemize}
+      \item User-friendly GUI
+      \item Linux and Windows; MacOS no longer supported
+      \item Closed source; free for government use
+      \item Scripting with Python or Cubit-specific scripting language
+    \end{itemize}
+    \hitem{Gmsh}
+    \begin{itemize}
+      \item Simple GUI
+      \item Linux, Windows, and MacOS
+      \item Open-source; distributed via PyPI
+      \item Scripting with Python or Gmsh-specific scripting language
+    \end{itemize}
+    \hitem{PyLith-specific ASCII files}
+    \begin{itemize}
+      \item Simple text files
+      \item Good for toy examples and testing
+    \end{itemize}
+  \end{itemize}
 
 \end{frame}
 
@@ -859,15 +930,15 @@ F^u(t,s,\dot{s}) = \int_\Omega \trialvec[u] \cdot \eqnannotate{\vec{f}(\vec{x},t
   \frametitle{Parameter Files}
   \summary{Simple syntax for specifying parameters for properties and components}
 
-  Syntax\vspace*{-8pt}%
+  Syntax\vspace*{-4pt}%
   \begin{cfgcode}
     [pylithapp.COMPONENT.SUBCOMPONENT]
     COMPONENT = OBJECT
     PARAMETER = VALUE
   \end{cfgcode}
 
-  \vspace*{-4pt}%
-  Example\vspace*{-8pt}%
+  \vspace*{-0pt}%
+  Example\vspace*{-4pt}%
   \begin{cfgcode}
       [pylithapp.problem]
       bc = [bc_xneg, bc_xpos]
@@ -885,6 +956,7 @@ F^u(t,s,\dot{s}) = \int_\Omega \trialvec[u] \cdot \eqnannotate{\vec{f}(\vec{x},t
     \end{cfgcode}
   
 \end{frame}
+
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
@@ -915,13 +987,32 @@ F^u(t,s,\dot{s}) = \int_\Omega \trialvec[u] \cdot \eqnannotate{\vec{f}(\vec{x},t
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
+  \frametitle{Testing}
+  \summary{We have used continuous integration (CI) testing since 2006}
+
+  \begin{itemize}
+    \item Continuous integration testing
+    \begin{itemize}
+      \item Unit tests (small pieces of code, e.g. functions)
+      \item Method of Manufactured Solutions (MMS) tests (verify numerical implementation)
+      \item Full-scale tests (verify simulations produce correct output)
+    \end{itemize}
+    \item Benchmarks (compare performance across versions)
+    \end{itemize}
+
+\end{frame}
+
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
   \frametitle{Documentation}
   \summary{Documentation is online; EPub and PDF files are also available}
 
   \begin{description}
   \item[PyLith] \url{pylith.readthedocs.io}
-  \item[PyLith Installer] \url{pylith_installer.readthedocs.io}
   \item[SpatialData] \url{spatialdata.readthedocs.io}
+  \item[PyLith Installer] \url{pylith_installer.readthedocs.io}
   \end{description}
   
 \end{frame}
@@ -946,7 +1037,7 @@ F^u(t,s,\dot{s}) = \int_\Omega \trialvec[u] \cdot \eqnannotate{\vec{f}(\vec{x},t
   \hitem{User Guide -- Introduction}
     \begin{onlyenv}<2>
       \begin{enumerate}
-      \item New in PyLith Version 3.0 and 4.0
+      \item Release information
       \item History
       \item PyLith Workflow
       \item Architecture
@@ -958,7 +1049,7 @@ F^u(t,s,\dot{s}) = \int_\Omega \trialvec[u] \cdot \eqnannotate{\vec{f}(\vec{x},t
       \begin{enumerate}
       \item Defining the Simulation
       \item PyLith Application
-      \item Petsc Options
+      \item PETSc Options
       \item Finite-Element Mesh
       \item Utilities
       \item Troubleshooting
@@ -1126,7 +1217,7 @@ F^u(t,s,\dot{s}) = \int_\Omega \trialvec[u] \cdot \eqnannotate{\vec{f}(\vec{x},t
     \begin{bashcode}
       cd PATH_TO_PYLITH_DIR
       mkdir playpen
-      cp -r src/pylith-4.1.0/examples playpen/
+      cp -r src/pylith-5.0.0/examples playpen/
     \end{bashcode}
   \item Work through relevant examples
   \item Try to complete relevant exercises listed in the manual

@@ -1,0 +1,112 @@
+\documentclass[crop,tikz]{standalone}
+\usepackage[x11names]{xcolor}
+\usepackage{tikz}
+\usepackage[scaled]{helvet}
+\renewcommand*\familydefault{\sfdefault}
+
+\begin{document}
+
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+\usetikzlibrary{arrows,shapes,positioning,calc}
+
+\tikzstyle{package} = [
+  rectangle, 
+  font=\large,
+  minimum height=2.0em,
+  rounded corners=0.75em,
+  ultra thick]
+
+\tikzstyle{sub-pylith} = [
+  rectangle, 
+  font=\large,
+  minimum height=2.0em,
+  ultra thick,
+  text width=12em, 
+  anchor=west]
+\tikzstyle{pylith} = [
+  package, 
+  font=\bf\large,
+  minimum width=16em, 
+  draw=Red2!80!black,
+  top color=Red1!50!white,
+  bottom color=Red3]
+\tikzstyle{cxx} = [
+  draw=Orange2!80!black,
+  top color=Orange1!20!white,
+  bottom color=Orange2,
+  ]
+\tikzstyle{swig} = [
+  draw=Green2!80!black,
+  top color=Green1!50!white,
+  bottom color=Green3,
+  ]
+\tikzstyle{python} = [
+  draw=DodgerBlue2!80!black,
+  top color=DodgerBlue1!50!white,
+  bottom color=DodgerBlue3,
+  ]
+
+\tikzstyle{python-package} = [
+  package,
+  minimum width=8em,
+  text depth=4em]
+
+
+\tikzstyle{arrowto} = [>=latex, ->, very thick, color=black]
+
+\begin{tikzpicture}[node distance=0.5ex and 2.0ex]
+
+  \begin{pgfonlayer}{background}
+    
+    % Component
+    \node (pylith) [pylith, text depth=16em] {{\bfseries PyLith}};
+    
+  \end{pgfonlayer}
+  
+  % Python
+  \node (python) [sub-pylith, python, below=of pylith.north, yshift=-2em, text depth=4em]
+    {{\bfseries Python}\\[\baselineskip] User Input};
+  \node (swig) [sub-pylith, swig, below=of python] {{\bfseries SWIG}};
+  \node (cxx) [sub-pylith, cxx, below=of swig]
+    {{\bfseries C/C++}\\[\baselineskip] Computational Engine};
+
+
+% Dependencies
+\node (pyre) [package, draw=DodgerBlue2!80!black, top color=DodgerBlue2, bottom color=Orange2, xshift=2em, right=of python.north east, anchor=north west] {Pyre};
+\node (h5py) [python, package, right=of pyre] {h5py};
+\node (numpy) [python, package, right=of h5py] {numpy};
+
+\node (spatialdata) [package, draw=Orange2!80!black, top color=DodgerBlue2, bottom color=Orange2, xshift=2em, right=of cxx.south east, anchor=south west] {SpatialData};
+\node (petsc) [cxx, package, right=of spatialdata] {PETSc};
+\node (proj) [cxx, package, right=of petsc] {Proj};
+\node (netcdf) [cxx, package, right=of proj] {NetCDF};
+\node (hdf5) [cxx, package, right=of netcdf] {HDF5};
+\node (mpi) [cxx, package, right=of hdf5] {MPI};
+
+  % Dependency
+  \draw[arrowto] (python.east) to (spatialdata.north);
+  \draw[arrowto] (python.east) to[bend right] (pyre.south);
+  \draw[arrowto] (python.east) to[bend right] (h5py.south);
+  \draw[arrowto] (python.east) to[bend right] (numpy.south);
+  \draw[arrowto] (pyre.south) to[bend right] (h5py.south);
+  \draw[arrowto] (pyre.south) to (mpi.north);
+  \draw[arrowto] (h5py.south) to (hdf5.north);
+  \draw[arrowto] (h5py.south) to[bend right] (numpy.south);
+
+  \draw[arrowto] (cxx.east) to[bend left] (petsc.north);
+  \draw[arrowto] (cxx.east) to[bend left] (netcdf.north);
+  \draw[arrowto] (cxx.east) to[bend left] (hdf5.north);
+  \draw[arrowto] (cxx.east) to[bend left] (mpi.north);
+  \draw[arrowto] (cxx.east) to[bend left] (spatialdata.north);
+  \draw[arrowto] (spatialdata.north) to (pyre.south);
+  \draw[arrowto] (spatialdata.north) to[bend left] (proj.north);
+  \draw[arrowto] (petsc.north) to[bend left] (hdf5.north);
+  \draw[arrowto] (petsc.north) to[bend left] (mpi.north);  
+  \draw[arrowto] (netcdf.north) to[bend left] (hdf5.north);
+  \draw[arrowto] (hdf5.north) to[bend left] (mpi.north);
+
+\end{tikzpicture}
+
+\end{document}

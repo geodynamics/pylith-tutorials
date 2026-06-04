@@ -1,0 +1,68 @@
+\documentclass[crop,tikz]{standalone}
+\usepackage[x11names]{xcolor}
+\usepackage{tikz}
+\usepackage[scaled]{helvet}
+\renewcommand*\familydefault{\sfdefault}
+
+\begin{document}
+
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+\usetikzlibrary{arrows,shapes,positioning,calc}
+
+\tikzstyle{component} = [
+  rectangle, 
+  font=\bf\large,
+  minimum height=2.0em,
+  rounded corners=0.75em,
+  ultra thick,
+  draw=Orchid2!80!black,
+  top color=Orchid1!50!white,
+  bottom color=Orchid3,
+  minimum width=4em,
+  text depth=2em,
+  anchor=west
+  ]
+
+\tikzstyle{connect} = [ultra thick, color=black]
+
+\begin{tikzpicture}[node distance=2em]
+
+\node (app) [component, minimum height=6em, text depth=0em] {Application};
+
+% Level 0
+\node (c00) [component, right=of app.north east, yshift=2em] {};
+\node (c01) [component, right=of app.east] {};
+\node (c02) [component, right=of app.south east, yshift=-4em] {};
+
+\draw[connect] ($(app.east)+(0em,2em)$) -- (c00.west);
+\draw[connect] (app.east) -- (c01.west);
+\draw[connect] ($(app.east)+(0em,-2em)$) -- (c02.west);
+
+% Level 1
+\node (c10) [component, right=of c00.east] {};
+\node (c11) [component, right=of c01.east] {};
+\node (c12) [component, right=of c02.east, yshift=+2em] {};
+\node (c13) [component, right=of c02.east, yshift=-2em] {};
+
+\draw[connect] (c00.east) -- (c10.west);
+\draw[connect] (c01.east) -- (c11.west);
+\draw[connect] ($(c02.east)+(0em,+0.5em)$) -- (c12.west);
+\draw[connect] ($(c02.east)+(0em,-0.5em)$) -- (c13.west);
+
+% Level 2
+\node (c20) [component, right=of c10.east, yshift=+2em] {};
+\node (c21) [component, right=of c10.east, yshift=-2em] {};
+\node (c22) [component, right=of c12.east, yshift=+2em] {};
+\node (c23) [component, right=of c12.east, yshift=-2em] {};
+
+\draw[connect] (c10.east) -- (c20.west);
+\draw[connect] (c10.east) -- (c21.west);
+\draw[connect] ($(c12.east)+(0em,+0.5em)$) -- (c22.west);
+\draw[connect] ($(c12.east)+(0em,-0.5em)$) -- (c23.west);
+
+
+\end{tikzpicture}
+
+\end{document}

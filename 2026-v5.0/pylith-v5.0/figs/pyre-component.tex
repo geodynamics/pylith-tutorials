@@ -1,0 +1,86 @@
+\documentclass[crop,tikz]{standalone}
+\usepackage[x11names]{xcolor}
+\usepackage{tikz}
+\usepackage[scaled]{helvet}
+\renewcommand*\familydefault{\sfdefault}
+
+\begin{document}
+
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+\usetikzlibrary{arrows,shapes,positioning,calc}
+
+\tikzstyle{basecomps} = [rectangle, 
+                      font=\large,
+                      minimum height=2.0em,
+                      rounded corners=0.75em,
+                      ultra thick]
+\tikzstyle{bgcomps} = [basecomps, 
+                      font=\bf\large,
+                      minimum width=24em]
+\tikzstyle{subcomps} = [basecomps,
+                      minimum width=20em, 
+                      text width=20em, 
+                      anchor=west]
+
+%\tikzstyle{subcomps} = [rectangle, text width=6em, text centered, very thick, minimum height=1.5em, font=\small, node distance=2.0em]
+\tikzstyle{component} = [bgcomps, 
+                      draw=Orchid2!80!black,
+                      top color=Orchid1!50!white,
+                      bottom color=Orchid3]
+\tikzstyle{sub-component} = [
+  component,
+  minimum width=8em,
+  text depth=4em]
+\tikzstyle{cxx} = [subcomps,
+                      dashed,
+                      draw=Orange2!80!black,
+                      top color=Orange1!20!white,
+                      bottom color=Orange2,
+                      ]
+\tikzstyle{swig} = [subcomps,
+                      dashed,
+                      draw=Green2!80!black,
+                      top color=Green1!50!white,
+                      bottom color=Green3]
+\tikzstyle{python} = [subcomps, 
+                      draw=DodgerBlue2!80!black,
+                      top color=DodgerBlue1!50!white,
+                      bottom color=DodgerBlue3]
+
+\tikzstyle{sub-label} = [color=black, font=\bf\large]
+\tikzstyle{connect} = [very thick, color=black]
+
+\begin{tikzpicture}[node distance=0.5ex]
+
+  \begin{pgfonlayer}{background}
+    
+    % Component
+    \node (component) [component, text depth=16em] {{\bfseries Component}};
+    
+  \end{pgfonlayer}
+  
+  % Python
+  \node (python) [python, below=of component.north, yshift=-2em]
+    {{\bfseries Python}\\[\baselineskip] \quad {\ttfamily properties} ({\itshape str, float, int})\\[1ex] \quad {\ttfamily facilities} ({\itshape sub-components})};
+  \node (swig) [swig, below=of python] {{\bfseries SWIG}};
+  \node (cxx) [cxx, below=of swig]
+    {{\bfseries C/C++}\\[\baselineskip] Computational Engine};
+
+
+% Subcomponents
+\node (sub-label) [sub-label, xshift=8em, yshift=2em] at (component.east) {Subcomponents};
+\node (sub0) [sub-component, below=of sub-label] {};
+\node (sub1) [sub-component, below=of sub0] {};
+\node (sub2) [sub-component, below=of sub1] {};
+
+  % Main workflow
+  \draw[connect] (component.east) -| ($(sub0.west)+(-2em,1em)$) |- (sub0);
+  \draw[connect] (component.east) -| ($(sub1.west)+(-2em,1em)$) |- (sub1);
+  \draw[connect] (component.east) -| ($(sub2.west)+(-2em,1em)$) |- (sub2);
+
+
+\end{tikzpicture}
+
+\end{document}
