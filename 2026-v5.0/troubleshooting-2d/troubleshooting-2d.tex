@@ -1,7 +1,7 @@
 % -*- TeX -*-
 \documentclass[aspectratio=169]{beamer}
 
-\title{PyLith v4.1 Tutorial}
+\title{PyLith v5.0 Tutorial}
 \subtitle{Troubleshooting PyLith Simulations (2D)}
 \author{Brad Aagaard\\
   Charles Williams \\
@@ -9,7 +9,7 @@
 \institute{\includegraphics[scale=1.5]{../../logos/cig_logo_dots}%
   \hspace{4em}%
 \raisebox{1em}{\includegraphics[scale=1.0]{../../logos/cig_short_pylith}}}
-\date{June 10, 2024}
+\date{June 8, 2026}
 
 
 % ---------------------------------------------------- CUSTOMIZATION
@@ -32,10 +32,8 @@
 % 3. Wrong solution field (no lagrange multiplier)
 % 4. Wrong number of locations in spatial database
 % 5. Incorrect name for spatial database values
-% 6. Wrong order for faults
-% 7. No buried edges
-% 8. Wrong interpolation type (fault slip)
-% 9. Wrong data dim for spatial database (slip)
+% 6. Wrong interpolation type (fault slip)
+% 7. Wrong data dim for spatial database (slip)
 %
 % Not covered
 %
@@ -182,10 +180,10 @@
         # Output
         facilities of 'dirichlettimedependent':
             auxiliary_subfields=<component name>: Discretization information for auxiliary subfields.
-                current value: 'auxiliary_subfields', from {file='/software/unix/py39-venv/pylith-debug/lib/python3.9/site-packages/pythia/pyre/inventory/ConfigurableClass.py', line=26, function='__set__'}
+                current value: 'auxiliary_subfields', from {file='lib/python3.12/site-packages/pythia/pyre/inventory/ConfigurableClass.py', line=26, function='__set__'}
                 configurable as: auxiliary_subfields
             db_auxiliary_field=<component name>: Database for physical property parameters.
-                current value: 'simpledb', from {imported} via {file='step02_sheardisp.cfg', line=87, column=-1}
+                current value: 'simpledb', from {imported} via {file='step02_sheardisp.cfg', line=75, column=-1}
                 configurable as: simpledb, db_auxiliary_field
             derived_subfields=<component name>: Discretization of derived subfields.
                 current value: 'emptybin', from {default}
@@ -278,8 +276,9 @@
 \begin{bashcode}
 pylith step01a_gravity.cfg
 
- >> {default}::
- -- pyre.inventory(error)
+# Output
+>> {default}::
+ -- error (pyre.inventory)
  -- timedependent.problem_defaults.name <- ''
  -- Missing required property 'name' in default options for problem.
 
@@ -287,8 +286,8 @@ pylith step01a_gravity.cfg
 
 usage: pylith [--<property>=<value>] [--<facility>.<property>=<value>] [FILE.cfg] ...
 component 'pylithapp'
-    properties: dump_parameters, help, help-components, help-persistence, help-properties, include-citations, initialize_only, job, launcher, mesh_generator, metadata, nodes, petsc, problem, scheduler, start_python_debugger, typos, weaver
-    facilities: dump_parameters,job,launcher,mesh_generator,metadata,petsc,problem,scheduler,weaver
+    properties: dump_parameters, help, help-components, help-persistence, help-properties, include-citations, initialize_only, job, launcher, metadata, nodes, petsc, problem, scheduler, show_application_flow, start_python_debugger, typos, weaver
+    facilities: dump_parameters,job,launcher,metadata,petsc,problem,scheduler,weaver
 For more information:
   --help-properties: prints details about user settable properties
   --help-components: prints details about user settable facilities and components
@@ -305,10 +304,10 @@ pylithapp: configuration error(s)
 
   \tserror
   \begin{bashcode}
-    >> {default}::
-    -- pyre.inventory(error)
-    -- timedependent.problem_defaults.name <- ''
-    -- Missing required property 'name' in default options for problem.
+  >> {default}::
+  -- error (pyre.inventory)
+  -- timedependent.problem_defaults.name <- ''
+  -- Missing required property 'name' in default options for problem.
   \end{bashcode}
 
   \tsdebug[Examine parameters for \pylith{pylithapp.timedependent.problem\_defaults}]\pause\\[1pt]
@@ -334,15 +333,16 @@ pylithapp: configuration error(s)
 \begin{bashcode}
 pylith step01_gravity.cfg
 
+# Output
  >> {default}::
- -- pyre.inventory(error)
+ -- error (pyre.inventory)
  -- timedependent.bc.dirichlettimedependent.label <- ''
  -- Label for boundary condition group/nodeset/pset in mesh not specified.
 
  # -- many lines omitted --
 
-  >> {default}::
- -- pyre.inventory(error)
+ >> {default}::
+ -- error (pyre.inventory)
  -- timedependent.bc.dirichlettimedependent.constrained_dof <- '[]'
  -- No constrained degrees of freedom found for time-dependent Dirichlet boundary condition 'bc_xpos'. 'constrained_dof' must be a zero-based integer array (0=x, 1=y, 2=z).
 
@@ -385,18 +385,19 @@ pylith step01_gravity.cfg
 \begin{bashcode}
 pylith step01_gravity.cfg
 
- >> ./pylithapp.cfg:118:
- -- pyre.inventory(error)
+# Output
+ >> ./pylithapp.cfg:112:
+ -- error (pyre.inventory)
  -- pylithapp.timedependent.materials.elasticity.auxiliary_subfields.bulk_modulus.basis_order <- '0'
  -- unknown component 'pylithapp.timedependent.materials.elasticity.auxiliary_subfields.bulk_modulus'
- >> ./pylithapp.cfg:119:
- -- pyre.inventory(error)
+ >> ./pylithapp.cfg:113:
+ -- error (pyre.inventory)
  -- pylithapp.timedependent.materials.elasticity.auxiliary_subfields.shear_modulus.basis_order <- '0'
  -- unknown component 'pylithapp.timedependent.materials.elasticity.auxiliary_subfields.shear_modulus'
 usage: pylith [--<property>=<value>] [--<facility>.<property>=<value>] [FILE.cfg] ...
 component 'pylithapp'
-    properties: dump_parameters, help, help-components, help-persistence, help-properties, include-citations, initialize_only, job, launcher, mesh_generator, metadata, nodes, petsc, problem, scheduler, start_python_debugger, typos, weaver
-    facilities: dump_parameters,job,launcher,mesh_generator,metadata,petsc,problem,scheduler,weaver
+    properties: dump_parameters, help, help-components, help-persistence, help-properties, include-citations, initialize_only, job, launcher, metadata, nodes, petsc, problem, scheduler, show_application_flow, start_python_debugger, typos, weaver
+    facilities: dump_parameters,job,launcher,metadata,petsc,problem,scheduler,weaver
 For more information:
   --help-properties: prints details about user settable properties
   --help-components: prints details about user settable facilities and components
@@ -413,17 +414,17 @@ pylithapp: configuration error(s)
 
   \tserror
   \begin{bashcode}
- >> ./pylithapp.cfg:118:
- -- pyre.inventory(error)
+ >> ./pylithapp.cfg:112:
+ -- error (pyre.inventory)
  -- pylithapp.timedependent.materials.elasticity.auxiliary_subfields.bulk_modulus.basis_order <- '0'
  -- unknown component 'pylithapp.timedependent.materials.elasticity.auxiliary_subfields.bulk_modulus'
- >> ./pylithapp.cfg:119:
- -- pyre.inventory(error)
+ >> ./pylithapp.cfg:113:
+ -- error (pyre.inventory)
  -- pylithapp.timedependent.materials.elasticity.auxiliary_subfields.shear_modulus.basis_order <- '0'
  -- unknown component 'pylithapp.timedependent.materials.elasticity.auxiliary_subfields.shear_modulus'
   \end{bashcode}
 
-  \tsdebug[Examine line 118 of \pylith{pylithapp.cfg}. Lookup \pylith{Elasticity} and \pylith{IsotropicLinearElasticity} components]\pause\\[1pt]
+  \tsdebug[Examine line 112 of \pylith{pylithapp.cfg}. Lookup \pylith{Elasticity} and \pylith{IsotropicLinearElasticity} components]\pause\\[1pt]
 
   \tsfix[Edit \pylith{pylithapp.cfg}]
   \begin{cfgcode}
@@ -445,24 +446,24 @@ pylithapp: configuration error(s)
 \begin{bashcode}
 pylith step01a_gravity.cfg
 
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py:77:main
- -- pylithapp(info)
+# Output
+ >> lib/python3.12/site-packages/pylith/apps/PyLithApp.py:76:main
+ -- info (application-flow)
  -- Running on 1 process(es).
 
 # -- many lines omitted --
 
-Fatal error. Calling MPI_Abort() to abort PyLith application.
-Traceback (most recent call last):
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PetscApplication.py", line 55, in onComputeNodes
-    self.main(*args, **kwds)
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py", line 101, in main
-    self.problem.verifyConfiguration()
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py", line 176, in verifyConfiguration
-    ModuleProblem.verifyConfiguration(self)
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/problems.py", line 162, in verifyConfiguration
-    return _problems.Problem_verifyConfiguration(self)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ >> libsrc/pylith/topology/MeshOps.cc:804:static void pylith::topology::MeshOps::checkMaterialLabels(const pylith::topology::Mesh &, pylith::int_array &)
+ -- error (user-input)
+ -- Material label_value '3' for cell '609' does not match the label_value of any materials or interfaces.
+ Fatal error. Calling MPI_Abort() to abort PyLith application.
+
+# -- many lines omitted --
+
 RuntimeError: Material label_value '3' for cell '609' does not match the label_value of any materials or interfaces.
+C++ traceback (8 frames):
+
+# -- many lines omitted --
 \end{bashcode}
 
 \end{frame}
@@ -475,7 +476,9 @@ RuntimeError: Material label_value '3' for cell '609' does not match the label_v
 
   \tserror
   \begin{bashcode}
-RuntimeError: Material label_value '3' for cell '3009' does not match the label_value of any materials or interfaces.
+ >> libsrc/pylith/topology/MeshOps.cc:804:static void pylith::topology::MeshOps::checkMaterialLabels(const pylith::topology::Mesh &, pylith::int_array &)
+ -- error (user-input)
+ -- Material label_value '3' for cell '609' does not match the label_value of any materials or interfaces.
   \end{bashcode}
 
   \tsdebug[Examine \pylith{pylithapp.problem.materials}]\pause\\[1pt]
@@ -503,31 +506,28 @@ RuntimeError: Material label_value '3' for cell '3009' does not match the label_
 \begin{bashcode}
 pylith step01a_gravity.cfg
 
+# Output
+# -- many lines omitted --
+
+ >> libsrc/pylith/problems/TimeDependent.cc:342:virtual void pylith::problems::TimeDependent::initialize()
+ -- info (application-flow)
+ -- Component 'timedependent.problem': Initializing problem.
 [0]PETSC ERROR: --------------------- Error Message --------------------------------------------------------------
 [0]PETSC ERROR: Error in external library
 [0]PETSC ERROR: Error converting spatial database values for gravitational_acceleration at (  -92285.3  -72772.7) in spatial database 'Gravity field'. Found near zero magnitude (0) for gravity field vector (  0  0).
 
 # -- lines with PETSc configuration omitted --
 
-[0]PETSC ERROR: #1 static PetscErrorCode pylith::topology::FieldQuery::queryDBPointFn(PylithInt, PylithReal, const PylithReal *, PylithInt, PylithScalar *, void *)() at /src/cig/pylith/libsrc/pylith/topology/FieldQuery.cc:330
-[0]PETSC ERROR: #2 DMProjectPoint_Func_Private() at /software/unix/petsc-dev/src/dm/impls/plex/plexproject.c:128
-[0]PETSC ERROR: #3 DMProjectPoint_Private() at /software/unix/petsc-dev/src/dm/impls/plex/plexproject.c:483
-[0]PETSC ERROR: #4 DMProjectLocal_Generic_Plex() at /software/unix/petsc-dev/src/dm/impls/plex/plexproject.c:1003
-[0]PETSC ERROR: #5 DMProjectFunctionLocal_Plex() at /software/unix/petsc-dev/src/dm/impls/plex/plexproject.c:1034
-[0]PETSC ERROR: #6 DMProjectFunctionLocal() at /software/unix/petsc-dev/src/dm/interface/dm.c:8183
-[0]PETSC ERROR: #7 void pylith::topology::FieldQuery::queryDB()() at /src/cig/pylith/libsrc/pylith/topology/FieldQuery.cc:223
+[0]PETSC ERROR: #1 static PetscErrorCode pylith::topology::FieldQuery::queryDBPointFn(PylithInt, PylithReal, const PylithReal *, PylithInt, PylithScalar *, void *)() at libsrc/pylith/topology/FieldQuery.cc:334
+[0]PETSC ERROR: #2 DMProjectPoint_Func_Private() at src/dm/impls/plex/plexproject.c:143
+[0]PETSC ERROR: #3 DMProjectPoint_Private() at src/dm/impls/plex/plexproject.c:545
+[0]PETSC ERROR: #4 DMProjectLocal_Generic_Plex() at src/dm/impls/plex/plexproject.c:1083
+[0]PETSC ERROR: #5 DMProjectFunctionLocal_Plex() at src/dm/impls/plex/plexproject.c:1114
+[0]PETSC ERROR: #6 DMProjectFunctionLocal() at src/dm/interface/dm.c:8361
+[0]PETSC ERROR: #7 void pylith::topology::FieldQuery::queryDB()() at libsrc/pylith/topology/FieldQuery.cc:228
 Fatal error. Calling MPI_Abort() to abort PyLith application.
-Traceback (most recent call last):
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PetscApplication.py", line 55, in onComputeNodes
-    self.main(*args, **kwds)
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py", line 103, in main
-    self.problem.initialize()
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py", line 187, in initialize
-    ModuleProblem.initialize(self)
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/problems.py", line 165, in initialize
-    return _problems.Problem_initialize(self)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-RuntimeError: Error detected while in PETSc function.
+
+# -- many lines omitted --
 \end{bashcode}
 
 \end{frame}
@@ -589,22 +589,23 @@ spatial database 'Gravity field'. Found near zero magnitude (0) for gravity fiel
 \begin{bashcode}
 pylith step06_twofaults.cfg
 
+# Output
  >> {default}::
- -- pyre.inventory(error)
+ -- error (pyre.inventory)
  -- timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.description <- ''
  -- Description for spatial database not specified.
  >> {default}::
- -- pyre.inventory(error)
+ -- error (pyre.inventory)
  -- timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.simpleioascii.filename <- ''
  -- Filename for spatial database not specified.
- >> step06_twofaults.cfg:85:
- -- pyre.inventory(error)
+ >> step06_twofaults.cfg:84:
+ -- error (pyre.inventory)
  -- timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.filename <- 'fault_slip.spatialdb'
  -- unrecognized property 'timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.filename'
 usage: pylith [--<property>=<value>] [--<facility>.<property>=<value>] [FILE.cfg] ...
 component 'pylithapp'
-    properties: dump_parameters, help, help-components, help-persistence, help-properties, include-citations, initialize_only, job, launcher, mesh_generator, metadata, nodes, petsc, problem, scheduler, start_python_debugger, typos, weaver
-    facilities: dump_parameters,job,launcher,mesh_generator,metadata,petsc,problem,scheduler,weaver
+    properties: dump_parameters, help, help-components, help-persistence, help-properties, include-citations, initialize_only, job, launcher, metadata, nodes, petsc, problem, scheduler, show_application_flow, start_python_debugger, typos, weaver
+    facilities: dump_parameters,job,launcher,metadata,petsc,problem,scheduler,weaver
 For more information:
   --help-properties: prints details about user settable properties
   --help-components: prints details about user settable facilities and components
@@ -621,10 +622,10 @@ pylithapp: configuration error(s)
 
   \tserror
   \begin{bashcode}
-    >> {default}::
-    -- pyre.inventory(error)
-    -- timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.description <- ''
-    -- Description for spatial database not specified.
+ >> {default}::
+ -- error (pyre.inventory)
+ -- timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.description <- ''
+ -- Description for spatial database not specified.
   \end{bashcode}
 
   \tsdebug[Look for missing description in \pylith{kinsrcstep.simpledb}]\pause\\[1pt]
@@ -647,18 +648,19 @@ pylithapp: configuration error(s)
 \begin{bashcode}
 pylith step06_twofaults.cfg
 
+# Output
  >> {default}::
- -- pyre.inventory(error)
+ -- error (pyre.inventory)
  -- timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.simpleioascii.filename <- ''
  -- Filename for spatial database not specified.
- >> step06_twofaults.cfg:85:
- -- pyre.inventory(error)
+ >> step06_twofaults.cfg:84:
+ -- error (pyre.inventory)
  -- timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.filename <- 'fault_slip.spatialdb'
  -- unrecognized property 'timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.filename'
 usage: pylith [--<property>=<value>] [--<facility>.<property>=<value>] [FILE.cfg] ...
 component 'pylithapp'
-    properties: dump_parameters, help, help-components, help-persistence, help-properties, include-citations, initialize_only, job, launcher, mesh_generator, metadata, nodes, petsc, problem, scheduler, start_python_debugger, typos, weaver
-    facilities: dump_parameters,job,launcher,mesh_generator,metadata,petsc,problem,scheduler,weaver
+    properties: dump_parameters, help, help-components, help-persistence, help-properties, include-citations, initialize_only, job, launcher, metadata, nodes, petsc, problem, scheduler, show_application_flow, start_python_debugger, typos, weaver
+    facilities: dump_parameters,job,launcher,metadata,petsc,problem,scheduler,weaver
 For more information:
   --help-properties: prints details about user settable properties
   --help-components: prints details about user settable facilities and components
@@ -675,10 +677,10 @@ pylithapp: configuration error(s)
 
   \tserror
   \begin{bashcode}
-    >> {default}::
-    -- pyre.inventory(error)
-    -- timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.simpleioascii.filename <- ''
-    -- Filename for spatial database not specified.
+ >> {default}::
+ -- error (pyre.inventory)
+ -- timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.simpleioascii.filename <- ''
+ -- Filename for spatial database not specified.
   \end{bashcode}
 
   \tsdebug[Look for missing filename in \pylith{kinsrcstep.simpledb.simpleioascii}]\pause\\[1pt]
@@ -703,20 +705,15 @@ pylithapp: configuration error(s)
 \begin{bashcode}
 pylith step06_twofaults.cfg
 
+# Output
 # -- many lines omitted --
 
+ >> libsrc/pylith/topology/FieldOps.cc:224:static void pylith::topology::FieldOps::checkSubfieldsExist(const pylith::string_vector &, const std::string &, const pylith::topology::Field &)
+ -- error (user-input)
+ -- Could not find 'lagrange_multiplier_fault' in domain solution field. Field contains: 'displacement'; the missing fields are required for interface 'FaultCohesiveKin'.
 Fatal error. Calling MPI_Abort() to abort PyLith application.
-Traceback (most recent call last):
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PetscApplication.py", line 55, in onComputeNodes
-    self.main(*args, **kwds)
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py", line 101, in main
-    self.problem.verifyConfiguration()
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py", line 176, in verifyConfiguration
-    ModuleProblem.verifyConfiguration(self)
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/problems.py", line 162, in verifyConfiguration
-    return _problems.Problem_verifyConfiguration(self)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-RuntimeError: Could not find 'lagrange_multiplier_fault' in solution field. Field contains: 'displacement; the missing fields are required for interface 'FaultCohesiveImpulses'.
+
+# -- many lines omitted --
 \end{bashcode}
 
 \end{frame}
@@ -729,7 +726,9 @@ RuntimeError: Could not find 'lagrange_multiplier_fault' in solution field. Fiel
 
   \tserror
   \begin{bashcode}
-RuntimeError: Could not find 'lagrange_multiplier_fault' in solution field. Field contains: 'displacement; the missing fields are required for interface 'FaultCohesiveImpulses'.
+ -- error (user-input)
+ -- Could not find 'lagrange_multiplier_fault' in domain solution field. Field contains: 'displacement'; the missing fields are required for interface 'FaultCohesiveKin'.
+Fatal error. Calling MPI_Abort() to abort PyLith application.
   \end{bashcode}
 
   \tsdebug[Look at solution field in parameter viewer]\pause\\[1pt]
@@ -751,22 +750,24 @@ RuntimeError: Could not find 'lagrange_multiplier_fault' in solution field. Fiel
 \begin{bashcode}
 pylith step06_twofaults.cfg
 
+# Output
 # -- many lines omitted --
 
+ -- info (application-flow)
+ -- Component 'timedependent.problem': Initializing problem.
 Fatal error. Calling MPI_Abort() to abort PyLith application.
 Traceback (most recent call last):
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PetscApplication.py", line 55, in onComputeNodes
+  File "lib/python3.12/site-packages/pylith/apps/PetscApplication.py", line 55, in onComputeNodes
     self.main(*args, **kwds)
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py", line 103, in main
+  File "lib/python3.12/site-packages/pylith/apps/PyLithApp.py", line 85, in main
     self.problem.initialize()
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py", line 187, in initialize
+  File "lib/python3.12/site-packages/pylith/problems/Problem.py", line 212, in initialize
     ModuleProblem.initialize(self)
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/problems.py", line 165, in initialize
+  File "lib/python3.12/site-packages/pylith/problems/problems.py", line 165, in initialize
     return _problems.Problem_initialize(self)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 RuntimeError: Error occurred while reading spatial database file 'fault_slip.spatialdb'.
 Read data for 3 out of 4 points.
-Error reading coordinates from buffer ''.
 \end{bashcode}
 
 \end{frame}
@@ -808,18 +809,9 @@ pylith step06_twofaults.cfg
 
 # -- many lines omitted --
 
-Fatal error. Calling MPI_Abort() to abort PyLith application.
-Traceback (most recent call last):
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PetscApplication.py", line 55, in onComputeNodes
-    self.main(*args, **kwds)
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/apps/PyLithApp.py", line 103, in main
-    self.problem.initialize()
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py", line 187, in initialize
-    ModuleProblem.initialize(self)
-  File "/software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/problems.py", line 165, in initialize
-    return _problems.Problem_initialize(self)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-RuntimeError: Could not find value 'final_slip_opening' in spatial database 'Fault rupture for main fault'. Available values are:
+ >> libsrc/pylith/topology/FieldQuery.cc:473:static void pylith::topology::_FieldQuery::findQueryIndices(FieldQuery::DBQueryContext *, const pylith::string_vector &)
+ -- error (user-input)
+ -- Could not find value 'final_slip_opening' in spatial database 'Fault rupture for main fault'. Available values are:
   final-slip-left-lateral
   final-slip-opening
   initiation-time
@@ -835,7 +827,8 @@ RuntimeError: Could not find value 'final_slip_opening' in spatial database 'Fau
 
   \tserror
   \begin{bashcode}
-RuntimeError: Could not find value 'final_slip_opening' in spatial database 'Fault rupture for main fault'. Available values are:
+ -- error (user-input)
+ -- Could not find value 'final_slip_opening' in spatial database 'Fault rupture for main fault'. Available values are:
   final-slip-left-lateral
   final-slip-opening
   initiation-time
@@ -858,117 +851,6 @@ RuntimeError: Could not find value 'final_slip_opening' in spatial database 'Fau
 % ------------------------------------------------------------ SLIDE
 \begin{frame}[fragile]
   \frametitle{{\ttfamily step06-twofaults}: Error 6}
-  \summary{Error found during solve}
-
-\begin{bashcode}
-pylith step06_twofaults.cfg
-
-# -- many lines omitted --
-
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/TimeDependent.py:132:run
- -- timedependent(info)
- -- Solving problem.
-0 TS dt 0.2 time -0.2
-    0 SNES Function norm 1.989081034695e-02
-      Linear solve converged due to CONVERGED_RTOL iterations 2
-    1 SNES Function norm 1.989081034695e-02
-    Nonlinear solve did not converge due to DIVERGED_MAX_IT iterations 1
-
-# -- many lines omitted --
-\end{bashcode}
-
-\end{frame}
-
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}[t,fragile]
-  \frametitle{{\ttfamily step06-twofaults}: Error 6 Resolution}
-  \summary{Error found during solve}
-
-  \tserror
-  \begin{bashcode}
-    Nonlinear solve did not converge due to DIVERGED_MAX_IT iterations 1
-  \end{bashcode}
-
-  \tsdebug[Look at boundary conditions, fault, and mesh]\pause\\[1pt]
-
-  \begin{onlyenv}<2>
-    \includefigure[height=4.0cm]{figs/step06-faults-wrong1}
-  \end{onlyenv}
-  \begin{onlyenv}<3>
-    \tsfix[Error in \pylith{step06\_twofaults.cfg}]
-  \begin{cfgcode}
-    # Error
-    [pylithapp.problem]
-    interfaces = [splay, fault]
-
-    # Correct
-    [pylithapp.problem]
-    interfaces = [fault, splay]
-  \end{cfgcode}
-  \end{onlyenv}
-
-\end{frame}
-
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}[fragile]
-  \frametitle{{\ttfamily step06-twofaults}: Error 7}
-  \summary{Error found during solve}
-
-\begin{bashcode}
-pylith step06_twofaults.cfg
-
-# -- many lines omitted --
-
- -- Solving problem.
-0 TS dt 0.2 time -0.2
-    0 SNES Function norm 1.989081034695e-02
-[0]PETSC ERROR: --------------------- Error Message --------------------------------------------------------------
-[0]PETSC ERROR: Residual norm computed by GMRES recursion formula 2.28464e+17 is far from the computed residual norm 2.99942e+27 at restart, residual norm at start of cycle 9.77239e+24
-
-# -- many lines omitted --
-\end{bashcode}
-
-\end{frame}
-
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}[t,fragile]
-  \frametitle{{\ttfamily step06-twofaults}: Error 7 Resolution}
-  \summary{Error found during solve}
-
-  \tserror
-  \begin{bashcode}
-[0]PETSC ERROR: Residual norm computed by GMRES recursion formula 3.48613e+10 is far from the computed residual norm 6.92443e+12 at restart, residual norm at start of cycle 6.91369e+12
-  \end{bashcode}
-
-  \tsdebug[Look at boundary conditions, fault, and mesh]\pause\\[1pt]
-
-  \begin{onlyenv}<2>
-    \includefigure[height=4.0cm]{figs/step06-faults-wrong2}
-  \end{onlyenv}
-  \begin{onlyenv}<3>
-    \tsfix[Error in \pylith{step06\_twofaults.cfg}]
-  \begin{cfgcode}
-      [pylithapp.problem.interfaces.fault]
-      ...
-      edge = fault_end
-      edge_value = 21
-
-      [pylithapp.problem.interfaces.splay]
-      ...
-      edge = splay_end
-      edge_value = 23
-  \end{cfgcode}
-  \end{onlyenv}
-
-\end{frame}
-
-
-% ------------------------------------------------------------ SLIDE
-\begin{frame}[fragile]
-  \frametitle{{\ttfamily step06-twofaults}: Error 8}
   \summary{No errors reported during simulation}
 
 \begin{bashcode}
@@ -976,23 +858,14 @@ pylith step06_twofaults.cfg
 
 # -- many lines omitted --
 
- -- Solving problem.
-0 TS dt 0.2 time -0.2
-    0 SNES Function norm 1.933709845425e-02
-      Linear solve converged due to CONVERGED_ATOL iterations 23
-    1 SNES Function norm 9.419694087448e-13
-    Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
-1 TS dt 0.2 time 0.
-    0 SNES Function norm 9.419697323909e-13
-    Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 0
 2 TS dt 0.2 time 0.2
-    0 SNES Function norm 8.112736904304e-03
-      Linear solve converged due to CONVERGED_ATOL iterations 22
-    1 SNES Function norm 1.563260631101e-12
+    0 SNES Function norm 3.245094761944e+00
+      Linear solve converged due to CONVERGED_ATOL iterations 14
+    1 SNES Function norm 3.376811091599e-08
     Nonlinear solve converged due to CONVERGED_FNORM_ABS iterations 1
 3 TS dt 0.2 time 0.4
- >> /software/unix/py3.12-venv/pylith-debug/lib/python3.12/site-packages/pylith/problems/Problem.py:199:finalize
- -- timedependent(info)
+ >> /Users/baagaard/tmp/pylith-5.0.0-macOS-12.0-arm64/lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
+ -- info (application-flow)
  -- Finalizing problem.
 \end{bashcode}
 
@@ -1001,7 +874,7 @@ pylith step06_twofaults.cfg
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}[t,fragile]
-  \frametitle{{\ttfamily step06-twofaults}: Error 8 Resolution}
+  \frametitle{{\ttfamily step06-twofaults}: Error 6 Resolution}
   \summary{No errors reported during simulation!}
 
   \tserror\par
@@ -1021,7 +894,7 @@ pylith step06_twofaults.cfg
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}[fragile]
-  \frametitle{{\ttfamily step06-twofaults}: Error 9}
+  \frametitle{{\ttfamily step06-twofaults}: Error 7}
   \summary{Error reported during initialization}
 
 \begin{bashcode}
@@ -1038,7 +911,7 @@ pylith step06_twofaults.cfg
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}[t,fragile]
-  \frametitle{{\ttfamily step06-twofaults}: Error 9 Resolution}
+  \frametitle{{\ttfamily step06-twofaults}: Error 7 Resolution}
   \summary{Error reported during initialization}
 
   \tserror
@@ -1062,7 +935,7 @@ pylith step06_twofaults.cfg
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}[fragile]
-  \frametitle{{\ttfamily step06-twofaults}: Error 10}
+  \frametitle{{\ttfamily step06-twofaults}: Error 8}
   \summary{Error reported during initialization}
 
 \begin{bashcode}
@@ -1079,7 +952,7 @@ pylith step06_twofaults.cfg
 
 % ------------------------------------------------------------ SLIDE
 \begin{frame}[t,fragile]
-  \frametitle{{\ttfamily step06-twofaults}: Error 10 Resolution}
+  \frametitle{{\ttfamily step06-twofaults}: Error 8 Resolution}
   \summary{Error reported during initialization}
 
   \tserror
