@@ -71,9 +71,11 @@
 \usefonttheme[onlymath]{serif}
 
 % minted shortcuts
-\newminted{cfg}{bgcolor=ltslate,autogobble,fontsize=\scriptsize}
+\usemintedstyle{tango}
+\newminted{cfg}{bgcolor=ltslate!50!white,autogobble,fontsize=\scriptsize}
+\newminted{yaml}{bgcolor=ltslate!50!white,autogobble,fontsize=\scriptsize}
 \newminted{bash}{bgcolor=ltslate!50!white,autogobble,fontsize=\tiny}
-\newmintinline{cfg}{bgcolor=ltslate,fontsize=\scriptsize}
+\newmintinline{cfg}{bgcolor=ltslate!50!white,fontsize=\scriptsize}
 \newmintinline{bash}{bgcolor=ltslate!50!white,fontsize=\scriptsize}
 
 % PyLith components
