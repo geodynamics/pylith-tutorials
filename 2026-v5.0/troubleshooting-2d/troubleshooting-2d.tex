@@ -88,15 +88,14 @@
   \frametitle{Parameter Files}
   \summary{Simple syntax for specifying parameters for properties and components}
 
-  Syntax\vspace*{-8pt}%
+  Syntax
   \begin{cfgcode}
     [pylithapp.COMPONENT.SUBCOMPONENT]
     COMPONENT = OBJECT
     PARAMETER = VALUE
   \end{cfgcode}
 
-  \vspace*{-4pt}%
-  Example\vspace*{-8pt}%
+  Example
   \begin{cfgcode}
       [pylithapp.problem]
       bc = [bc_xneg, bc_xpos]
@@ -158,7 +157,7 @@
   \begin{itemize}
   \item Show components and properties for given component \bashinline|--help|
     \begin{onlyenv}<2>
-      \begin{bashcode}
+      \begin{pyrejournal}
         # Show components and properties for [pylithapp.problem.bc.bc_yneg]
         pylith step02_sheardisp.cfg --problem.bc.bc_yneg.help
 
@@ -169,11 +168,11 @@
         For more information:
             --help-properties: prints details about user settable properties
             --help-components: prints details about user settable facilities and components
-      \end{bashcode}
+      \end{pyrejournal}
     \end{onlyenv}    
   \item Current components of a given component \bashinline|--help-components|
     \begin{onlyenv}<3>
-      \begin{bashcode}
+      \begin{pyrejournal}
         # Show components for [pylithapp.problem.bc.bc_yneg]
         pylith step02_sheardisp.cfg --problem.bc.bc_yneg.help-components
 
@@ -189,11 +188,11 @@
                 current value: 'emptybin', from {default}
                 configurable as: emptybin, derived_subfields
             ...
-      \end{bashcode}
+      \end{pyrejournal}
     \end{onlyenv}
   \item Current properties of a given component \bashinline|--help-properties|
     \begin{onlyenv}<4>
-      \begin{bashcode}
+      \begin{pyrejournal}
         # Show properties for [pylithapp.problem.bc.bc_yneg]
         pylith step02_sheardisp.cfg --problem.bc.bc_yneg.help-properties
 
@@ -213,7 +212,7 @@
                 default value: 1
                 current value: 1, from {default}
             ...
-      \end{bashcode}
+      \end{pyrejournal}
     \end{onlyenv}
   \end{itemize}
 
@@ -273,16 +272,16 @@
   \frametitle{{\ttfamily step01a-gravity}: Error 1}
   \summary{Error found while doing basic validation of user input}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step01a_gravity.cfg
 
 # Output
 >> {default}::
- -- error (pyre.inventory)
- -- timedependent.problem_defaults.name <- ''
- -- Missing required property 'name' in default options for problem.
+-- error (pyre.inventory)
+-- timedependent.problem_defaults.name <- ''
+-- Missing required property 'name' in default options for problem.
 
-  # -- many line omitted --
+# -- many line omitted --
 
 usage: pylith [--<property>=<value>] [--<facility>.<property>=<value>] [FILE.cfg] ...
 component 'pylithapp'
@@ -292,7 +291,7 @@ For more information:
   --help-properties: prints details about user settable properties
   --help-components: prints details about user settable facilities and components
 pylithapp: configuration error(s)
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -303,12 +302,12 @@ pylithapp: configuration error(s)
   \summary{Error found while doing basic validation of user input}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
   >> {default}::
   -- error (pyre.inventory)
   -- timedependent.problem_defaults.name <- ''
   -- Missing required property 'name' in default options for problem.
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Examine parameters for \pylith{pylithapp.timedependent.problem\_defaults}]\pause\\[1pt]
 
@@ -330,7 +329,7 @@ pylithapp: configuration error(s)
   \frametitle{{\ttfamily step01a-gravity}: Error 2}
   \summary{Error found while doing basic validation of user input}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step01_gravity.cfg
 
 # Output
@@ -347,7 +346,7 @@ pylith step01_gravity.cfg
  -- No constrained degrees of freedom found for time-dependent Dirichlet boundary condition 'bc_xpos'. 'constrained_dof' must be a zero-based integer array (0=x, 1=y, 2=z).
 
 # -- many lines omitted --
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -358,10 +357,10 @@ pylith step01_gravity.cfg
   \summary{Error found while doing basic validation of user input}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
     ValueError: No constrained degrees of freedom found for time-dependent Dirichlet boundary condition 'bc_xpos'.
     'constrained_dof' must be a zero-based integer array (0=x, 1=y, 2=z).
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Examine parameters for \pylith{pylithapp.problem.bc.bc\_xpos}]\pause\\[1pt]
 
@@ -382,7 +381,7 @@ pylith step01_gravity.cfg
   \frametitle{{\ttfamily step01-gravity}: Error 3}
   \summary{Error found while doing basic validation of user input}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step01_gravity.cfg
 
 # Output
@@ -402,7 +401,7 @@ For more information:
   --help-properties: prints details about user settable properties
   --help-components: prints details about user settable facilities and components
 pylithapp: configuration error(s)
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -413,7 +412,7 @@ pylithapp: configuration error(s)
   \summary{Error found while doing basic validation of user input}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
  >> ./pylithapp.cfg:112:
  -- error (pyre.inventory)
  -- pylithapp.timedependent.materials.elasticity.auxiliary_subfields.bulk_modulus.basis_order <- '0'
@@ -422,7 +421,7 @@ pylithapp: configuration error(s)
  -- error (pyre.inventory)
  -- pylithapp.timedependent.materials.elasticity.auxiliary_subfields.shear_modulus.basis_order <- '0'
  -- unknown component 'pylithapp.timedependent.materials.elasticity.auxiliary_subfields.shear_modulus'
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Examine line 112 of \pylith{pylithapp.cfg}. Lookup \pylith{Elasticity} and \pylith{IsotropicLinearElasticity} components]\pause\\[1pt]
 
@@ -443,7 +442,7 @@ pylithapp: configuration error(s)
   \frametitle{{\ttfamily step01a-gravity}: Error 4}
   \summary{Error found while doing validation of user input}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step01a_gravity.cfg
 
 # Output
@@ -464,7 +463,7 @@ RuntimeError: Material label_value '3' for cell '609' does not match the label_v
 C++ traceback (8 frames):
 
 # -- many lines omitted --
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -475,11 +474,11 @@ C++ traceback (8 frames):
   \summary{Error found while doing validation of user input}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
  >> libsrc/pylith/topology/MeshOps.cc:804:static void pylith::topology::MeshOps::checkMaterialLabels(const pylith::topology::Mesh &, pylith::int_array &)
  -- error (user-input)
  -- Material label_value '3' for cell '609' does not match the label_value of any materials or interfaces.
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Examine \pylith{pylithapp.problem.materials}]\pause\\[1pt]
 
@@ -503,7 +502,7 @@ C++ traceback (8 frames):
   \frametitle{{\ttfamily step01a-gravity}: Error 5}
   \summary{Error found while doing initialization}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step01a_gravity.cfg
 
 # Output
@@ -528,7 +527,7 @@ pylith step01a_gravity.cfg
 Fatal error. Calling MPI_Abort() to abort PyLith application.
 
 # -- many lines omitted --
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -539,10 +538,10 @@ Fatal error. Calling MPI_Abort() to abort PyLith application.
   \summary{Error found while doing initialization}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
 [0]PETSC ERROR: Error converting spatial database values for gravitational_acceleration at (  -96623.5  -72650.4) in
 spatial database 'Gravity field'. Found near zero magnitude (0) for gravity field vector (  0  0).
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Examine setup of gravity in \pylith{step01a\_gravity.cfg}]\pause\\[1pt]
 
@@ -586,7 +585,7 @@ spatial database 'Gravity field'. Found near zero magnitude (0) for gravity fiel
   \frametitle{{\ttfamily step06-twofaults}: Error 1}
   \summary{Error found while doing basic validation of user input}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step06_twofaults.cfg
 
 # Output
@@ -610,7 +609,7 @@ For more information:
   --help-properties: prints details about user settable properties
   --help-components: prints details about user settable facilities and components
 pylithapp: configuration error(s)
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -621,12 +620,12 @@ pylithapp: configuration error(s)
   \summary{Error found while doing basic validation of user input}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
  >> {default}::
  -- error (pyre.inventory)
  -- timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.description <- ''
  -- Description for spatial database not specified.
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Look for missing description in \pylith{kinsrcstep.simpledb}]\pause\\[1pt]
 
@@ -645,7 +644,7 @@ pylithapp: configuration error(s)
   \frametitle{{\ttfamily step06-twofaults}: Error 2}
   \summary{Error found while doing basic validation of user input}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step06_twofaults.cfg
 
 # Output
@@ -665,7 +664,7 @@ For more information:
   --help-properties: prints details about user settable properties
   --help-components: prints details about user settable facilities and components
 pylithapp: configuration error(s)
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -676,12 +675,12 @@ pylithapp: configuration error(s)
   \summary{Error found while doing basic validation of user input}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
  >> {default}::
  -- error (pyre.inventory)
  -- timedependent.interfaces.faultcohesivekin.singlerupture.kinsrcstep.simpledb.simpleioascii.filename <- ''
  -- Filename for spatial database not specified.
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Look for missing filename in \pylith{kinsrcstep.simpledb.simpleioascii}]\pause\\[1pt]
 
@@ -702,7 +701,7 @@ pylithapp: configuration error(s)
   \frametitle{{\ttfamily step06-twofaults}: Error 3}
   \summary{Error found while doing validation of user input}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step06_twofaults.cfg
 
 # Output
@@ -714,7 +713,7 @@ pylith step06_twofaults.cfg
 Fatal error. Calling MPI_Abort() to abort PyLith application.
 
 # -- many lines omitted --
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -725,11 +724,11 @@ Fatal error. Calling MPI_Abort() to abort PyLith application.
   \summary{Error found while doing validation of user input}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
  -- error (user-input)
  -- Could not find 'lagrange_multiplier_fault' in domain solution field. Field contains: 'displacement'; the missing fields are required for interface 'FaultCohesiveKin'.
 Fatal error. Calling MPI_Abort() to abort PyLith application.
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Look at solution field in parameter viewer]\pause\\[1pt]
 
@@ -747,7 +746,7 @@ Fatal error. Calling MPI_Abort() to abort PyLith application.
   \frametitle{{\ttfamily step06-twofaults}: Error 4}
   \summary{Error found during initialization}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step06_twofaults.cfg
 
 # Output
@@ -768,7 +767,7 @@ Traceback (most recent call last):
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 RuntimeError: Error occurred while reading spatial database file 'fault_slip.spatialdb'.
 Read data for 3 out of 4 points.
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -779,11 +778,11 @@ Read data for 3 out of 4 points.
   \summary{Error found during initialization}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
 RuntimeError: Error occurred while reading spatial database file 'fault_slip.spatialdb'.
 Read data for 3 out of 4 points.
 Error reading coordinates from buffer ''.
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Look at number of data points in \pylith{fault\_slip.spatialdb}]\pause\\[1pt]
 
@@ -804,7 +803,7 @@ Error reading coordinates from buffer ''.
   \frametitle{{\ttfamily step06-twofaults}: Error 5}
   \summary{Error found during initialization}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step06_twofaults.cfg
 
 # -- many lines omitted --
@@ -815,7 +814,7 @@ pylith step06_twofaults.cfg
   final-slip-left-lateral
   final-slip-opening
   initiation-time
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -826,13 +825,13 @@ pylith step06_twofaults.cfg
   \summary{Error found during initialization}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
  -- error (user-input)
  -- Could not find value 'final_slip_opening' in spatial database 'Fault rupture for main fault'. Available values are:
   final-slip-left-lateral
   final-slip-opening
   initiation-time
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Look at names of values in \pylith{fault\_slip.spatialdb}]\pause\\[1pt]
 
@@ -853,7 +852,7 @@ pylith step06_twofaults.cfg
   \frametitle{{\ttfamily step06-twofaults}: Error 6}
   \summary{No errors reported during simulation}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step06_twofaults.cfg
 
 # -- many lines omitted --
@@ -867,7 +866,7 @@ pylith step06_twofaults.cfg
  >> /Users/baagaard/tmp/pylith-5.0.0-macOS-12.0-arm64/lib/python3.12/site-packages/pylith/problems/Problem.py:222:finalize
  -- info (application-flow)
  -- Finalizing problem.
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -897,14 +896,14 @@ pylith step06_twofaults.cfg
   \frametitle{{\ttfamily step06-twofaults}: Error 7}
   \summary{Error reported during initialization}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step06_twofaults.cfg
 
 # -- many lines omitted --
 
 [0]PETSC ERROR: Error in external library
 [0]PETSC ERROR: Could not find values for initiation_time at (  -21860.3  -27621) in spatial database 'Fault rupture for main fault'.
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -915,9 +914,9 @@ pylith step06_twofaults.cfg
   \summary{Error reported during initialization}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
 [0]PETSC ERROR: Could not find values for initiation_time at (  -21860.3  -27621) in spatial database 'Fault rupture for main fault'.
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Look at spatial database \pylith{fault\_slip.spatialdb}]\pause\\[1pt]
 
@@ -938,14 +937,14 @@ pylith step06_twofaults.cfg
   \frametitle{{\ttfamily step06-twofaults}: Error 8}
   \summary{Error reported during initialization}
 
-\begin{bashcode}
+\begin{pyrejournal}
 pylith step06_twofaults.cfg
 
 # -- many lines omitted --
 
 [0]PETSC ERROR: Error in external library
 [0]PETSC ERROR: Could not find values for initiation_time at (  -21860.3  -27621) in spatial database 'Fault rupture for main fault'.
-\end{bashcode}
+\end{pyrejournal}
 
 \end{frame}
 
@@ -956,9 +955,9 @@ pylith step06_twofaults.cfg
   \summary{Error reported during initialization}
 
   \tserror
-  \begin{bashcode}
+  \begin{pyrejournal}
 [0]PETSC ERROR: Could not find values for initiation_time at (  -21860.3  -27621) in spatial database 'Fault rupture for main fault'.
-  \end{bashcode}
+  \end{pyrejournal}
 
   \tsdebug[Look at spatial database \pylith{fault\_slip.spatialdb}]\pause\\[1pt]
 
