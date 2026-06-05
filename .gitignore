@@ -5,4 +5,5 @@
 *.snm
 *.toc
 *.vrb
-_minted-*
+*.fls
+_minted*
