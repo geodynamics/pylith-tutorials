@@ -164,9 +164,9 @@ EVENTS = (
         ),
     ),
     Event(
-        date=create_date(2026, month=12),
+        date=create_date(2028, month=4),
         offset=OFFSET,
-        label="2026: PyLith v6.0 release",
+        label="2028: PyLith v6.0 release",
         color=COLORS["pylith"],
         notes=(
             "Update to current Pyre simulation framework",
@@ -190,7 +190,7 @@ for i_frame, event in enumerate(EVENTS):
     locator = dates.AutoDateLocator(minticks=10, maxticks=12)
 
     ax.xaxis_date()
-    ax.set_xlim(create_date(2002), create_date(2027))
+    ax.set_xlim(create_date(2002), create_date(2029))
     ax.set_ylim((0, 3))
     ax.xaxis.set_major_locator(locator)
 

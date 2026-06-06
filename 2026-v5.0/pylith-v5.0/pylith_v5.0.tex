@@ -258,7 +258,7 @@ Zechao Zhuo \includegraphics[height=1em]{images/ORCIDiD_icon32x32}0000-0002-8163
     \only<11>{\includegraphics[height=6.9cm]{figs/pylith-timeline-10}}
     \only<12>{\includegraphics[height=6.9cm]{figs/pylith-timeline-11}}
     \only<13>{\includegraphics[height=6.9cm]{figs/pylith-timeline-12}}
-    \only<13>{\includegraphics[height=6.9cm]{figs/pylith-timeline-13}}
+    \only<14>{\includegraphics[height=6.9cm]{figs/pylith-timeline-13}}
   \end{overlayarea}
 
 \end{frame}
@@ -638,6 +638,19 @@ $t_o$       & Time scale          & & \\
 
 
 % ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Nondimensionalization: Setting the length scale}
+  \summary{}
+
+The length scale can impact solver performance, especially when there is a fault.
+
+\vfill
+\important{Important: Set the length scale to the nominal (usually minimum) discretization size.}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
 \begin{frame}[t]
   \frametitle{Solver for quasi-static boundary value problems}
   \summary{}
@@ -1002,6 +1015,36 @@ $t_o$       & Time scale          & & \\
 
 \end{frame}
 
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Performance for 2D elasticity + prescribed slip}
+  \summary{Solver performance for elasticity with faults is excellent!}
+
+  \only<1>{Version 3.x}
+  \only<2>{Version 4.1}
+  \only<3>{Version 5.x}\par
+  \only<1>{\includefigure[height=7.0cm]{figs/solver-performance-2d-0}}
+  \only<2>{\includefigure[height=7.0cm]{figs/solver-performance-2d-1}}
+  \only<3>{\includefigure[height=7.0cm]{figs/solver-performance-2d-3}}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Performance for 3D elasticity + prescribed slip}
+  \summary{Solver performance for elasticity with faults is excellent!}
+
+  \only<1>{Version 3.x}
+  \only<2>{Version 4.1}
+  \only<3>{Version 5.x}\par
+  \only<1>{\includefigure[height=7.0cm]{figs/solver-performance-3d-0}}
+  \only<2>{\includefigure[height=7.0cm]{figs/solver-performance-3d-1}}
+  \only<3>{\includefigure[height=7.0cm]{figs/solver-performance-3d-3}}
+
+\end{frame}
 
 
 % ------------------------------------------------------------ SLIDE
