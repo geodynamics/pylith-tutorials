@@ -324,6 +324,103 @@ Zechao Zhuo \includegraphics[height=1em]{images/ORCIDiD_icon32x32}0000-0002-8163
 
 
 % ------------------------------------------------------------ SLIDE
+\begin{frame}[t,fragile]
+  \frametitle{PyLith v4.2 $\rightarrow$ PyLith v5.0}
+  \summary{Journal channels - now a small set of channels with predefined names}
+
+  \begin{minipage}[t]{0.45\textwidth}
+    PyLith v4.2 \\
+
+\begin{cfgcode}
+[pylithapp.journal.info]
+pylithapp = 1
+timedependent = 1
+solution = 1
+meshiopetsc = 1
+\end{cfgcode}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.45\textwidth}
+    PyLith v5.0 \\
+
+\begin{cfgcode}
+[pylithapp]
+# Turn off 'application-flow' channel (default is on)
+show_application_flow = False
+
+# Turn on colorized journal output
+journal.device = color-console
+\end{cfgcode}
+  \end{minipage}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t,fragile]
+  \frametitle{PyLith v4.2 $\rightarrow$ PyLith v5.0}
+  \summary{Nondimensionalization - {\ttfamily normalizer} $\rightarrow$ {\ttfamily scales}, {\ttfamily displacement\_scale}}
+
+
+  \begin{minipage}[t]{0.45\textwidth}
+    PyLith v4.2 \\
+
+\begin{cfgcode}
+  [pylithapp.problem]
+  normalizer = spatialdata.units.NondimElasticQuasistatic
+  normalizer.length_scale = 1.0*km
+  normalizer.shear_modulus = 10.0*GPa
+  normalizer.relaxation_time = 100.0*year
+\end{cfgcode}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.45\textwidth}
+    PyLith v5.0 \\
+
+\begin{cfgcode}
+  [pylithapp.problem]
+  scales = pylith.scales.QuasistaticElasticity
+  scales.length_scale = 100.0*km
+  scales.displacement_scale = 1.0*m
+  scales.shear_modulus = 10.0*GPa
+  scales.time_scale = 100.0*year
+\end{cfgcode}
+
+  \end{minipage}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t,fragile]
+  \frametitle{PyLith v4.2 $\rightarrow$ PyLith v5.0}
+  \summary{Modular mesh initialization}
+
+  \begin{minipage}[t]{0.45\textwidth}
+    PyLith v4.2 \\
+
+\begin{cfgcode}
+  [pylithapp.problem.mesh_generator]
+  reader = pylith.meshio.MeshIOPetsc
+  reader.filename = mesh_hex.msh
+\end{cfgcode}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.45\textwidth}
+    PyLith v5.0 \\
+
+\begin{cfgcode}
+  [pylithapp.problem.mesh_initializer.phases.read_mesh]
+  reader = pylith.meshio.MeshIOPetsc
+  reader.filename = mesh_hex.msh
+\end{cfgcode}
+
+  \end{minipage}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
 \begin{frame}
   \frametitle{PyLith v5.0}
   \summary{}
