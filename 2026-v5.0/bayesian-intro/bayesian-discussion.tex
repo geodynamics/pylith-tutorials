@@ -1,70 +1,77 @@
-% % This is cool: https://bayes.wustl.edu/etj/articles/leapz.pdf
-\documentclass[aspectratio=169,dvipsnames,18pt]{beamer}
-
-\input{talkPreambleNoBeamer.tex}
-\usepackage{physics}
-\usepackage{fancyvrb}
+% -*- TeX -*-
+\documentclass[aspectratio=169]{beamer}
+\usepackage[none]{hyphenat}
+\usepackage{tikz}
 \usepackage{annotate-equations}
+\usepackage{natbib}
 
-\mode<presentation>
-{
-  \usetheme{Malmoe}
-  \usefonttheme{serif}
 
-  \setbeamertemplate{headline}{}
-  \setbeamertemplate{footline}{}
-  \setbeamercovered{transparent}
-}
+\usepackage{mathtools} % equations
 
-\AtBeginSection[]
-{
-  \begin{frame}<beamer>
-    \frametitle{Outline}
-    \tableofcontents[currentsection,hideothersubsections]
-  \end{frame}
-}
+\title{Bayesian Inference: Very Short Intro}
+\author{Matt Knepley\\
+Brad Aagaard}
+\institute{\includegraphics[scale=1.5]{../../logos/cig_logo_dots}%
+  \hspace{4em}%
+\raisebox{1em}{\includegraphics[scale=1.0]{../../logos/cig_short_pylith}}}
+\date{June 11, 2026}
 
-\AtBeginSubsection[]
-{
-  \begin{frame}<beamer>
-    \frametitle{Outline}
-    \tableofcontents[sectionstyle=show/hide,subsectionstyle=show/shaded/hide]
-  \end{frame}
-}
 
-\setbeamerfont{title}{size=\normalsize}
-\setbeamerfont{author}{size=\footnotesize,series=\bfseries}
-\setbeamerfont{title page}{size=\scriptsize}
+% ---------------------------------------------------- CUSTOMIZATION
+\usetheme{CIG}
+\input{../style}
 
-\setbeamercovered{invisible}
-
-% Bibliography
-%   http://tex.stackexchange.com/questions/12806/guidelines-for-customizing-biblatex-styles
-\usepackage[sorting=none, backend=biber, style=authoryear, maxcitenames=4, maxbibnames=20]{biblatex}
-\addbibresource{presentations.bib}
-\renewcommand*{\bibfont}{\tiny}
-
-\title[Bayes]{Bayesian Inference: Very Short Intro}
-\author[Knepley]{Matt Knepley}
-\date[Jun]{PyLith Tutorial 2026\\Golden, CO\\June 8, 2026}
-% - Use the \inst command if there are several affiliations
-\institute[Buffalo]{
-  Computer Science and Engineering\\
-  University at Buffalo
-}
-
+% --------------------------------------------------------- DOCUMENT
 \begin{document}
-\beamertemplatenavigationsymbolsempty
 
-{
+% ------------------------------------------------------------ SLIDE
+\maketitle
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_short_pylith}}
+
+
+% ========================================================== SECTION
+\section{Introduction}
+
+
+% ------------------------------------------------------------ SLIDE
 \begin{frame}
-  \titlepage
+  \frametitle{Uncertainty Quantification}
+
+  \begin{itemize}
+  \item What is the uncertainty in my observations?
+  \item How accurate is my model?
+    \begin{itemize}
+    \item What is the accuracy of my solver?
+    \item What is the accuracy (discretization error) of my mesh+discretization?
+    \item How well do I know my input parameters?
+    \end{itemize}
+  \item What is the uncertainty in my inversion?
+    \begin{itemize}
+    \item How big is the null space?
+    \end{itemize}
+  \end{itemize}
 \end{frame}
-}
-%
+
+
+
+% ========================================================== SECTION
+\section{Bayesian Inference}
+
+% ------------------------------------------------------------ SLIDE
 \begin{frame}
-\Large
-\begin{center}
+
+  \Large\begin{center}
+    Bayesian Inference
+    \vfill
+    Matt Knepley
+
+  \end{center}
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+
+  \Large\begin{center}
   \Huge Never believe anything\\
 
   \bigskip
@@ -73,8 +80,11 @@
   \qquad until you run it.
 \end{center}
 \end{frame}
-%
-\begin{frame}{Bayesian Inference}\Huge
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}{Bayesian Inference}
+\Huge
 \qquad Using data to improve\\
 
 \bigskip
@@ -82,19 +92,25 @@
 
 \qquad\qquad an approximate distribution
 \end{frame}
-%
+
+
+% ------------------------------------------------------------ SLIDE
 \begin{frame}{Bayes' Rule}\Huge
 \begin{align*}
   P(H | D) = \frac{P(D | H) P(H)}{P(D)}
 \end{align*}
 \end{frame}
-%
+
+
+% ------------------------------------------------------------ SLIDE
 \begin{frame}{Bayes' Rule}\Huge
 \begin{align*}
   P(H | D) = \frac{P(D | H) P(H)}{\sum_i P(D | H_i) P(H_i)}
 \end{align*}
 \end{frame}
-%
+
+
+% ------------------------------------------------------------ SLIDE
 \tikzset{annotate equations/text/.style={font=\normalsize}}
 \begin{frame}{Bayes' Rule}\Huge
 \begin{align*}
@@ -104,10 +120,12 @@
   \annotate[yshift=-1em]{below}{prior}{prior}
 \end{align*}
 \end{frame}
-%
+
+
+% ------------------------------------------------------------ SLIDE
 \begin{frame}{Strategy 1: Lots of Samples}\Huge
 \begin{center}
-  \href{https://academic.oup.com/gji/article/202/2/1289/593030}{\parencite{baumannkaus2015}}
+  \href{https://academic.oup.com/gji/article/202/2/1289/593030}{\citep{baumannkaus2015}}
 \end{center}
 
 \bigskip
@@ -120,18 +138,21 @@
   \item[] Likelihood samples can be very expensive
 \end{itemize}
 \end{frame}
-%
-% Figure 4. 1-D and 2-D marginal distributions of the posterior probability for two parameter combinations. We used 508 random walks with 2000 steps each (508 000 MCMC samples) to determine the posterior. The 2-D marginal distributions are illustrated in terms of samples per bin, which is denoted with colour. The black lines show the associated confidence intervals with a step-width of 20 per cent and the red markers indicate the true model values. (a) This is an example of the cohesion of the subducting crust and the power-law exponent of the mantle lithosphere/upper mantle. Here, as opposed to the scatter plot of Fig. 3, we find a global maximum, where the true model is associated with a location within the 20 per cent confidence area. We can also see that n(ml/um) has a higher sensitivity. (b) In this case the friction angle of the subducting crust is plotted against the activation energy of the crust. We have a clear maximum, which is also well correlated with the true solution. An overview of all marginal distributions of the posterior is provided in the Supporting Information.
+
+
+% ------------------------------------------------------------ SLIDE
 \begin{frame}{Strategy 1: Lots of Samples}\Huge
 \begin{center}
 \includegraphics[height=0.8\textheight]{figures/Bayesian/BayesMCMCKaus}\\
 \small Baumann and Kaus, 2015
 \end{center}
 \end{frame}
-%
+
+
+% ------------------------------------------------------------ SLIDE
 \begin{frame}{Strategy 2: Lots of Approximations}\Huge
 \begin{center}
-  \href{https://arxiv.org/pdf/1407.1517}{\parencite{buithanhgirolami2014}}
+  \href{https://arxiv.org/pdf/1407.1517}{\citep{buithanhgirolami2014}}
 \end{center}
 
 \bigskip
@@ -146,10 +167,12 @@
   \item[] Low-rank Hessian approximation
 \end{itemize}
 \end{frame}
-%
+
+
+% ------------------------------------------------------------ SLIDE
 \begin{frame}{Cross-Fade}\Huge
 \begin{center}
-  \href{https://academic.oup.com/gji/article/239/3/1629/7783283}{\parencite{minson2024}}
+  \href{https://academic.oup.com/gji/article/239/3/1629/7783283}{\citep{minson2024}}
 \end{center}
 
 \bigskip
@@ -162,9 +185,29 @@
   \item[] Calculates marginal likelihood for design optimization
 \end{itemize}
 \end{frame}
-%
+
+
+% ------------------------------------------------------------ SLIDE
 \begin{frame}[allowframebreaks]{References}
-  \printbibliography
+  \bibliographystyle{chicagoAA}
+    {\scriptsize\bibliography{presentations}}
 \end{frame}
-%
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Discussion}
+
+  \begin{itemize}
+  \item What are the obstacles for quantifying uncertainty in your work?
+  \item What techniques are available for quantifying uncertainty?
+  \item What resources (e.g., software) are available?
+  \end{itemize}
+\end{frame}
+
+
+% ======================================================================
 \end{document}
+
+
+% End of file
