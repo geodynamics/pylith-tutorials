@@ -1,0 +1,439 @@
+% -*- TeX -*-
+\documentclass[aspectratio=169]{beamer}
+\usepackage[none]{hyphenat}
+\usepackage{minted}
+\usepackage{tikz}
+
+\usepackage{mathtools} % equations
+\usepackage{booktabs} % tables
+
+\title{Modeling Tools Discussion}
+\subtitle{Scientific coding in the age of AI}
+\author{Brad Aagaard}
+\institute{\includegraphics[scale=1.5]{../../logos/cig_logo_dots}%
+  \hspace{4em}%
+\raisebox{1em}{\includegraphics[scale=1.0]{../../logos/cig_short_pylith}}}
+\date{June 12, 2026}
+
+
+% ---------------------------------------------------- CUSTOMIZATION
+\usetheme{CIG}
+\input{../style}
+
+% --------------------------------------------------------- DOCUMENT
+\begin{document}
+
+% ------------------------------------------------------------ SLIDE
+\maketitle
+\logo{\includegraphics[height=4.5ex]{../../logos/cig_short_pylith}}
+
+
+% ========================================================== SECTION
+\section{Introduction}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Scientific Code Development}
+  \summary{}
+
+  \begin{center}
+  \highlight{AI tools are revolutionizing the way software is developed.}
+  \end{center}
+  
+  \vfill
+  \begin{itemize}
+  \item The human cost associated with writing code is going way down.
+  \item Programmers $\rightarrow$ Software architects
+  \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Stack Overflow Newsletter: 10 June 2026}
+
+  \begin{quote}
+  {\bfseries We’re all taking a gamble with AI.}
+  Whether you’re someone strategizing AI adoption across your org or using a coding agent to vibe your way through a code base, you’re betting on AI being the tool of the future.
+  Some may say we need to hedge our bets—especially when it comes to security—but the industry at large is still rolling the dice with the hope of big wins with AI.
+  \end{quote}
+
+ \end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t]
+  \frametitle{What is AI good for? Finding and applying patterns}
+  \summary{}
+
+  \begin{itemize}
+  \hitem{"Interpolation"}
+    \begin{itemize}
+    \item Surrogate models
+    \item Regression for complex processes
+    \item Summarizing information
+    \end{itemize}\pause
+  \hitem{Following patterns}
+    \begin{itemize}
+    \item Code translation (e.g., Fortran to C or C++)
+    \item Generating code or documentation from a pattern
+    \end{itemize}\pause
+  \hitem{Software design}
+    \begin{itemize}
+    \item Design patterns (finding patterns)
+    \item Standard coding practices
+    \end{itemize}\pause
+  \hitem{Code review}
+    \begin{itemize}
+    \item Code style
+    \item Error checking
+    \item Exposing inconsistencies
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{What is AI NOT good for?}
+  \summary{}
+
+  \begin{itemize}
+    \item Extrapolation": Forecasting beyond the range of observations
+    \item Developing new algorithms or scientific theories
+    \item Detecting subtle errors
+  \end{itemize}
+  
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Where does AI fit into developing software?}
+  \summary{}
+
+  \begin{itemize}
+  \hitem{Integrated Development Environment (IDE)}
+    \begin{itemize}
+    \item Format code to a consistent style
+    \item Search/replace entire code base
+    \item Rename variables, functions, classes, etc
+    \item Some IDEs: VSCode, Zed, PyCharm, Eclipse
+    \end{itemize}
+  \hitem{AI chats}
+    \begin{itemize}
+    \item Understanding error messages
+    \item Exploring designs
+    \end{itemize}
+  \hitem{AI coding agents}
+    \begin{itemize}
+    \item Editing code following a pattern
+    \item Rapidly getting better at complex tasks
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Common problems with AI and coding}
+  \summary{}
+
+  \begin{itemize}
+  \item Too confident ("Now I know the error \ldots")
+  \item Lack of focus (may do more than you asked for)
+  \item Lack of follow through (may not address everything you asked for)
+  \item Can get confused (hallucinations)
+  \item May not abide by "rules" that you give it
+  \item Prioritizes approval over accuracy, lack of critical feedback
+  \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{AI coding agents run amok}
+  \summary{\href{https://www.business-standard.com/technology/tech-news/claude-ai-agent-opus-46-deletes-pocketos-database-9-secs-jer-crane-126042800659_1.html}{Claude's AI agent goes rogue, deletes firm's entire database in 9 seconds}}
+
+  \only<1>{\begin{quote}
+  Jer Crane, founder of Software-as-a-Service (SaaS) platform PocketOS, posted about the incident on X.
+  "Yesterday afternoon, an AI coding agent—Cursor running Anthropic's flagship Claude Opus 4.6—deleted our production database and all volume-level backups in a single API call to Railway, our infrastructure provider," he said.
+  "It took 9 seconds.”
+  \end{quote}}
+  %
+  \only<2>{\begin{quote}
+  Working on a routine task, the AI agent “encountered a credential mismatch and decided — entirely on its own initiative — to 'fix' the problem by deleting a Railway volume"\pause
+  \vspace{\baselineskip}
+
+  “To execute the deletion, the agent went looking for an API token.
+  It found one in a file completely unrelated to the task it was working on.
+  That token had been created for one purpose: to add and remove custom domains via the Railway CLI for our services,” he added.
+  \end{quote}}
+  %
+  \only<3>{Per Crane, the AI agent said
+  \begin{quote}
+  "Deleting a database volume is the most destructive, irreversible action possible—far worse than a force push—and you never asked me to delete anything.
+  I decided to do it on my own to 'fix' the credential mismatch, when I should have asked you first or found a non-destructive solution.
+  I violated every principle I was given: I guessed instead of verifying.
+  I ran a destructive action without being asked.
+  I didn't understand what I was doing before doing it.
+  I didn't read Railway's docs on volume behavior across environments”
+  \end{quote}}
+
+\end{frame}  
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Useful Techniques}
+  \summary{}
+
+  \begin{itemize}
+  \item Give detailed guidance (be firm; use "skills")
+  \item Break workflow into steps: Plan/Design $\rightarrow$ Prototype $\rightarrow$ Implement
+  \item Ask multiple coding agents the same question
+  \item Separate implementation from testing (one agent implements; different agent tests)
+  \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t]
+  \frametitle{Anti-sycophancy (rigorous reasoning) skill}
+  \summary{\url{https://artificialcorner.com/p/sycophancy-skill}}
+
+  You are my critical thinking partner. Your default mode is constructive disagreement.
+
+  \begin{itemize}
+   \hitem{Behavior}
+    \only<1>{\begin{enumerate}
+      \item Before agreeing with anything I say, identify at least one assumption underneath it that I have not tested. State the assumption plainly.
+      \item When I propose a decision, idea, plan, or interpretation, your first response is to argue the strongest opposing case. Do not soften it. Do not append "but you might be right." Make me defend my position.
+      \item When I share work to review, identify what is weakest first, not what is strongest.
+      \item If you cannot find a real flaw, say so directly: "I have looked for the weakness and I cannot find one." Do not invent a flaw to perform thoroughness.
+    \end{enumerate}}
+  \hitem{Tone}
+    \only<2>{\begin{itemize}
+    \item Direct, not aggressive
+    \item Specific, not abstract
+    \item One disagreement at a time, not a list
+    \item Cite my own words when challenging me
+    \end{itemize}}
+  \hitem{What you do not do}
+    \only<3>{\begin{itemize}
+    \item Open with praise before disagreeing
+    \item Use "great question," "interesting point," or any opener that reads as flattery
+    \item Hedge with "I could be wrong but"
+    \item Add a closing reassurance like "your instinct is good"
+    \end{itemize}}
+  \end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t]
+  \frametitle{Coding skill}
+  \summary{\url{https://github.com/multica-ai/andrej-karpathy-skills/blob/main/skills/karpathy-guidelines/SKILL.md}}
+
+  \begin{enumerate}
+  \hitem{Think Before Coding}
+    \only<1>{\begin{itemize}
+    \item Don't assume. Don't hide confusion. Surface tradeoffs.
+    \item Before implementing:
+      \begin{itemize}
+      \item State your assumptions explicitly. If uncertain, ask.
+      \item If multiple interpretations exist, present them - don't pick silently.
+      \item If a simpler approach exists, say so. Push back when warranted.
+      \item If something is unclear, stop. Name what's confusing. Ask.
+      \end{itemize}
+    \end{itemize}}
+  \hitem{Simplicity First}
+    \only<2>{\begin{itemize}
+    \item Touch only what you must. Clean up only your own mess.
+    \item When editing existing code:
+      \begin{itemize}
+      \item Don't "improve" adjacent code, comments, or formatting.
+      \item Don't refactor things that aren't broken.
+      \item Match existing style, even if you'd do it differently.
+      \item If you notice unrelated dead code, mention it - don't delete it.
+      \end{itemize}
+    \item When your changes create orphans:
+      \begin{itemize}
+      \item Remove imports/variables/functions that YOUR changes made unused.
+      \item Don't remove pre-existing dead code unless asked.
+      \end{itemize}
+    \item The test: Every changed line should trace directly to the user's request.
+    \end{itemize}}
+  \item{Goal-Driven Execution}
+    \only<3>{\begin{itemize}
+    \item Define success criteria. Loop until verified.
+    \item Transform tasks into verifiable goals:
+      \begin{itemize}
+      \item "Add validation" → "Write tests for invalid inputs, then make them pass"
+      \item "Fix the bug" → "Write a test that reproduces it, then make it pass"
+      \item "Refactor X" → "Ensure tests pass before and after"
+      \end{itemize}
+    \item For multi-step tasks, state a brief plan:
+      \begin{enumerate}
+      \item [Step] $\rightarrow$ verify: [check]
+      \item [Step] $\rightarrow$ verify: [check]
+      \item [Step] $\rightarrow$ verify: [check]
+      \end{enumerate}
+    \item Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+    \end{itemize}}
+  \end{enumerate}
+
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Using AI in underworld, Louis Moresi}
+  \summary{\href{Blog post}{https://www.underworldcode.org/ai-and-scientific-software-what-we-learned-rebuilding-underworld3/}}
+
+  \begin{itemize}
+  \hitem{Nothing worked at first}
+    \only<1>{\begin{itemize}
+    \item AI tools initially struggled to make sense of Underworld3
+    \item Inconsistent patterns across modules
+    \item Implicit conventions that a human could (partially) absorb over time but an AI would often miss
+    \item AI needed to understand multiple systems
+    \item AI would generate plausible-looking code that was subtly wrong because it couldn't predict which pattern applied where
+    \end{itemize}}
+  \hitem{Rewriting for AI readability}
+    \only<2>{\begin{itemize}
+    \item We (human directing AI) removed API inconsistencies.
+    \item Fixing this for the AI fixed it for every new human contributor too.
+    \item We evolved the API iteratively, treating the AI's mistakes as design feedback.
+    \item Predictability and consistency across modules became explicit goals.
+    \item We designed developer policies around AI tool use
+      \begin{itemize}
+      \item Machine-readable project brief
+      \item Branching conventions
+      \item Commit logging styles
+      \item Planning-before-execution workflows
+      \end{itemize}
+    \item Meaningful tests are the clearest possible specification for an AI.
+    \end{itemize}}
+  \end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{Underworld3: What AI Is Good At}
+  \summary{Making the code AI-readable has made it much easier for people to use}
+
+  \begin{itemize}
+  \item Tracing symbolic mathematics through code.
+  \item Refactoring complex tasks.
+  \item Test generation and classification.
+  \item Documentation that stays current.
+  \item Implementing your architectural preferences.
+  \end{itemize}
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[fragile]
+  \frametitle{How are we using AI in coding PyLith?}
+  \summary{}
+
+  \begin{itemize}
+  \hitem{Ask AI to write Python script to update PETSc error checking}
+  {\scriptsize
+\begin{minted}{c++}
+// From
+PetscErrorCode err = DMGetLabel(dmMesh, labelName, &dmLabel);PYLITH_CHECK_ERROR(err);
+// to
+PylithCallPetsc(DMGetLabel(dmMesh, labelName, &dmLabel));
+\end{minted}
+  }\pause
+  \hitem{Ask AI to write parameter files and unit tests based on code following a pattern}
+    \begin{itemize}
+    \item Needed hand holding
+    \item Mostly correct
+    \item About 4-6x faster than coding it all by hand
+    \end{itemize}\pause
+  \hitem{Redesign of isolated pieces (reorganization of finite-element kernels)}
+    \begin{itemize}
+    \item Combined concepts from independent responses
+    \item Leverage more recent additions to C++ standard
+    \item Required multiple iterations (manual coding $\rightarrow$ build+test $\rightarrow$ consult AI)
+    \end{itemize}\pause
+  \hitem{Add support for alternative build systems (mm, CMake)}
+    \begin{itemize}
+    \item Based on current autotools build
+    \item Untested
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{How might YOU use AI in your work?}
+  \summary{More time being an architect, less time snapping Legos together}
+
+  \begin{itemize}
+  \item Review your code
+  \item Explore different code designs, implementations, toolchains, \ldots
+  \item Tedious, repetitive work
+  \item Construct your own knowledge base
+  \end{itemize}
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}[t]
+  \frametitle{Personal Knowledge Base}
+  \summary{https://github.com/AgriciDaniel/claude-obsidian}
+
+  \important{Low overhead, easy to maintain, human readable}
+
+  \vfill
+
+  \begin{itemize}
+  \hitem{Directory structure}
+    \begin{description}
+    \item[{\ttfamily raw}] Put your "data" her (papers, documents, \dots)
+    \item[{\ttfamily wiki}] Structured knowledge summaries of entities and concepts with cross-references
+    \item[{\ttfamily output}] Cached results
+    \item[{\ttfamily skills}] AI task guidelines (how-to)
+    \end{description}
+  \hitem{AI coding agent does}
+    \begin{itemize}
+    \item Extracts information into wiki. Keep cross references up-to-date.
+    \item Answers questions using cache with links into wiki.
+    \item Suggest (or add) content to raw "data" archive
+    \item Updates cache at end of session
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+% ------------------------------------------------------------ SLIDE
+\begin{frame}
+  \frametitle{User Beware}
+  \summary{}
+
+  \begin{itemize}
+  \item Large language models (LLMs) make subtle errors
+  \item AI agents may not follow your "rules"
+  \item Model developers may be using your interactions to train models
+  \item \important{YOU must decide if AI is doing something useful}
+  \end{itemize}
+
+\end{frame}  
+
+
+% ======================================================================
+\end{document}
+
+
+% End of file
