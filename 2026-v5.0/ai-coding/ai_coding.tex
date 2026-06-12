@@ -1,5 +1,5 @@
 % -*- TeX -*-
-\documentclass[aspectratio=169]{beamer}
+\documentclass[aspectratio=169,hyperref=colorlinks]{beamer}
 \usepackage[none]{hyphenat}
 \usepackage{minted}
 \usepackage{tikz}
@@ -52,6 +52,7 @@
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
   \frametitle{Stack Overflow Newsletter: 10 June 2026}
+  \summary{\href{https://stackoverflow.blog/newsletter/issue-333-the-ai-jackpot/}{Issue 333: The AI jackpot}}
 
   \begin{quote}
   {\bfseries We’re all taking a gamble with AI.}
@@ -100,7 +101,7 @@
   \summary{}
 
   \begin{itemize}
-    \item Extrapolation": Forecasting beyond the range of observations
+    \item Extrapolation: Forecasting beyond the range of observations
     \item Developing new algorithms or scientific theories
     \item Detecting subtle errors
   \end{itemize}
@@ -142,12 +143,12 @@
   \summary{}
 
   \begin{itemize}
-  \item Too confident ("Now I know the error \ldots")
-  \item Lack of focus (may do more than you asked for)
-  \item Lack of follow through (may not address everything you asked for)
-  \item Can get confused (hallucinations)
-  \item May not abide by "rules" that you give it
-  \item Prioritizes approval over accuracy, lack of critical feedback
+  \hitem{Too confident} ("Now I know the error \ldots")
+  \hitem{Lack of focus} (may do more than you asked for)
+  \hitem{Lack of follow through} (may not address everything you asked for)
+  \hitem{Can get confused} (hallucinations)
+  \hitem{May not abide by "rules" that you give it}
+  \hitem{Prioritizes approval over accuracy}, lack of critical feedback
   \end{itemize}
 
 \end{frame}
@@ -156,11 +157,13 @@
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
   \frametitle{AI coding agents run amok}
-  \summary{\href{https://www.business-standard.com/technology/tech-news/claude-ai-agent-opus-46-deletes-pocketos-database-9-secs-jer-crane-126042800659_1.html}{Claude's AI agent goes rogue, deletes firm's entire database in 9 seconds}}
+  \summary{\href{https://www.business-standard.com/technology/tech-news/claude-ai-agent-opus-46-deletes-pocketos-database-9-secs-jer-crane-126042800659_1.html}{Business Standard: Claude's AI agent goes rogue, deletes firm's entire database in 9 seconds}}
 
-  \only<1>{\begin{quote}
-  Jer Crane, founder of Software-as-a-Service (SaaS) platform PocketOS, posted about the incident on X.
-  "Yesterday afternoon, an AI coding agent—Cursor running Anthropic's flagship Claude Opus 4.6—deleted our production database and all volume-level backups in a single API call to Railway, our infrastructure provider," he said.
+    
+  \only<1>{%
+  Jer Crane, founder of Software-as-a-Service (SaaS) platform PocketOS
+  \begin{quote}
+  "Yesterday afternoon, an AI coding agent -- Cursor running Anthropic's flagship Claude Opus 4.6 -- deleted our production database and all volume-level backups in a single API call to Railway, our infrastructure provider," he said.
   "It took 9 seconds.”
   \end{quote}}
   %
@@ -173,9 +176,10 @@
   That token had been created for one purpose: to add and remove custom domains via the Railway CLI for our services,” he added.
   \end{quote}}
   %
-  \only<3>{Per Crane, the AI agent said
+  \only<3>{%
+  Per Crane, the AI agent said
   \begin{quote}
-  "Deleting a database volume is the most destructive, irreversible action possible—far worse than a force push—and you never asked me to delete anything.
+  "Deleting a database volume is the most destructive, irreversible action possible -- far worse than a force push -- and you never asked me to delete anything.
   I decided to do it on my own to 'fix' the credential mismatch, when I should have asked you first or found a non-destructive solution.
   I violated every principle I was given: I guessed instead of verifying.
   I ran a destructive action without being asked.
@@ -192,10 +196,15 @@
   \summary{}
 
   \begin{itemize}
-  \item Give detailed guidance (be firm; use "skills")
-  \item Break workflow into steps: Plan/Design $\rightarrow$ Prototype $\rightarrow$ Implement
-  \item Ask multiple coding agents the same question
-  \item Separate implementation from testing (one agent implements; different agent tests)
+  \hitem{Give detailed guidance} (be firm; use "skills")
+  \hitem{Break workflow into steps:} Plan/Design $\rightarrow$ Prototype $\rightarrow$ Implement
+  \hitem{Ask multiple coding agents the same question}
+  \hitem{Use an independent agent for each task}
+    \begin{itemize}
+    \item Agent A: Designs API
+    \item Agent B: Creates tests matching API
+    \item Agent C: Implements API
+    \end{itemize}
   \end{itemize}
 
 \end{frame}
@@ -204,7 +213,7 @@
 % ------------------------------------------------------------ SLIDE
 \begin{frame}[t]
   \frametitle{Anti-sycophancy (rigorous reasoning) skill}
-  \summary{\url{https://artificialcorner.com/p/sycophancy-skill}}
+  \summary{\href{https://artificialcorner.com/p/sycophancy-skill}{artificialcorner.com/p/sycophancy-skill}}
 
   You are my critical thinking partner. Your default mode is constructive disagreement.
 
@@ -238,7 +247,8 @@
 % ------------------------------------------------------------ SLIDE
 \begin{frame}[t]
   \frametitle{Coding skill}
-  \summary{\url{https://github.com/multica-ai/andrej-karpathy-skills/blob/main/skills/karpathy-guidelines/SKILL.md}}
+  \summary{\href{https://github.com/multica-ai/andrej-karpathy-skills/blob/main/skills/karpathy-guidelines/SKILL.md}{andrej-karpathy-skills/skills/karpathy-guidelines
+/SKILL.md}}
 
   \begin{enumerate}
   \hitem{Think Before Coding}
@@ -269,7 +279,7 @@
       \end{itemize}
     \item The test: Every changed line should trace directly to the user's request.
     \end{itemize}}
-  \item{Goal-Driven Execution}
+  \hitem{Goal-Driven Execution}
     \only<3>{\begin{itemize}
     \item Define success criteria. Loop until verified.
     \item Transform tasks into verifiable goals:
@@ -294,7 +304,7 @@
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
   \frametitle{Using AI in underworld, Louis Moresi}
-  \summary{\href{Blog post}{https://www.underworldcode.org/ai-and-scientific-software-what-we-learned-rebuilding-underworld3/}}
+  \summary{\href{https://www.underworldcode.org/ai-and-scientific-software-what-we-learned-rebuilding-underworld3/}{Underworld blog post}}
 
   \begin{itemize}
   \hitem{Nothing worked at first}
@@ -360,13 +370,13 @@ PylithCallPetsc(DMGetLabel(dmMesh, labelName, &dmLabel));
     \item Mostly correct
     \item About 4-6x faster than coding it all by hand
     \end{itemize}\pause
-  \hitem{Redesign of isolated pieces (reorganization of finite-element kernels)}
+  \hitem{Redesign of isolated pieces} (reorganization of finite-element kernels)
     \begin{itemize}
     \item Combined concepts from independent responses
     \item Leverage more recent additions to C++ standard
     \item Required multiple iterations (manual coding $\rightarrow$ build+test $\rightarrow$ consult AI)
     \end{itemize}\pause
-  \hitem{Add support for alternative build systems (mm, CMake)}
+  \hitem{Add support for alternative build systems} (mm, CMake)
     \begin{itemize}
     \item Based on current autotools build
     \item Untested
@@ -378,7 +388,7 @@ PylithCallPetsc(DMGetLabel(dmMesh, labelName, &dmLabel));
 % ------------------------------------------------------------ SLIDE
 \begin{frame}
   \frametitle{How might YOU use AI in your work?}
-  \summary{More time being an architect, less time snapping Legos together}
+  \summary{More time being an architect, less time snapping Lego pieces together}
 
   \begin{itemize}
   \item Review your code
@@ -392,7 +402,7 @@ PylithCallPetsc(DMGetLabel(dmMesh, labelName, &dmLabel));
 % ------------------------------------------------------------ SLIDE
 \begin{frame}[t]
   \frametitle{Personal Knowledge Base}
-  \summary{https://github.com/AgriciDaniel/claude-obsidian}
+  \summary{\href{https://github.com/AgriciDaniel/claude-obsidian}{github.com/AgriciDaniel/claude-obsidian}}
 
   \important{Low overhead, easy to maintain, human readable}
 
@@ -401,16 +411,16 @@ PylithCallPetsc(DMGetLabel(dmMesh, labelName, &dmLabel));
   \begin{itemize}
   \hitem{Directory structure}
     \begin{description}
-    \item[{\ttfamily raw}] Put your "data" her (papers, documents, \dots)
+    \item[{\ttfamily raw}] Put your "data" here (papers, documents, \dots)
     \item[{\ttfamily wiki}] Structured knowledge summaries of entities and concepts with cross-references
     \item[{\ttfamily output}] Cached results
     \item[{\ttfamily skills}] AI task guidelines (how-to)
     \end{description}
-  \hitem{AI coding agent does}
+  \hitem{AI coding agent}
     \begin{itemize}
     \item Extracts information into wiki. Keep cross references up-to-date.
     \item Answers questions using cache with links into wiki.
-    \item Suggest (or add) content to raw "data" archive
+    \item Suggests (or adds) content to raw "data" archive
     \item Updates cache at end of session
     \end{itemize}
   \end{itemize}
@@ -418,6 +428,30 @@ PylithCallPetsc(DMGetLabel(dmMesh, labelName, &dmLabel));
 
 
 % ------------------------------------------------------------ SLIDE
+\begin{frame}[t]
+  \frametitle{Carbon footprint of using AI}
+
+\begin{itemize}
+\hitem{The carbon footprint of using AI is difficult to determine}
+  \begin{itemize}
+  \item Most AI models are proprietary
+  \item Most AI models are run in the cloud
+  \end{itemize}
+\hitem{Estimates of energy use and carbon emissions}
+  \begin{itemize}
+  \item \href{https://www.npr.org/2024/07/12/g-s1-9545/ai-brings-soaring-emissions-for-google-and-microsoft-a-major-contributor-to-climate-change}{NPR: AI brings soaring emissions for Google and Microsoft, a major contributor to climate change}
+  \item \href{https://kanoppi.co/search-engines-vs-ai-energy-consumption-compared/}{Search Engines vs AI: energy consumption compared}
+    \begin{itemize}
+    \item {\bfseries Google Search:} Uses 0.0003 kWh per query, emitting 0.2g CO2
+    \item {\bfseries ChatGPT:} Uses 0.0029 kWh per query (10x more energy), emitting 68g CO2.
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}  
+
+
+  % ------------------------------------------------------------ SLIDE
 \begin{frame}
   \frametitle{User Beware}
   \summary{}
@@ -426,7 +460,7 @@ PylithCallPetsc(DMGetLabel(dmMesh, labelName, &dmLabel));
   \item Large language models (LLMs) make subtle errors
   \item AI agents may not follow your "rules"
   \item Model developers may be using your interactions to train models
-  \item \important{YOU must decide if AI is doing something useful}
+  \item \important{YOU must decide if AI is doing something useful and worth the cost}
   \end{itemize}
 
 \end{frame}  
